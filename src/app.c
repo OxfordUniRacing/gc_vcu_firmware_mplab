@@ -106,9 +106,44 @@
     See prototype in app.h.
  */
 
+//============================UART=============================================
+static void uart1_rx_char(char c)
+{
+    
+}
+
+
+static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
+{
+    switch(event)
+    {
+        case UART_EVENT_READ_THRESHOLD_REACHED: //If we have reached our threshold (of 1 byte))
+            
+            break;
+            
+        case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
+            break;
+            
+        case UART_EVENT_READ_ERROR:     //If there is a reading errror
+            break;
+            
+        case UART_EVENT_WRITE_THRESHOLD_REACHED:    //If the number of write free spaces reaches the theshold
+            //Dont think we need this one
+            break;
+    }    
+}
+
+
 void APP_Initialize ( void )
 {
-
+    
+    //UART 1 SETUPP
+    UART1_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
+    UART1_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
+    //UART1_WriteThresholdSet(1);     
+    UART2_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
+    UART2_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
+    //UART2_WriteThresholdSet(1);
 }
 
 
