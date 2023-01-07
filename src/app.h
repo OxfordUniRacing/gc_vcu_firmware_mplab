@@ -82,21 +82,6 @@ extern "C" {
     determine the behavior of the application at various times.
 */
 
-typedef enum
-{
-    /* Application's state machine's initial state. */
-    APP_STATE_WAIT_UART_CONSOLE_CONFIGURED = 0,
-    APP_STATE_GET_CONSOLE_HANDLE,
-    APP_STATE_DEMONSTRATE_DEBUG_APIS,
-    APP_STATE_READ_FROM_CONSOLE,
-    APP_STATE_WAIT_READ_COMPLETE,
-    APP_STATE_WRITE_RECEIVED_DATA,
-    APP_STATE_WAIT_WRITE_BUFFER_EMPTY,
-    APP_STATE_ECHO_TEST,
-    APP_STATE_CONSOLE_READ_WRITE,
-    APP_STATE_ERROR,
-
-} APP_STATES;
 
 
 // *****************************************************************************
@@ -112,14 +97,6 @@ typedef enum
     Application strings and buffers are be defined outside this structure.
  */
 
-typedef struct
-{
-    /* The application's current state */
-    APP_STATES state;
-
-    SYS_CONSOLE_HANDLE consoleHandle;
-
-} APP_DATA;
 
 // *****************************************************************************
 // *****************************************************************************
