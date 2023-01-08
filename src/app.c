@@ -55,6 +55,7 @@
 #include "system/debug/sys_debug.h"
 #include "user.h"
 
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -107,24 +108,50 @@
  */
 
 //============================UART=============================================
-static void uart1_rx_char(char c)
-{
-    
-}
+static volatile bool uart1_ready;
+static volatile bool uart2_ready;
 
+static volatile char inv1_rx_buf[128];
+static volatile uint8_t inv1_rx_ptr = 0;
+static volatile char inv2_rx_buf[128];
+static volatile uint8_t inv2_rx_ptr = 0;
+
+static volatile void uart1_rx_char(void)
+{
+    uint8_t temp_char;
+    
+    //Read through all characters in buffers from the uart and add them to a new buffer
+    while(UART1_Read(&temp_char, 1))
+    {
+        //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
+        
+        inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
+        if(inv1_rx_ptr + 1 < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
+		else inv1_rx_ptr = 0;
+		
+        //If we recieve '\n', then the main line code is ready to read the buffers
+		if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
+		{
+			uart1_ready = true;
+			inv1_rx_ptr = 0;
+		}
+    }
+}
 
 static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
 {
     switch(event)
     {
         case UART_EVENT_READ_THRESHOLD_REACHED: //If we have reached our threshold (of 1 byte))
-            
+            uart1_rx_char();
             break;
             
         case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
+            //Should never happen
             break;
             
         case UART_EVENT_READ_ERROR:     //If there is a reading errror
+            //Probably should have something here to reset the module
             break;
             
         case UART_EVENT_WRITE_THRESHOLD_REACHED:    //If the number of write free spaces reaches the theshold
@@ -134,15 +161,169 @@ static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
 }
 
 
+static void uart2_rx_char(void)
+{
+    uint8_t temp_char;
+    
+    //Read through all characters in buffers from the uart and add them to a new buffer
+    while(UART2_Read(&temp_char, 1))
+    {
+        //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
+        
+        inv2_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
+        if(inv2_rx_ptr + 1 < sizeof(inv2_rx_buf)) inv2_rx_ptr++;    //Increment the pointer, overlapping if overflows
+		else inv2_rx_ptr = 0;
+		
+        //If we recieve '\n', then the main line code is ready to read the buffers
+		if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
+		{
+			uart2_ready = true;
+			inv2_rx_ptr = 0;
+		}
+    }
+}
+
+static void uart2_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
+{
+    switch(event)
+    {
+        case UART_EVENT_READ_THRESHOLD_REACHED: //If we have reached our threshold (of 1 byte))
+            uart2_rx_char();
+            break;
+            
+        case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
+            //Should never happen
+            break;
+            
+        case UART_EVENT_READ_ERROR:     //If there is a reading errror
+            //Probably should have something here to reset the module
+            break;
+            
+        case UART_EVENT_WRITE_THRESHOLD_REACHED:    //If the number of write free spaces reaches the theshold
+            //Dont think we need this one
+            break;
+    }    
+}
+
+
+//==================================INVERTERS===================================
+// Motor stream is the uart recive buffer
+//State of Motor Controller as given from the plettenberg manual (this is the info we are getting from the MCs)
+typedef struct {
+	char inputmethod;
+	float aux_input;
+	float throttle_input;
+	int pwm;
+	float voltage;
+	float phase_current;
+	int rpm;
+	int power_stage_temp;
+	int motor_temp; // this is the one we want for dash display (to be sent across can)
+	
+}inv_t;
+
+static inv_t inv1;
+static inv_t inv2;
+
+uint16_t get_inv_lowest_voltage(void)
+{
+	if( inv1.voltage < inv2.voltage) return inv1.voltage;
+	else return inv2.voltage;
+}
+
+static void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(const char*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
+{
+	// IO DESCRIPTOR ARG Is for writing the s
+	
+	// Startup check - when the inverters start they send a menu with a * character which we should ignore, 
+	// Therefore, only do the rest of the code (pare into the struct) when st_c = 0;
+	int st_c = 1;
+	
+    SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
+	
+	// Check for garbage
+	switch(msg[0])
+	{
+		case '*': // garbled start up message
+			st_c = 1;
+			break;
+		case 'T': // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
+			st_c = 0;
+			break;
+		case 'S':
+			st_c = 0;
+			break;
+		case 't': // inactive analogue
+			// Change to 's'
+			st_c = 0;
+			io_write("s\r\n",4); // length including null terminator 
+			break; 
+		case 's':
+			st_c = 0;
+			break;
+		default:
+			return; // not any of those values so return (bad message!!!) 
+	}
+
+	
+	if (st_c == 0) //  if its not start up noise, do the good shit
+	{
+		char* curr = (char*) msg;
+		
+			// Get the message and put in struct
+			#define ERROR_CHECK if ((uintptr_t)curr > (uintptr_t)msg+len) goto error;
+			inv->throttle_input = strtof(curr+2, &curr); // starts at curr 2 however many digits it taks to complete it it will increm cur pointer
+			ERROR_CHECK
+			inv->aux_input = strtof(curr+4, &curr); // check what string to long returns if garbled // check garbled maybe???
+			ERROR_CHECK
+			inv->pwm = strtol(curr+6, &curr, 10);
+			ERROR_CHECK
+			inv->voltage = strtof(curr+3, &curr);
+			ERROR_CHECK
+			inv->phase_current = strtof(curr+4, &curr);
+			ERROR_CHECK
+			inv->rpm = strtol(curr+6, &curr, 10);
+			ERROR_CHECK
+			inv->power_stage_temp = strtol(curr+5, &curr, 10);
+			ERROR_CHECK
+			inv->motor_temp = strtol(curr+7, &curr, 10); // debugged to +7
+			ERROR_CHECK
+			#undef ERROR_CHECK
+			// @@@@ NOTE: when testing in C ide, the compiler does not recognize the degree character
+			return;
+		
+			error:
+			//log_warn("mc_parser: read beyond the end of the string!!!");
+			return;
+	}
+}
+
+void handle_uart(void)
+{
+    if(uart1_ready)	//If the uart 1 interrupt has been called
+	{
+		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);
+		uart1_ready = false;
+	}
+	if(uart2_ready)
+	{
+		inv_parse_rx(inv2_rx_buf, inv2_rx_ptr, &inv2, &UART2_Write);
+		uart2_ready = false;
+	}
+}
+
+
 void APP_Initialize ( void )
 {
     
     //UART 1 SETUPP
     UART1_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
     UART1_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
+    UART1_ReadCallbackRegister(&uart1_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
     //UART1_WriteThresholdSet(1);     
     UART2_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
     UART2_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
+    UART1_ReadCallbackRegister(&uart2_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
     //UART2_WriteThresholdSet(1);
 }
 
@@ -156,7 +337,7 @@ void APP_Initialize ( void )
  */
 void APP_Tasks ( void )
 {
-
+    handle_uart();
 }
 
 

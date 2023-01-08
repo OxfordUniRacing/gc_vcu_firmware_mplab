@@ -19,6 +19,10 @@
 #ifndef USER_H
 #define USER_H
 #include "bsp/bsp.h"
+#include "peripheral/uart/plib_uart_common.h"
+#include "peripheral/uart/plib_uart1.h"
+#include "peripheral/uart/plib_uart2.h"
+
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
