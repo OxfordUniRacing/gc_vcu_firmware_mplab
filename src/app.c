@@ -230,8 +230,10 @@ uint16_t get_inv_lowest_voltage(void)
 	if( inv1.voltage < inv2.voltage) return inv1.voltage;
 	else return inv2.voltage;
 }
-
-static void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(const char*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
+/*
+ * XC32 kicking off warnings about passing a function with argument uint8_t* vs const char* - shouldn't make a difference but maybe look at different 
+ */
+static void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
 {
 	// IO DESCRIPTOR ARG Is for writing the s
 	
@@ -302,7 +304,7 @@ void handle_uart(void)
 {
     if(uart1_ready)	//If the uart 1 interrupt has been called
 	{
-		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);
+		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);    
 		uart1_ready = false;
 	}
 	if(uart2_ready)
