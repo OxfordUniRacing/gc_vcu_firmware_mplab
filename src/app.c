@@ -133,7 +133,7 @@ static volatile void uart1_rx_char(void)
 		if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
 		{
 			uart1_ready = true;
-			inv1_rx_ptr = 0;
+			inv1_rx_buf[inv1_rx_ptr] = '\0';
 		}
     }
 }
@@ -147,6 +147,7 @@ static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
             break;
             
         case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
+			uart1_rx_char();
             //Should never happen
             break;
             
@@ -170,7 +171,7 @@ static void uart2_rx_char(void)
     {
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
         
-        inv2_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
+        inv2_rx_buf[inv2_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv2_rx_ptr + 1 < sizeof(inv2_rx_buf)) inv2_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		else inv2_rx_ptr = 0;
 		
@@ -178,7 +179,8 @@ static void uart2_rx_char(void)
 		if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
 		{
 			uart2_ready = true;
-			inv2_rx_ptr = 0;
+			inv2_rx_buf[inv2_rx_ptr] = '\0';
+			
 		}
     }
 }
@@ -192,6 +194,7 @@ static void uart2_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
             break;
             
         case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
+			uart2_rx_char();
             //Should never happen
             break;
             
@@ -292,8 +295,17 @@ static void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, si
 			ERROR_CHECK
 			#undef ERROR_CHECK
 			// @@@@ NOTE: when testing in C ide, the compiler does not recognize the degree character
-			return;
 		
+			SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
+			SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
+			SYS_CONSOLE_PRINT("PWM: %f\n\r", inv->pwm);
+			SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
+			SYS_CONSOLE_PRINT("mot: %f\n\r", inv->motor_temp);
+			
+			
+			return;	
+			
+			
 			error:
 			//log_warn("mc_parser: read beyond the end of the string!!!");
 			return;
@@ -302,31 +314,31 @@ static void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, si
 
 void handle_uart(void)
 {
+	uart2_rx_char();	//Interrupts not working, so just poll the rx
+	uart1_rx_char();
+	
     if(uart1_ready)	//If the uart 1 interrupt has been called
 	{
-		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);    
+		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);   
+		inv1_rx_ptr = 0;
 		uart1_ready = false;
 	}
 	if(uart2_ready)
 	{
 		inv_parse_rx(inv2_rx_buf, inv2_rx_ptr, &inv2, &UART2_Write);
+		inv2_rx_ptr = 0;
 		uart2_ready = false;
 	}
 }
 
 
 void APP_Initialize ( void )
-{
-    
-    //UART 1 SETUPP
-    UART1_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
+{   
     UART1_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
-    UART1_ReadCallbackRegister(&uart1_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
-    //UART1_WriteThresholdSet(1);     
-    UART2_SerialSetup(NULL, 0);     //Sets up UART 2 defined in Harmony
+    UART1_ReadCallbackRegister(uart1_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
+         
     UART2_ReadThresholdSet(1);      //Allow for interrupt to be called when 1 byte is received
-    UART1_ReadCallbackRegister(&uart2_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
-    //UART2_WriteThresholdSet(1);
+    UART2_ReadCallbackRegister(uart2_rx_interrupt_handler, (uintptr_t)NULL);   //Set the callback function to our custom function
 }
 
 
@@ -340,9 +352,25 @@ void APP_Initialize ( void )
 void APP_Tasks ( void )
 {
     handle_uart();
+	
+	
+	
+//	char* test_msg_1 = "This is testing UART1\";
+//	char* test_msg_2 = "This is testing UART2\";
+//	
+//    UART1_write(test_msg_1, sizeof(test_msg_1));
+//	UART2_write(test_msg_1, sizeof(test_msg_1));
+	
+    //Just for testing add an echo for the console
+    static char console_rx_buf[10];
+    
+    if (SYS_CONSOLE_Read(0, console_rx_buf, 1) >= 1)
+    {
+	    LED_TOGGLE();
+		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
+		UART2_Write(console_rx_buf, 1);
+    }
 }
-
-
 /*******************************************************************************
  End of File
  */
