@@ -56,6 +56,7 @@
 #include "configuration.h"
 #ifdef SYS_DEBUG_USE_CONSOLE
 #include "system/console/sys_console.h"
+#include "system/debug/sys_debug.h"
 #endif
 
 

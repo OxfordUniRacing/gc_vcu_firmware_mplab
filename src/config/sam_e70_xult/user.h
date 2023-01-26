@@ -23,6 +23,8 @@
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/uart/plib_uart2.h"
 
+#include "system/debug/sys_debug.h"
+
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
 
