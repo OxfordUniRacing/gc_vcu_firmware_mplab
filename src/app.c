@@ -120,7 +120,7 @@
 
 void handle_console(void)
 {
-	static char console_rx_buf[10];
+	static uint8_t console_rx_buf[10];
     
     if (SYS_CONSOLE_Read(0, console_rx_buf, 1) >= 1)
     {
@@ -133,14 +133,16 @@ void handle_console(void)
 
 void APP_Initialize ( void )
 {   
-	//Uart
-	
-	
-	//SETUP CAN
+	//SETUP Uart
 	init_uart();
 	
 	//Timer
 	init_timer();
+	
+	//init can
+	init_can();
+	
+	SYS_CONSOLE_PRINT("\n\r============SYSTEM ON==========\n\r");
 
 }
 
@@ -158,7 +160,9 @@ void APP_Tasks ( void )
 	
 	handle_console();
 	
-	handle_can();
+	//handle_can();
+	
+
 
 }
 /*******************************************************************************

@@ -3,6 +3,7 @@
 #include "peripheral/mcan/plib_mcan_common.h"
 
 #include <xc.h>
+#include "user.h"
 //==============================DEFINITIONS
 
 //CAN Ids
@@ -18,8 +19,7 @@
 
 //============================LOCAL VAR
 
-struct MCAN_RX_BUFFER can_rx_queue[CAN_RX_BUFFER_SIZE];
-uint8_t can_rx_data_buffer[CAN_RX_BUFFER_SIZE][8];
+MCAN_RX_BUFFER can_rx_queue[CAN_RX_BUFFER_SIZE];
 uint8_t can_rx_queue_head = 0;
 uint8_t can_rx_queue_tail = 0;
 uint8_t can_rx_queue_len = 0;
@@ -27,54 +27,80 @@ uint8_t can_rx_queue_len = 0;
 
 //===================================LOCAL FUNC DECLARATIONS
 
+MCAN_RX_BUFFER* can_rx_queue_pop(void);
+MCAN_RX_BUFFER* can_rx_queue_push(void);
+void can_rx_queue_initialise(void);
+
 void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 //===========================================GLOBAL FUNC
 
 void handle_can(void)
 {	
-	MCAN_RX_BUFFER *buf;
+	MCAN_TX_BUFFER temp_tx_buf = {
+		.data = {50,50,50,50,50,50,50,50},
+		.dlc = 8,
+		.id = 0x00A,
+		.xtd = 1,
+		.fdf = 1,
+		.brs = 1
+	};
 	
-	//Take pedal board
+	//MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 	
-	switch(buf->id)
+	MCAN_RX_BUFFER can_temp ={0};
+	if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
 	{
-		case CAN_ID_PEDAL_BOARD:
-			break;
-			
-		case CAN_ID_BMS_CELL_BROADCAST:
-			break;
-			
-		case CAN_ID_AUX_STATES:
-			break;
+		char temp_buf[256] = {0};
+		char *temp_ptr = temp_buf;
+		
+		temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
+		for(uint8_t i = 0; i < 8; i++)
+		{
+			temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
+		}
+		snprintf(temp_ptr, 5, "\n\r");
+		//SYS_CONSOLE_PRINT(temp_buf);
+	}
+	
+	if(can_rx_queue_len > 0)
+	{
+		MCAN_RX_BUFFER *buf;
+		buf = can_rx_queue_pop();
+		//Take pedal board
+
+		switch(buf->id)
+		{
+			case CAN_ID_PEDAL_BOARD:
+				break;
+
+			case CAN_ID_BMS_CELL_BROADCAST:
+				break;
+
+			case CAN_ID_AUX_STATES:
+				break;
+		}
+		
+		
 	}
 }
 
 void init_can(void)
 {
-	can_rx_queue_initialise();
-
-	MCAN0_Initialize();
+	
 	MCAN0_RxFifoCallbackRegister(MCAN_RX_FIFO_0, can_rx_callback, (uintptr_t)(NULL));
-
-
-
+	
+	MCAN0_Initialize();
 }
 
 //=====================================LOCAL FUNC
 void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle)
 {
 	MCAN_RX_BUFFER* can_temp;
-	MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, &can_temp);	
+	can_temp = can_rx_queue_push();
+	
+	MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, can_temp);	
 }
 
-//Sets up the buffer for the CAN rx queue
-void can_rx_queue_initialise(void)
-{
-	for(uint8_t i = 0; i < CAN_RX_BUFFER_SIZE;i++)
-	{
-		can_rx_queue[i].data = can_rx_data_buffer[i];
-	}
-}
 
 //returns a pointer to where the next can message can be stored
 MCAN_RX_BUFFER* can_rx_queue_push(void)

@@ -33,7 +33,6 @@ void timer_callback(TC_TIMER_STATUS status, uintptr_t context);
 void init_timer(void)
 {
 	TC0_CH0_TimerCallbackRegister(timer_callback, (uintptr_t)(NULL));
-	TC0_CH0_TimerInitialize();
 	TC0_CH0_TimerStart();
 }
 
