@@ -79,11 +79,10 @@
 #define MCAN0_TX_FIFO_BUFFER_ELEMENT_SIZE 16U
 #define MCAN0_TX_FIFO_BUFFER_SIZE         96U
 #define MCAN0_TX_EVENT_FIFO_SIZE          48U
-#define MCAN0_STD_MSG_ID_FILTER_SIZE      4U
 
 /* MCAN0_MESSAGE_RAM_CONFIG_SIZE to be used by application or driver
    for allocating buffer from non-cached contiguous memory */
-#define MCAN0_MESSAGE_RAM_CONFIG_SIZE     244U
+#define MCAN0_MESSAGE_RAM_CONFIG_SIZE     240U
 
 // *****************************************************************************
 // *****************************************************************************
@@ -99,8 +98,6 @@ bool MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_NUM rxFifoNum, uint8_t numberOfMessag
 MCAN_ERROR MCAN0_ErrorGet(void);
 void MCAN0_ErrorCountGet(uint8_t *txErrorCount, uint8_t *rxErrorCount);
 void MCAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress);
-bool MCAN0_StandardFilterElementSet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement);
-bool MCAN0_StandardFilterElementGet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement);
 void MCAN0_SleepModeEnter(void);
 void MCAN0_SleepModeExit(void);
 void MCAN0_TxFifoCallbackRegister(MCAN_TX_FIFO_CALLBACK callback, uintptr_t contextHandle);

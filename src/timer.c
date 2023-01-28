@@ -71,4 +71,14 @@ void timer_callback(TC_TIMER_STATUS status, uintptr_t context)
 	else							ms_timer_1 += 2;	
 	
 	ms_timer_flipflop ^= 1;
+	
+	
+	static uint16_t ms_count = 0;
+	ms_count++;
+	if(ms_count >= 1000)
+	{
+		ms_count = 0;
+		
+		//SYS_CONSOLE_PRINT("New Time: %u\n", current_time_ms());
+	}
 }

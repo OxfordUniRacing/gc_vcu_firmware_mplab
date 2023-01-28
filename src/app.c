@@ -162,6 +162,15 @@ void APP_Tasks ( void )
 	
 	//handle_can();
 	
+	static uint32_t can_time = 0;
+	if(has_delay_passed(can_time, 1000))
+	{
+		can_time = current_time_ms();
+		
+		handle_can();
+		
+	}
+	
 
 
 }

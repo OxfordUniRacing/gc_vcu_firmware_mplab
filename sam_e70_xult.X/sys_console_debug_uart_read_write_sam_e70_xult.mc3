@@ -945,7 +945,8 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;GraphSettings canvasHeight=&quot;575&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;0&quot;/&gt;
+    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E70_Xplained&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;3&quot; y=&quot;72&quot;/&gt;
@@ -964,7 +965,6 @@
         &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
-    &lt;GraphSettings canvasHeight=&quot;575&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -3508,7 +3508,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_STD&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -5124,7 +5124,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.h</file>
-         <hash>261badcccb9b3d0a80be3517319aad5553b82b6b838b4f566fed92a6b5b15476</hash>
+         <hash>8c9230839074f15022b782b4870c82b7c92f59d0fb673ef2cec1b9cea92311ed</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\console\src\sys_console_uart.h</file>
@@ -5148,7 +5148,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.c</file>
-         <hash>11000e5bbde4586b3124150994960a94a149a218a82fcbd055e7914b4968d590</hash>
+         <hash>a16698d8089bbd5363fccbc8c4aa42aabb1c69770b62f4ff64eaeb36dd8d6efe</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\console\src\sys_console.c</file>

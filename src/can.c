@@ -59,7 +59,7 @@ void handle_can(void)
 			temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
 		}
 		snprintf(temp_ptr, 5, "\n\r");
-		//SYS_CONSOLE_PRINT(temp_buf);
+		SYS_CONSOLE_PRINT(temp_buf);
 	}
 	
 	if(can_rx_queue_len > 0)

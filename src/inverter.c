@@ -74,11 +74,11 @@ void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*
 			#undef ERROR_CHECK
 			// @@@@ NOTE: when testing in C ide, the compiler does not recognize the degree character
 		
-			SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
-			SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
-			SYS_CONSOLE_PRINT("PWM: %f\n\r", inv->pwm);
-			SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
-			SYS_CONSOLE_PRINT("mot: %f\n\r", inv->motor_temp);
+			//SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
+			//SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
+			//SYS_CONSOLE_PRINT("PWM: %f\n\r", inv->pwm);
+			//SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
+			//SYS_CONSOLE_PRINT("mot: %f\n\r", inv->motor_temp);
 			
 			
 			return;	
