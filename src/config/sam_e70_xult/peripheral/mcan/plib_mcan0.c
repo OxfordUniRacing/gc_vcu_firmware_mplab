@@ -66,6 +66,16 @@ static MCAN_RX_FIFO_CALLBACK_OBJ mcan0RxFifoCallbackObj[2];
 static MCAN_CALLBACK_OBJ mcan0CallbackObj;
 static MCAN_OBJ mcan0Obj;
 
+static const mcan_sidfe_registers_t mcan0StdFilter[] =
+{
+    {
+        .MCAN_SIDFE_0 = MCAN_SIDFE_0_SFT(0UL) |
+                  MCAN_SIDFE_0_SFID1(0x0UL) |
+                  MCAN_SIDFE_0_SFID2(0x7ffUL) |
+                  MCAN_SIDFE_0_SFEC(1UL)
+    },
+};
+
 // *****************************************************************************
 // *****************************************************************************
 // MCAN0 PLib Interface Routines
@@ -100,11 +110,11 @@ void MCAN0_Initialize(void)
     MCAN0_REGS->MCAN_CCCR |= MCAN_CCCR_CCE_Msk;
 
     /* Set Nominal Bit timing and Prescaler Register */
-    MCAN0_REGS->MCAN_NBTP  = MCAN_NBTP_NTSEG2(0) | MCAN_NBTP_NTSEG1(17) | MCAN_NBTP_NBRP(0) | MCAN_NBTP_NSJW(0);
+    MCAN0_REGS->MCAN_NBTP  = MCAN_NBTP_NTSEG2(4) | MCAN_NBTP_NTSEG1(13) | MCAN_NBTP_NBRP(0) | MCAN_NBTP_NSJW(0);
 
 
     /* Global Filter Configuration Register */
-    MCAN0_REGS->MCAN_GFC = MCAN_GFC_ANFS(2) | MCAN_GFC_ANFE(2);
+    MCAN0_REGS->MCAN_GFC = MCAN_GFC_ANFS_RX_FIFO_0 | MCAN_GFC_ANFE(2);
 
     /* Set the operation mode */
 
@@ -341,7 +351,7 @@ bool MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_NUM rxFifoNum, uint8_t numberOfMessag
                 }
                 rxBuf += MCAN0_RX_FIFO0_ELEMENT_SIZE;
                 rxgi++;
-                if (rxgi == 6U)
+                if (rxgi == 1U)
                 {
                     rxgi = 0U;
                 }
@@ -456,7 +466,7 @@ void MCAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress)
     mcan0Obj.msgRAMConfig.rxFIFO0Address = (mcan_rxf0e_registers_t *)msgRAMConfigBaseAddress;
     offset = MCAN0_RX_FIFO0_SIZE;
     /* Receive FIFO 0 Configuration Register */
-    MCAN0_REGS->MCAN_RXF0C = MCAN_RXF0C_F0S(6UL) | MCAN_RXF0C_F0WM(0UL) |
+    MCAN0_REGS->MCAN_RXF0C = MCAN_RXF0C_F0S(1UL) | MCAN_RXF0C_F0WM(0UL) | MCAN_RXF0C_F0OM_Msk |
             MCAN_RXF0C_F0SA(((uint32_t)mcan0Obj.msgRAMConfig.rxFIFO0Address >> 2));
 
     mcan0Obj.msgRAMConfig.txBuffersAddress = (mcan_txbe_registers_t *)(msgRAMConfigBaseAddress + offset);
@@ -470,6 +480,15 @@ void MCAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress)
     /* Transmit Event FIFO Configuration Register */
     MCAN0_REGS->MCAN_TXEFC = MCAN_TXEFC_EFWM(0UL) | MCAN_TXEFC_EFS(6UL) |
             MCAN_TXEFC_EFSA(((uint32_t)mcan0Obj.msgRAMConfig.txEventFIFOAddress >> 2));
+
+    mcan0Obj.msgRAMConfig.stdMsgIDFilterAddress = (mcan_sidfe_registers_t *)(msgRAMConfigBaseAddress + offset);
+    memcpy((void *)mcan0Obj.msgRAMConfig.stdMsgIDFilterAddress,
+           (const void *)mcan0StdFilter,
+           MCAN0_STD_MSG_ID_FILTER_SIZE);
+    offset += MCAN0_STD_MSG_ID_FILTER_SIZE;
+    /* Standard ID Filter Configuration Register */
+    MCAN0_REGS->MCAN_SIDFC = MCAN_SIDFC_LSS(1UL) |
+            MCAN_SIDFC_FLSSA(((uint32_t)mcan0Obj.msgRAMConfig.stdMsgIDFilterAddress >> 2));
 
     /* Set 16-bit MSB of mcan0 base address */
     MATRIX_REGS->CCFG_CAN0 = (MATRIX_REGS->CCFG_CAN0 & ~CCFG_CAN0_Msk)
@@ -486,6 +505,67 @@ void MCAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress)
     }
 }
 
+// *****************************************************************************
+/* Function:
+    bool MCAN0_StandardFilterElementSet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement)
+
+   Summary:
+    Set a standard filter element configuration.
+
+   Precondition:
+    MCAN0_Initialize and MCAN0_MessageRAMConfigSet must have been called
+    for the associated MCAN instance.
+
+   Parameters:
+    filterNumber          - Standard Filter number to be configured.
+    stdMsgIDFilterElement - Pointer to Standard Filter Element configuration to be set on specific filterNumber.
+
+   Returns:
+    Request status.
+    true  - Request was successful.
+    false - Request has failed.
+*/
+bool MCAN0_StandardFilterElementSet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement)
+{
+    if ((filterNumber > 1U) || (stdMsgIDFilterElement == NULL))
+    {
+        return false;
+    }
+    mcan0Obj.msgRAMConfig.stdMsgIDFilterAddress[filterNumber - 1U].MCAN_SIDFE_0 = stdMsgIDFilterElement->MCAN_SIDFE_0;
+
+    return true;
+}
+
+// *****************************************************************************
+/* Function:
+    bool MCAN0_StandardFilterElementGet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement)
+
+   Summary:
+    Get a standard filter element configuration.
+
+   Precondition:
+    MCAN0_Initialize and MCAN0_MessageRAMConfigSet must have been called
+    for the associated MCAN instance.
+
+   Parameters:
+    filterNumber          - Standard Filter number to get filter configuration.
+    stdMsgIDFilterElement - Pointer to Standard Filter Element configuration for storing filter configuration.
+
+   Returns:
+    Request status.
+    true  - Request was successful.
+    false - Request has failed.
+*/
+bool MCAN0_StandardFilterElementGet(uint8_t filterNumber, mcan_sidfe_registers_t *stdMsgIDFilterElement)
+{
+    if ((filterNumber > 1U) || (stdMsgIDFilterElement == NULL))
+    {
+        return false;
+    }
+    stdMsgIDFilterElement->MCAN_SIDFE_0 = mcan0Obj.msgRAMConfig.stdMsgIDFilterAddress[filterNumber - 1U].MCAN_SIDFE_0;
+
+    return true;
+}
 
 
 void MCAN0_SleepModeEnter(void)

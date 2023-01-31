@@ -4,6 +4,7 @@
 
 #include <xc.h>
 #include "user.h"
+#include "can.h"
 //==============================DEFINITIONS
 
 //CAN Ids
@@ -19,10 +20,14 @@
 
 //============================LOCAL VAR
 
+uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)))__attribute__((space(data), section (".ram_nocache")));
+
 MCAN_RX_BUFFER can_rx_queue[CAN_RX_BUFFER_SIZE];
 uint8_t can_rx_queue_head = 0;
 uint8_t can_rx_queue_tail = 0;
 uint8_t can_rx_queue_len = 0;
+
+
 
 
 //===================================LOCAL FUNC DECLARATIONS
@@ -36,31 +41,58 @@ void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 
 void handle_can(void)
 {	
-	MCAN_TX_BUFFER temp_tx_buf = {
-		.data = {50,50,50,50,50,50,50,50},
-		.dlc = 8,
-		.id = 0x00A,
-		.xtd = 1,
-		.fdf = 1,
-		.brs = 1
-	};
+//	MCAN_TX_BUFFER temp_tx_buf = {
+//		.data = {50,50,50,50,50,50,50,50},
+//		.dlc = 8,
+//		.id = 0x00A,
+//		.xtd = 1,
+//		.fdf = 1,
+//		.brs = 1
+//	};
+//	
+//	MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 	
-	//MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
+	uint32_t status;
 	
-	MCAN_RX_BUFFER can_temp ={0};
-	if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
+	status = MCAN0_ErrorGet();
+	
+	uint32_t error_counts;
+	error_counts = MCAN0_REGS->MCAN_ECR;
+	
+	if((status & MCAN_PSR_LEC_Msk) == MCAN_ERROR_NONE)
 	{
-		char temp_buf[256] = {0};
-		char *temp_ptr = temp_buf;
+		__builtin_software_breakpoint();
 		
-		temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
-		for(uint8_t i = 0; i < 8; i++)
+		MCAN_RX_BUFFER can_temp = {0};
+		if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
 		{
-			temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
+			char temp_buf[256] = {0};
+			char *temp_ptr = temp_buf;
+
+			temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
+			for(uint8_t i = 0; i < 8; i++)
+			{
+				temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
+			}
+			snprintf(temp_ptr, 5, "\n\r");
+			SYS_CONSOLE_PRINT(temp_buf);
 		}
-		snprintf(temp_ptr, 5, "\n\r");
-		SYS_CONSOLE_PRINT(temp_buf);
 	}
+	else if((status & MCAN_PSR_LEC_Msk) != MCAN_ERROR_LEC_NO_CHANGE)
+	{
+		SYS_CONSOLE_PRINT("Can Error: %08x \n\r",status);
+	}
+	
+	if(( status & MCAN_PSR_EW_Msk) == MCAN_PSR_EW(1))
+	{
+		SYS_CONSOLE_PRINT("WARNING: Error CAN State \n\r");
+		init_can();
+		//MCAN0_SleepModeExit();
+	}
+	
+	
+	
+	
 	
 	if(can_rx_queue_len > 0)
 	{
@@ -87,9 +119,10 @@ void handle_can(void)
 void init_can(void)
 {
 	
-	MCAN0_RxFifoCallbackRegister(MCAN_RX_FIFO_0, can_rx_callback, (uintptr_t)(NULL));
 	
 	MCAN0_Initialize();
+	MCAN0_MessageRAMConfigSet(Mcan0MessageRAM);
+	MCAN0_RxFifoCallbackRegister(MCAN_RX_FIFO_0, can_rx_callback, (uintptr_t)(NULL));
 }
 
 //=====================================LOCAL FUNC

@@ -945,8 +945,7 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;GraphSettings canvasHeight=&quot;575&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;0&quot;/&gt;
-    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E70_Xplained&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;3&quot; y=&quot;72&quot;/&gt;
@@ -956,7 +955,7 @@
         &lt;ElementPosition dnOrder=&quot;5&quot; id=&quot;core&quot; x=&quot;240&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;6&quot; id=&quot;dfp&quot; x=&quot;20&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;7&quot; id=&quot;efc&quot; x=&quot;480&quot; y=&quot;20&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;8&quot; id=&quot;mcan0&quot; x=&quot;544&quot; y=&quot;431&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;8&quot; id=&quot;mcan0&quot; x=&quot;592&quot; y=&quot;480&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;9&quot; id=&quot;sys_console&quot; x=&quot;183&quot; y=&quot;168&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;10&quot; id=&quot;sys_debug&quot; x=&quot;370&quot; y=&quot;171&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;11&quot; id=&quot;tc0&quot; x=&quot;547&quot; y=&quot;339&quot;/&gt;
@@ -965,6 +964,7 @@
         &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
+    &lt;GraphSettings canvasHeight=&quot;575&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -3394,11 +3394,22 @@
          <value>__ROOTVIEW</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="AUTO_DATA_BIT_TIMING_CALCULATION"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;AUTO_DATA_BIT_TIMING_CALCULATION&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="AUTO_NOMINAL_BIT_TIMING_CALCULATION"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;AUTO_NOMINAL_BIT_TIMING_CALCULATION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3409,7 +3420,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;CALCULATED_DATA_BITRATE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;1000&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3420,7 +3431,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;CALCULATED_DATA_ERRORRATE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;-100.000&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0.000&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3449,11 +3460,54 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="DATA_BITRATE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DATA_BITRATE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;1000&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="DATA_SAMPLE_POINT"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DATA_SAMPLE_POINT&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;readOnly&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+    &lt;Values dnOrder=&quot;1&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;95.0&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="DATA_TIME_QUANTA_PERIOD"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DATA_TIME_QUANTA_PERIOD&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0.000&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;50.000&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="DBTP_DBRP"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DBTP_DBRP&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;readOnly&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+    &lt;Values dnOrder=&quot;1&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3464,7 +3518,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DBTP_DSJW&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3475,7 +3529,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DBTP_DTSEG1&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;-1&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;18&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3486,7 +3540,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DBTP_DTSEG2&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3497,7 +3551,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;DBTP_TOTAL_TIME_QUANTA&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;4&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;20&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3508,7 +3562,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_STD&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3519,7 +3573,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_STD_NOMATCH&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;2&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3531,6 +3585,17 @@
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;INTERRUPT_MODE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
       &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN0_STD_FILTER1_CONFIG"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN0_STD_FILTER1_CONFIG&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3570,6 +3635,17 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN_GENERATE_LEGACY_APIS"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN_GENERATE_LEGACY_APIS&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN_MATRIX_CAN_ENABLE"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN_MATRIX_CAN_ENABLE&quot;&gt;
@@ -3597,11 +3673,12 @@
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NBTP_NBRP&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;readOnly&quot;&gt;
-        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
       &lt;/Boolean&gt;
     &lt;/Attributes&gt;
     &lt;Values dnOrder=&quot;1&quot;&gt;
       &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;0&quot;/&gt;
+      &lt;User dnOrder=&quot;1&quot; value=&quot;0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3612,7 +3689,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NBTP_NSJW&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;1&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;5&quot;/&gt;
       &lt;User dnOrder=&quot;1&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
@@ -3624,7 +3701,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NBTP_NTSEG1&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;18&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;14&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3635,7 +3712,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NBTP_NTSEG2&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;1&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;5&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3669,11 +3746,12 @@
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NOMINAL_SAMPLE_POINT&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Boolean dnOrder=&quot;0&quot; id=&quot;readOnly&quot;&gt;
-        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
       &lt;/Boolean&gt;
     &lt;/Attributes&gt;
     &lt;Values dnOrder=&quot;1&quot;&gt;
       &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;95.0&quot;/&gt;
+      &lt;User dnOrder=&quot;1&quot; value=&quot;75.0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3685,6 +3763,17 @@
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;NOMINAL_TIME_QUANTA_PERIOD&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
       &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;mcan0&quot; value=&quot;50.000&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="RXBUF_USE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;RXBUF_USE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3711,7 +3800,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;RXF0_ELEMENTS&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;6&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3722,7 +3811,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;RXF0_OVERWRITE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -3829,6 +3918,19 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="headerFile"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;headerFile&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;String dnOrder=&quot;0&quot; id=&quot;source&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;../peripheral/mcan_11273/templates/plib_mcan_common.h&lt;/Value&gt;
+      &lt;/String&gt;
+    &lt;/Attributes&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="instHeaderFile"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;instHeaderFile&quot;&gt;
@@ -3864,6 +3966,17 @@
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="sys_console" name="#&amp;__MCC_Group_Parrent_id"/>
          <value>__ROOTVIEW</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="sys_console" name="SYS_CONSOLE_PRINT_BUFFER_SIZE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;sys_console&gt;
+  &lt;sys_console dnOrder=&quot;0&quot; id=&quot;SYS_CONSOLE_PRINT_BUFFER_SIZE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;512&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/sys_console&gt;
+&lt;/sys_console&gt;
+</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="sys_console" name="SYS_CONSOLE_UART_CONNECTION_COUNTER"/>
@@ -4600,7 +4713,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\definitions.h</file>
-         <hash>aab1a7e27454ce954293424595b9050439218ee631f2f3c8d980308911764ddc</hash>
+         <hash>fb808d5c674326ffe10e0a848036a05babae09024c30f04f2f8e298346721dc1</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\fuses.h</file>
@@ -4648,7 +4761,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>c4194b568a79ec2dc3ad718c1f4c6112e2ce7a3d4308904aa423647cb0f1fd87</hash>
+         <hash>638642a359ef8a5e9eb517650fd5f8654d0e9ec1c39b851d17f044d7bffdf196</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.h</file>
@@ -5063,12 +5176,12 @@
          <hash>e64db8df7309625b10e2c9686d0bb01b6824769ea9691033b6086e9d988507b5</hash>
       </entry>
       <entry>
-         <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc_common.h</file>
-         <hash>18de4e464f8009ae88ff57f51eade38db795cae08b4a09570ef487e4e980d086</hash>
-      </entry>
-      <entry>
          <file>..\src\config\sam_e70_xult\bsp\bsp.h</file>
          <hash>748b0bf0d026c9d1f428d7274ec55926a9017d6149259fc9cc314b92c0217710</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc_common.h</file>
+         <hash>18de4e464f8009ae88ff57f51eade38db795cae08b4a09570ef487e4e980d086</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.h</file>
@@ -5124,7 +5237,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.h</file>
-         <hash>8c9230839074f15022b782b4870c82b7c92f59d0fb673ef2cec1b9cea92311ed</hash>
+         <hash>62bbf1d5ffae0eae33f89b6a5de543171d9cd1190ebad721901e4e9b4486a59f</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\console\src\sys_console_uart.h</file>
@@ -5148,7 +5261,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.c</file>
-         <hash>a16698d8089bbd5363fccbc8c4aa42aabb1c69770b62f4ff64eaeb36dd8d6efe</hash>
+         <hash>131a434b7c651b7c809d040cbdd6cd6b55db167fc1809ff257200ce4c7560f07</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\console\src\sys_console.c</file>
@@ -5252,7 +5365,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>5e6fe5ce83c7de154d1da17394c32036fb2d08467bcaeb1d18caf218574282ce</hash>
+         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\uart3.h</file>
