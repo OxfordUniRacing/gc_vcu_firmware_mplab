@@ -1,5 +1,6 @@
 //=============================INCLUDES
 #include "peripheral/mcan/plib_mcan0.h"
+
 #include "peripheral/mcan/plib_mcan_common.h"
 
 #include <xc.h>
@@ -20,7 +21,9 @@
 
 //============================LOCAL VAR
 
-uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)))__attribute__((space(data), section (".ram_nocache")));
+//volatile uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)))__attribute__((space(data), section (".ram_nocache")));
+
+volatile uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE];
 
 MCAN_RX_BUFFER can_rx_queue[CAN_RX_BUFFER_SIZE];
 uint8_t can_rx_queue_head = 0;
@@ -59,24 +62,57 @@ void handle_can(void)
 	uint32_t error_counts;
 	error_counts = MCAN0_REGS->MCAN_ECR;
 	
+	uint32_t rx_fifo_status;
+	rx_fifo_status =  MCAN0_REGS->MCAN_RXF0S;
+	
+	uint32_t rx_fifo_control;
+	rx_fifo_control = MCAN0_REGS->MCAN_RXF0C;
+	
+	MCAN_RX_BUFFER *first_ram_element = (void*)Mcan0MessageRAM;
+	
+	static MCAN_RX_BUFFER can_temp = {0};	
+	
 	if((status & MCAN_PSR_LEC_Msk) == MCAN_ERROR_NONE)
 	{
-		__builtin_software_breakpoint();
-		
-		MCAN_RX_BUFFER can_temp = {0};
-		if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
-		{
-			char temp_buf[256] = {0};
-			char *temp_ptr = temp_buf;
-
-			temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
-			for(uint8_t i = 0; i < 8; i++)
+		//If there is more than 1 element in RXFIFO_0, then readit
+		while((rx_fifo_status & MCAN_RXF0S_F0FL_Msk) >= MCAN_RXF0S_F0FL(1))
+		{		
+					
+			if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
 			{
-				temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
+				
+				char temp_buf[256] = {0};
+				char *temp_ptr = temp_buf;
+
+//				temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
+//				for(uint8_t i = 0; i < 8; i++)
+//				{
+//					temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
+//				}
+//				snprintf(temp_ptr, 5, "\n\r");
+//				SYS_CONSOLE_PRINT(temp_buf);
 			}
-			snprintf(temp_ptr, 5, "\n\r");
-			SYS_CONSOLE_PRINT(temp_buf);
+			
+			rx_fifo_status =  MCAN0_REGS->MCAN_RXF0S;
 		}
+		
+		char temp_buf[256] = {0};
+		char *temp_ptr = temp_buf;
+				
+		uint8_t rxgi = (uint8_t)((MCAN0_REGS->MCAN_RXF0S & MCAN_RXF0S_F0GI_Msk) >> MCAN_RXF0S_F0GI_Pos);
+		MCAN_RX_BUFFER *rxFifo = (uint8_t *) ((uint8_t *)Mcan0MessageRAM + ((uint32_t)rxgi * MCAN0_RX_FIFO0_ELEMENT_SIZE));
+		MCAN0_REGS->MCAN_RXF0A = MCAN_RXF0A_F0AI((uint32_t)rxgi+1);
+		
+		
+		uint8_t pedal_position;
+		pedal_position = rxFifo->data[0];
+		
+		snprintf(temp_buf, 32, "PEDAL POS: %u\n\r", pedal_position);
+		SYS_CONSOLE_PRINT(temp_buf);
+		
+		//__builtin_software_breakpoint();
+		__NOP();
+		
 	}
 	else if((status & MCAN_PSR_LEC_Msk) != MCAN_ERROR_LEC_NO_CHANGE)
 	{
