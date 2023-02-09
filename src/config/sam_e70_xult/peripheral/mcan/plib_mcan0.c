@@ -110,7 +110,7 @@ void MCAN0_Initialize(void)
     MCAN0_REGS->MCAN_CCCR |= MCAN_CCCR_CCE_Msk;
 
     /* Set Nominal Bit timing and Prescaler Register */
-    MCAN0_REGS->MCAN_NBTP  = MCAN_NBTP_NTSEG2(4) | MCAN_NBTP_NTSEG1(13) | MCAN_NBTP_NBRP(0) | MCAN_NBTP_NSJW(0);
+    MCAN0_REGS->MCAN_NBTP  = MCAN_NBTP_NTSEG2(19) | MCAN_NBTP_NTSEG1(58) | MCAN_NBTP_NBRP(0) | MCAN_NBTP_NSJW(0);
 
 
     /* Global Filter Configuration Register */
@@ -351,7 +351,7 @@ bool MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_NUM rxFifoNum, uint8_t numberOfMessag
                 }
                 rxBuf += MCAN0_RX_FIFO0_ELEMENT_SIZE;
                 rxgi++;
-                if (rxgi == 1U)
+                if (rxgi == 16U)
                 {
                     rxgi = 0U;
                 }
@@ -466,7 +466,7 @@ void MCAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress)
     mcan0Obj.msgRAMConfig.rxFIFO0Address = (mcan_rxf0e_registers_t *)msgRAMConfigBaseAddress;
     offset = MCAN0_RX_FIFO0_SIZE;
     /* Receive FIFO 0 Configuration Register */
-    MCAN0_REGS->MCAN_RXF0C = MCAN_RXF0C_F0S(1UL) | MCAN_RXF0C_F0WM(0UL) | MCAN_RXF0C_F0OM_Msk |
+    MCAN0_REGS->MCAN_RXF0C = MCAN_RXF0C_F0S(16UL) | MCAN_RXF0C_F0WM(0UL) | MCAN_RXF0C_F0OM_Msk |
             MCAN_RXF0C_F0SA(((uint32_t)mcan0Obj.msgRAMConfig.rxFIFO0Address >> 2));
 
     mcan0Obj.msgRAMConfig.txBuffersAddress = (mcan_txbe_registers_t *)(msgRAMConfigBaseAddress + offset);

@@ -28,8 +28,6 @@ uint8_t can_rx_queue_tail = 0;
 uint8_t can_rx_queue_len = 0;
 
 
-
-
 //===================================LOCAL FUNC DECLARATIONS
 
 MCAN_RX_BUFFER* can_rx_queue_pop(void);
@@ -41,17 +39,19 @@ void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 
 void handle_can(void)
 {	
-//	MCAN_TX_BUFFER temp_tx_buf = {
-//		.data = {50,50,50,50,50,50,50,50},
-//		.dlc = 8,
-//		.id = 0x00A,
-//		.xtd = 1,
-//		.fdf = 1,
-//		.brs = 1
-//	};
-//	
-//	MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
+	if(MCAN0_TxFifoFreeLevelGet() >= 1)
+	{
+		MCAN_TX_BUFFER temp_tx_buf = {
+		.data = {50,50,50,50,50,50,50,50},
+		.dlc = 8,
+		.id = 0x005,
+		.fdf = 1,
+		.brs = 1,
+		};
 	
+		//MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
+	}
+		
 	uint32_t status;
 	
 	status = MCAN0_ErrorGet();
@@ -119,10 +119,9 @@ void handle_can(void)
 void init_can(void)
 {
 	
-	
-	MCAN0_Initialize();
+	//MCAN0_Initialize();
 	MCAN0_MessageRAMConfigSet(Mcan0MessageRAM);
-	MCAN0_RxFifoCallbackRegister(MCAN_RX_FIFO_0, can_rx_callback, (uintptr_t)(NULL));
+	//MCAN0_RxFifoCallbackRegister(MCAN_RX_FIFO_0, can_rx_callback, (uintptr_t)(NULL));
 }
 
 //=====================================LOCAL FUNC
@@ -131,7 +130,7 @@ void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle)
 	MCAN_RX_BUFFER* can_temp;
 	can_temp = can_rx_queue_push();
 	
-	MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, can_temp);	
+	//MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, can_temp);	
 }
 
 

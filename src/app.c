@@ -168,11 +168,7 @@ void APP_Tasks ( void )
 		can_time = current_time_ms();
 		
 		handle_can();
-		
 	}
-	
-
-
 }
 /*******************************************************************************
  End of File

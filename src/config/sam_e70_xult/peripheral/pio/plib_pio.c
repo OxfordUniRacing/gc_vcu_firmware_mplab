@@ -118,8 +118,8 @@ void PIO_Initialize ( void )
     /* PORTC Output Write Enable */
     ((pio_registers_t*)PIO_PORT_C)->PIO_OWER = PIO_OWER_Msk;
     /* PORTC Output Direction Enable */
-    ((pio_registers_t*)PIO_PORT_C)->PIO_OER = 0x100;
-    ((pio_registers_t*)PIO_PORT_C)->PIO_ODR = ~0x100U;
+    ((pio_registers_t*)PIO_PORT_C)->PIO_OER = 0x80100;
+    ((pio_registers_t*)PIO_PORT_C)->PIO_ODR = ~0x80100U;
     /* Initialize PORTC pin state */
     ((pio_registers_t*)PIO_PORT_C)->PIO_ODSR = 0x100;
     /* PORTC drive control */
@@ -142,8 +142,8 @@ void PIO_Initialize ( void )
     /* PORTD Output Write Enable */
     ((pio_registers_t*)PIO_PORT_D)->PIO_OWER = PIO_OWER_Msk;
     /* PORTD Output Direction Enable */
-    ((pio_registers_t*)PIO_PORT_D)->PIO_OER = 0x0;
-    ((pio_registers_t*)PIO_PORT_D)->PIO_ODR = ~0x0U;
+    ((pio_registers_t*)PIO_PORT_D)->PIO_OER = 0x800;
+    ((pio_registers_t*)PIO_PORT_D)->PIO_ODR = ~0x800U;
     /* Initialize PORTD pin state */
     ((pio_registers_t*)PIO_PORT_D)->PIO_ODSR = 0x0;
     /* PORTD drive control */

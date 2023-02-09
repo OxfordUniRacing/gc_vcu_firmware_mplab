@@ -71,6 +71,15 @@
 #define TS_INPUT_Get()               ((PIOD_REGS->PIO_PDSR >> 20) & 0x1)
 #define TS_INPUT_PIN                  PIO_PIN_PD20
 
+/*** Macros for CAN_STANDBY pin ***/
+#define CAN_STANDBY_Set()               (PIOD_REGS->PIO_SODR = (1<<11))
+#define CAN_STANDBY_Clear()             (PIOD_REGS->PIO_CODR = (1<<11))
+#define CAN_STANDBY_Toggle()            (PIOD_REGS->PIO_ODSR ^= (1<<11))
+#define CAN_STANDBY_OutputEnable()      (PIOD_REGS->PIO_OER = (1<<11))
+#define CAN_STANDBY_InputEnable()       (PIOD_REGS->PIO_ODR = (1<<11))
+#define CAN_STANDBY_Get()               ((PIOD_REGS->PIO_PDSR >> 11) & 0x1)
+#define CAN_STANDBY_PIN                  PIO_PIN_PD11
+
 /*** Macros for ASS_PIN_RELAY pin ***/
 #define ASS_PIN_RELAY_Set()               (PIOC_REGS->PIO_SODR = (1<<19))
 #define ASS_PIN_RELAY_Clear()             (PIOC_REGS->PIO_CODR = (1<<19))

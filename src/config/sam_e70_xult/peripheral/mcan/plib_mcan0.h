@@ -75,7 +75,7 @@
 // *****************************************************************************
 /* MCAN0 Message RAM Configuration Size */
 #define MCAN0_RX_FIFO0_ELEMENT_SIZE       16U
-#define MCAN0_RX_FIFO0_SIZE               16U
+#define MCAN0_RX_FIFO0_SIZE               256U
 #define MCAN0_TX_FIFO_BUFFER_ELEMENT_SIZE 16U
 #define MCAN0_TX_FIFO_BUFFER_SIZE         96U
 #define MCAN0_TX_EVENT_FIFO_SIZE          48U
@@ -83,7 +83,7 @@
 
 /* MCAN0_MESSAGE_RAM_CONFIG_SIZE to be used by application or driver
    for allocating buffer from non-cached contiguous memory */
-#define MCAN0_MESSAGE_RAM_CONFIG_SIZE     164U
+#define MCAN0_MESSAGE_RAM_CONFIG_SIZE     404U
 
 // *****************************************************************************
 // *****************************************************************************
