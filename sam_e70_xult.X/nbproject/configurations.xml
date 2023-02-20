@@ -34,6 +34,10 @@
               <itemPath>../src/config/sam_e70_xult/peripheral/mcan/plib_mcan0.h</itemPath>
               <itemPath>../src/config/sam_e70_xult/peripheral/mcan/plib_mcan_common.h</itemPath>
             </logicalFolder>
+            <logicalFolder name="mpu" displayName="mpu" projectFiles="true">
+              <itemPath>../src/config/sam_e70_xult/peripheral/mpu/plib_mpu.h</itemPath>
+              <itemPath>../src/config/sam_e70_xult/peripheral/mpu/plib_mpu_local.h</itemPath>
+            </logicalFolder>
             <logicalFolder name="f3" displayName="nvic" projectFiles="true">
               <itemPath>../src/config/sam_e70_xult/peripheral/nvic/plib_nvic.h</itemPath>
             </logicalFolder>
@@ -249,6 +253,9 @@
             <logicalFolder name="mcan" displayName="mcan" projectFiles="true">
               <itemPath>../src/config/sam_e70_xult/peripheral/mcan/plib_mcan0.c</itemPath>
             </logicalFolder>
+            <logicalFolder name="mpu" displayName="mpu" projectFiles="true">
+              <itemPath>../src/config/sam_e70_xult/peripheral/mpu/plib_mpu.c</itemPath>
+            </logicalFolder>
             <logicalFolder name="f3" displayName="nvic" projectFiles="true">
               <itemPath>../src/config/sam_e70_xult/peripheral/nvic/plib_nvic.c</itemPath>
             </logicalFolder>
@@ -302,6 +309,8 @@
       <itemPath>../src/uart0.c</itemPath>
       <itemPath>../src/inverter.c</itemPath>
       <itemPath>../src/can.c</itemPath>
+      <itemPath>../src/pio.c</itemPath>
+      <itemPath>../src/pio.h</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -378,8 +387,6 @@
       <C32>
         <property key="additional-warnings" value="true"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe"
-                  value="-Wformat=2 -Wundef -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Waggregate-return -Wstrict-prototypes -Wno-deprecated-declarations -Wredundant-decls -Wnested-externs -Winline -Wlong-long -Wunreachable-code -Wmissing-noreturn -Werror-implicit-function-declaration -Wfloat-equal -Wpacked"/>
         <property key="enable-app-io" value="false"/>
         <property key="enable-omit-frame-pointer" value="false"/>
         <property key="enable-symbols" value="true"/>
@@ -437,7 +444,6 @@
         <property key="additional-options-use-response-files" value="false"/>
         <property key="additional-options-write-sla" value="false"/>
         <property key="allocate-dinit" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="code-dinit" value="false"/>
         <property key="ebase-addr" value=""/>
         <property key="enable-check-sections" value="false"/>
@@ -477,7 +483,6 @@
       <C32CPP>
         <property key="additional-warnings" value="false"/>
         <property key="addresss-attribute-use" value="false"/>
-        <property key="appendMe" value=""/>
         <property key="check-new" value="false"/>
         <property key="eh-specs" value="true"/>
         <property key="enable-app-io" value="false"/>
@@ -506,7 +511,6 @@
         <property key="use-indirect-calls" value="false"/>
       </C32CPP>
       <C32Global>
-        <property key="appendMe" value="-Wno-error"/>
         <property key="common-include-directories" value=""/>
         <property key="gp-relative-option" value=""/>
         <property key="legacy-libc" value="false"/>
@@ -552,6 +556,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="400000-5fffff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="D:/VCU/gc_vcu_firmware_mplab/sam_e70_xult.X/debug/sam_e70_xult/sam_e70_xult_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"

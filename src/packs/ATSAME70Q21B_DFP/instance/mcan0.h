@@ -24,7 +24,6 @@
 #ifndef _SAME70_MCAN0_INSTANCE_
 #define _SAME70_MCAN0_INSTANCE_
 
-
 /* ========== Instance Parameter definitions for MCAN0 peripheral ========== */
 #define MCAN0_INSTANCE_ID                        (35)       
 #define MCAN0_CLOCK_ID                           (35)       

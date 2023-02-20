@@ -58,6 +58,8 @@
 #include "timer.h"
 #include "uart0.h"
 #include "can.h"
+#include "pio.h"
+#include "inverter.h"
 
 
 // *****************************************************************************
@@ -118,6 +120,86 @@
  * XC32 kicking off warnings about passing a function with argument uint8_t* vs const char* - shouldn't make a difference but maybe look at different 
  */
 
+static void handle_precharge(void)
+{
+	static enum {
+		PC_TS_OFF,						//The TS is not active
+		PC_WAIT_FOR_INVERTERP,			//Waiting for communication from the inverters
+		PC_WAIT_FOR_FINAL_VOLTAGE,		//Waiting for the inverter voltage to reach 95% of battery voltage
+		PC_READY,						//Ready to for BMS to exit precharge
+		PC_FAILED						//A timeout has occured, set flag for VCU relay to open 
+	} PRECHARGE_STATE = PC_TS_OFF;		//Different possible precharge states
+	
+	static uint32_t precharge_start_time = 0;
+
+	
+	switch(PRECHARGE_STATE)
+	{
+		case PC_TS_OFF:
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = true;
+		
+			if(ts_active())
+			{
+				PRECHARGE_STATE = PC_WAIT_FOR_INVERTERP;
+				precharge_start_time = current_time_ms();
+			}
+			break;
+		case PC_WAIT_FOR_INVERTERP:
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = true;
+			
+			if(comms_active.inv1 && comms_active.inv2)
+			{
+				PRECHARGE_STATE = PC_WAIT_FOR_FINAL_VOLTAGE;
+			}
+			else
+			{
+				//@@ Needs to calculate total delay
+				//t = RC ln ( Vbat / (Vbat - 30*1.2) ) * 1000
+				if(has_delay_passed(precharge_start_time, 5000))
+				{
+					PRECHARGE_STATE = PC_FAILED;
+				}
+				//Checked we have received communication from inverter
+				//else check how much time has passed
+			}
+			
+
+			break;
+		case PC_WAIT_FOR_FINAL_VOLTAGE:
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = true;
+		
+			//Read battery voltage
+			//Check inverter voltage has reached 95% of battery voltage
+			//If not, check how much time has passed, exit if necessary
+			
+			if(get_inv_lowest_voltage() > bms.voltage * 0.95)
+			{
+				PRECHARGE_STATE = PC_READY;
+			}
+			else
+			{
+				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
+				if(has_delay_passed(precharge_start_time, 3743))
+				{
+					PRECHARGE_STATE = PC_FAILED;
+				}
+			}
+			
+			break;
+		case PC_READY:
+			bms.precharge_enable = true;
+			ass.break_loop_precharge = false;
+			break;
+		case PC_FAILED:
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = true;
+			break;
+	}
+}
+
 void handle_console(void)
 {
 	static uint8_t console_rx_buf[10];
@@ -126,7 +208,7 @@ void handle_console(void)
     {
 	    LED_TOGGLE();
 		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
-		UART2_Write(console_rx_buf, 1);
+		//UART2_Write(console_rx_buf, 1);
     }
 }
 
@@ -140,6 +222,7 @@ void APP_Initialize ( void )
 	init_timer();
 	
 	//init can
+    
 	init_can();
 	
 	SYS_CONSOLE_PRINT("\n\r============SYSTEM ON==========\n\r");
@@ -156,24 +239,24 @@ void APP_Initialize ( void )
  */
 void APP_Tasks ( void )
 {
+    handle_precharge();
+    
     handle_uart();
 	
 	handle_console();
 	
-	//handle_can();
+	int pedal_val = handle_can();
 	
-	static uint32_t can_time = 0;
-	if(has_delay_passed(can_time, 3000))
-	{
-		can_time = current_time_ms();
-		
-		handle_can();
-		
-	}
-	
-
-
+    if(pedal_val != -1){
+        send_uart(pedal_val);
+    }
+    
+    handle_timeouts();
 }
+
+//=================================PRECHARGE==========================================
+
+
 /*******************************************************************************
  End of File
  */

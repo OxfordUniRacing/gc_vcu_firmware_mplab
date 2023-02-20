@@ -3,5 +3,6 @@
 
 void init_uart(void);
 void handle_uart(void);
+void send_uart(int pedal_val);
 
 #endif

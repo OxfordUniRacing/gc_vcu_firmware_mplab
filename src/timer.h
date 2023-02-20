@@ -27,5 +27,6 @@ extern comms_time_t comms_time;
 uint32_t current_time_ms(void);
 bool has_delay_passed(uint32_t start_time, uint32_t delay);
 void init_timer(void);
+void handle_timeouts(void);
 
 #endif

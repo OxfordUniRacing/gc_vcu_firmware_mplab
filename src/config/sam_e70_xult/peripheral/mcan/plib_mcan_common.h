@@ -299,14 +299,18 @@ typedef struct
 */
 typedef struct
 {
-    /* Identifier */
-    uint32_t id:29;
+    /* Start of Frame */
+    uint32_t sof:1;
+    /* Identifier 1*/
+    uint32_t id:11;
+    /* Skip over extended CAN messages */
+    uint32_t :17;
     /* Remote Transmission Request */
     uint32_t rtr:1;
-    /* Extended Identifier */
-    uint32_t xtd:1;
     /* Error State Indicator */
     uint32_t esi:1;
+    /* Extended Identifier */
+    uint32_t xtd:1;
 
     /* Rx Timestamp */
     uint32_t rxts:16;
@@ -342,8 +346,13 @@ typedef struct
 */
 typedef struct
 {
+    /* Modification to make it so the VCU sends non-extended CAN messages*/
+    /* SOF should always be set to 1 to follow CAN protocol, the other 17 bits
+     are left alone until we get to the 11 identifier bits*/
+    uint32_t sof:1;
+    uint32_t :17;
     /* Identifier */
-    uint32_t id:29;
+    uint32_t id:11;
     /* Remote Transmission Request */
     uint32_t rtr:1;
     /* Extended Identifier */

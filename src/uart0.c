@@ -1,10 +1,12 @@
 //=====================INCLUDES
 #include <xc.h>
+#include <stdio.h>
 
 #include "peripheral/uart/plib_uart_common.h"
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/uart/plib_uart2.h"
 #include "inverter.h"
+#include "timer.h"
 //=====================DEFINITIONS
 
 //=====================================GLOBAL VARIABLES========================
@@ -44,20 +46,89 @@ void handle_uart(void)
 	
     if(uart1_ready)	//If the uart 1 interrupt has been called
 	{
-		inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);   
+		comms_time.inv1 = current_time_ms();
+        inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);   
 		inv1_rx_ptr = 0;
 		uart1_ready = false;
 	}
 	if(uart2_ready)
 	{
-		inv_parse_rx(inv2_rx_buf, inv2_rx_ptr, &inv2, &UART2_Write);
+		comms_time.inv2 = current_time_ms();
+        inv_parse_rx(inv2_rx_buf, inv2_rx_ptr, &inv2, &UART2_Write);
 		inv2_rx_ptr = 0;
 		uart2_ready = false;
 	}
 }
 
+// This function takes an integer between 0 and 100, fills a buffer with a 
+// Plettenberg motor command, and returns the length of the command
+int get_thr_cmd(int desired_thr, char output[], size_t size){
+    char* ptr = output;
+    
+    if(desired_thr > 100) desired_thr = 100;	// caps throttle at 99.9, cause why not
+    if(desired_thr == 100){
+        ptr += snprintf(output,2,"m");
+        return 1;
+    }
+	if(desired_thr < 5){// if throttle is 0 or lower, stop the car
+		ptr += snprintf(output,2,"0");
+		return 1;
+	}
+	
+	int length = 0;
+	//decide first char: '1' - '9'
+	int firstdec = (int)(desired_thr / 10);
+	if(firstdec > 0){		// if 10.0% <= desired_thr <= 99.9%
+		//output->buf[0] = '0' + firstdec;
+        ptr += snprintf(output,1,"%d",firstdec);
+		desired_thr -= 10 * firstdec;
+		length += 1;
+		
+		// decide number of '+'
+		int seconddec = (int)(desired_thr);
+		for(int i = length; i < length+seconddec; i++){
+			//output->buf[i] = '+';
+            ptr += snprintf(output,2,"+");
+		}
+		desired_thr -= seconddec;
+		length += seconddec;
+		
+        return length;
+	}
+    else{							// if 0.1% <= desired_thr <= 9.9%
+		//first letter must be '1'
+		//output->buf[0] = '1';
+        ptr += snprintf(output,2,"1");
+		length += 1;
+		
+		// decide number of '+'
+		int seconddec = (int)desired_thr;
+		for(int i = length; i < length + (10-seconddec); i++){
+			//output->buf[i] = '-';
+            ptr += snprintf(output,2,"-");
+		}
+		desired_thr -= seconddec;
+		length += (10-seconddec);
+		
+		return length;
+	}
+	
+}
+
+void send_uart(int pedal_val){
+    //start with empty buffer long enough for any command
+    char thr_cmd[128] = {0};
+    //use helper function to fill buffer, actual length of command returned from
+    //helper function so that I don't write unnecessary characters
+    int length = get_thr_cmd(pedal_val,thr_cmd,128);
+    //write same command to both motors
+    UART1_Write((uint8_t*)thr_cmd,length);
+    UART2_Write((uint8_t*)thr_cmd,length);
+}
+
 
 //=================================LOCAL FUNCTIONS==============================
+
 
 static volatile void uart1_rx_char(void)
 {

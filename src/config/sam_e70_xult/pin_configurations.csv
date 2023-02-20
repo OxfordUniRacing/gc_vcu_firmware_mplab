@@ -78,7 +78,7 @@
 93,PA2,,Available,In,,,,,,,
 94,PC11,,Available,In,,,,,,,
 97,PC14,,Available,In,,,,,,,
-98,PD11,,Available,In,,,,,,,
+98,PD11,GPIO_PD11,Available,In,,,,,,,
 99,PA1,,Available,In,,,,,,,
 100,PC16,,Available,In,,,,,,,
 101,PD10,,Available,In,,,,,,,
