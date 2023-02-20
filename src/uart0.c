@@ -6,6 +6,7 @@
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/uart/plib_uart2.h"
 #include "inverter.h"
+#include "user.h"
 #include "timer.h"
 //=====================DEFINITIONS
 
@@ -47,7 +48,7 @@ void handle_uart(void)
     if(uart1_ready)	//If the uart 1 interrupt has been called
 	{
 		comms_time.inv1 = current_time_ms();
-        inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);   
+        inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write); 
 		inv1_rx_ptr = 0;
 		uart1_ready = false;
 	}
@@ -88,7 +89,7 @@ int get_thr_cmd(int desired_thr, char output[], size_t size){
 		int seconddec = (int)(desired_thr);
 		for(int i = length; i < length+seconddec; i++){
 			//output->buf[i] = '+';
-            ptr += snprintf(output,2,"+");
+            ptr += snprintf(ptr,2,"+");
 		}
 		desired_thr -= seconddec;
 		length += seconddec;
@@ -105,7 +106,7 @@ int get_thr_cmd(int desired_thr, char output[], size_t size){
 		int seconddec = (int)desired_thr;
 		for(int i = length; i < length + (10-seconddec); i++){
 			//output->buf[i] = '-';
-            ptr += snprintf(output,2,"-");
+            ptr += snprintf(ptr,2,"-");
 		}
 		desired_thr -= seconddec;
 		length += (10-seconddec);

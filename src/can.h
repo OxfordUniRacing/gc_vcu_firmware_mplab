@@ -4,9 +4,11 @@
 typedef struct {
 	//inputs
 	uint16_t voltage;
+    bool relay_state;
 	
 	//outputs
 	bool precharge_enable;
+    
 }bms_t;
 
 extern bms_t bms;

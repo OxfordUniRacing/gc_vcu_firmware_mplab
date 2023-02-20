@@ -11,6 +11,7 @@
 //CAN Ids
 #define CAN_ID_PEDAL_BOARD	0x100
 #define CAN_ID_BMS_CELL_BROADCAST 0x6D0 
+#define CAN_ID_RELAY_STATE 0x009
 #define CAN_ID_AUX_STATES		0x900
 #define CAN_ID_RTD          0x469;
 
@@ -45,10 +46,17 @@ void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 
 void send_can(void)
 {
+    uint8_t precharge;
+    
+    if(bms.precharge_enable)
+        precharge = 1;
+    else
+        precharge = 0;
+    
     MCAN_TX_BUFFER temp_tx_buf = {
-		.data = {50,51,52,53,54,55,56,57},
+		.data = {precharge,0,0,0,0,0,0,0},
 		.dlc = 8,
-		.id = 0x0A1,
+		.id = 0x008,
         .sof = 1
 	};
 	
@@ -114,6 +122,19 @@ int handle_can(void)
                     return pedal_val;
                 }
 				break;
+            
+            case CAN_ID_RELAY_STATE:
+                comms_time.bms = current_time_ms();
+                //char printbuf[10] = {0};
+                //snprintf(printbuf,10,"%u",buf->data[0]);
+                //SYS_CONSOLE_PRINT(printbuf);
+                if(buf->data[0] == 128){
+                    bms.relay_state = true;
+                }
+                else{
+                    bms.relay_state = false;
+                }
+                break;
 
 			case CAN_ID_BMS_CELL_BROADCAST:
                 comms_time.bms = current_time_ms();
