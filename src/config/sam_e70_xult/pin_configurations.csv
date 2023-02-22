@@ -25,7 +25,7 @@
 28,PE5,,Available,In,,,,,,,
 31,PB3,,MCAN0_CANRX0,n/a,n/a,No,Disabled,No,No,Disabled,Low
 32,PA21,,USART1_RXD1,n/a,n/a,No,Disabled,No,No,Disabled,Low
-34,PD30,,AFEC0_AD0,n/a,n/a,No,Disabled,No,No,Disabled,Low
+34,PD30,TS_INPUT,GPIO,In,n/a,No,Disabled,No,No,Disabled,Low
 35,PA7,,Available,In,,,,,,,
 36,PA8,,Available,In,,,,,,,
 37,PA22,,Available,In,,,,,,,
@@ -52,7 +52,7 @@
 62,PA26,,Available,In,,,,,,,
 63,PD21,,Available,In,,,,,,,
 64,PA11,SWITCH,SWITCH_AL,n/a,n/a,No,Disabled,No,No,Disabled,Low
-65,PD20,TS_INPUT,GPIO,In,n/a,No,Disabled,No,No,Disabled,Low
+65,PD20,GPIO_PD20,Available,In,,,,,,,
 66,PA10,,Available,In,,,,,,,
 67,PD19,,Available,In,,,,,,,
 68,PA12,,Available,In,,,,,,,

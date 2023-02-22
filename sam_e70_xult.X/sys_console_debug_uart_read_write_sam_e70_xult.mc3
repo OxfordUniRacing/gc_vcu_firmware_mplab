@@ -945,8 +945,7 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;GraphSettings canvasHeight=&quot;681&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;0&quot;/&gt;
-    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E70_Xplained&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;3&quot; y=&quot;72&quot;/&gt;
@@ -965,6 +964,7 @@
         &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
+    &lt;GraphSettings canvasHeight=&quot;681&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -2148,11 +2148,22 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_34_FUNCTION_NAME"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_34_FUNCTION_NAME&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;TS_INPUT&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_34_FUNCTION_TYPE"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_34_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC0_AD0&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2163,7 +2174,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_34_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2295,7 +2306,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_65_FUNCTION_NAME&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;TS_INPUT&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO_PD20&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2306,7 +2317,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_65_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2317,7 +2328,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_65_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -5112,7 +5123,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\definitions.h</file>
-         <hash>e53d690e7865f316b150eefe5acb502484afa0d935cb1c764ac2840978c7e412</hash>
+         <hash>44614317f3e251e9420b3bd240232e697d2a3f1739d3f4f881aee575f1b0a642</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\fuses.h</file>
@@ -5160,11 +5171,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>638642a359ef8a5e9eb517650fd5f8654d0e9ec1c39b851d17f044d7bffdf196</hash>
+         <hash>28a33e07ea67633bfd157bfc430f8112e35808cc74abed234e9d0507f194f301</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.h</file>
-         <hash>33911ec8568765fec8f2cec5a8bf4967cec405a902a5a6b239c51536e31028d0</hash>
+         <hash>9705b05c7c314288686a5e752413daf47e46b15740c75c9e0f2b86977fb549ff</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\gmac.h</file>
@@ -5224,7 +5235,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\pin_configurations.csv</file>
-         <hash>3db8f2a7346d6183e10a90c5374f0b33e13dfb9eef887d271df6d6cc500b5159</hash>
+         <hash>c1901a29b9abcebed9652f95d2a00e7648df3d847aa31458d743abd0910cce9f</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\afec.h</file>
@@ -5257,6 +5268,10 @@
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\utmi.h</file>
          <hash>d3e0b422fc0f0ccf381f58ecc76a3f39234f45860426f89107fee5035543f0e2</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\peripheral\xdmac\plib_xdmac.c</file>
+         <hash>894e86f88bf6efca05c5f48b9455f9a34501ea9bdc88c0812b8ef161ec6e07b6</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\tc3.h</file>
@@ -5301,6 +5316,10 @@
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\same70q21b.h</file>
          <hash>a716dc97909b50a4addc6ac05a279f0538e1b6ee48b6fbb97608a35aaf35e499</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\peripheral\xdmac\plib_xdmac.h</file>
+         <hash>4a06eb9eff7ad2588e5a0c94b60ccac934b188240005861adcd2e66aeddbc256</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\usart\plib_usart1.h</file>
@@ -5349,6 +5368,10 @@
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\afec1.h</file>
          <hash>8e4ef0776b13b63d4effca532e6c99f989fe5b2bf129d0d22d55ea055ce2d3d9</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\peripheral\xdmac\plib_xdmac_common.h</file>
+         <hash>96647f506cf2fe28b1204a1e6ce56e8e4cf04da59d224d6bace73fa5749c87ac</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\rtt.h</file>
@@ -5592,7 +5615,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.h</file>
-         <hash>a13af6ace771ccca5a2e54b2f2644314ed31b307bc32e77d7b87b84a774078bc</hash>
+         <hash>2ed7ad19b83d0010a9563769123b89c145055df1fba6bd7b7dd548d55a1b5d49</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\debug\sys_debug.h</file>
@@ -5624,7 +5647,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.c</file>
-         <hash>5a25d5b5d26a1266845a1d1d66bb3e579c5fe9f2a4ecb4a761c01f6da9dc182d</hash>
+         <hash>1187e26cbb741f6583d794b134e8272d5b713ce514f5f5c76b9181c55c0aee1f</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\mcan.h</file>
@@ -5660,7 +5683,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\clk\plib_clk.c</file>
-         <hash>dbbe8920b01687b877184f03aade24b2de13c95a357578a8a6b365ab0ffcd459</hash>
+         <hash>8e0edee76fc828dce3f79c926e473667fb4846c5c10f7ca4d6a0c2e72ea41b0c</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\pwm.h</file>
@@ -5756,7 +5779,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\nvic\plib_nvic.c</file>
-         <hash>ceb511773e60abb677671df1588b7a7e3f07a6ccafaef036fc808f7e414fe1e7</hash>
+         <hash>14fc2b2bf2adf80c505d644e02ff41c77ec4740c1dddc6347877c4fb58c86810</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\twihs0.h</file>
@@ -5776,7 +5799,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
+         <hash>926b8f6077372a2715a823f8cf1bbb95bae12a49859d1403b13d75dd3cadb1b0</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\uart3.h</file>

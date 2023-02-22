@@ -63,13 +63,13 @@
 
 
 /*** Macros for TS_INPUT pin ***/
-#define TS_INPUT_Set()               (PIOD_REGS->PIO_SODR = (1<<20))
-#define TS_INPUT_Clear()             (PIOD_REGS->PIO_CODR = (1<<20))
-#define TS_INPUT_Toggle()            (PIOD_REGS->PIO_ODSR ^= (1<<20))
-#define TS_INPUT_OutputEnable()      (PIOD_REGS->PIO_OER = (1<<20))
-#define TS_INPUT_InputEnable()       (PIOD_REGS->PIO_ODR = (1<<20))
-#define TS_INPUT_Get()               ((PIOD_REGS->PIO_PDSR >> 20) & 0x1)
-#define TS_INPUT_PIN                  PIO_PIN_PD20
+#define TS_INPUT_Set()               (PIOD_REGS->PIO_SODR = (1<<30))
+#define TS_INPUT_Clear()             (PIOD_REGS->PIO_CODR = (1<<30))
+#define TS_INPUT_Toggle()            (PIOD_REGS->PIO_ODSR ^= (1<<30))
+#define TS_INPUT_OutputEnable()      (PIOD_REGS->PIO_OER = (1<<30))
+#define TS_INPUT_InputEnable()       (PIOD_REGS->PIO_ODR = (1<<30))
+#define TS_INPUT_Get()               ((PIOD_REGS->PIO_PDSR >> 30) & 0x1)
+#define TS_INPUT_PIN                  PIO_PIN_PD30
 
 /*** Macros for ASS_PIN_RELAY pin ***/
 #define ASS_PIN_RELAY_Set()               (PIOC_REGS->PIO_SODR = (1<<19))

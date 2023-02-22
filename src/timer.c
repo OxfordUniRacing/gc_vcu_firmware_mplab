@@ -14,6 +14,11 @@
 #define TIMEOUT_PB		500
 #define TIMEOUT_BMS		500
 
+#define TX_PERIOD_INV1  100
+#define TX_PERIOD_INV2  100
+#define TX_PERIOD_BMS   100
+#define TX_PERIOD_LOGGER    500
+
 //=====================================GLOBAL VARIABLES========================
 
 comms_active_t comms_active = {0};
@@ -23,6 +28,14 @@ comms_time_t comms_time = {
     .inv2 = -500,
     .bms = -500,
     .pb = -500
+};
+tx_ready_t tx_ready = {0};
+tx_time_t tx_time = {
+    
+    .inv1 = -500,
+    .inv2 = -500,
+    .logger = -500,
+    .bms = -500,
 };
 
 //=====================================LOCAL VARIABLES=========================
@@ -75,6 +88,25 @@ void handle_timeouts(void)
     }
 	else												comms_active.bms = true;
 	
+}
+
+void handle_tx_timer(void){
+    
+    if(has_delay_passed(tx_time.inv1,TX_PERIOD_INV1))	{tx_ready.inv1 = true; //SYS_CONSOLE_PRINT("inv1 tx");
+    }
+	else												tx_ready.inv1 = false;
+	
+	if(has_delay_passed(tx_time.inv2,TX_PERIOD_INV2))	{tx_ready.inv2 = true; //SYS_CONSOLE_PRINT("inv2 tx");
+    }
+	else												tx_ready.inv2 = false;
+	
+	if(has_delay_passed(tx_time.logger,TX_PERIOD_LOGGER))		{tx_ready.logger = true; //SYS_CONSOLE_PRINT("log tx");
+    }
+	else												tx_ready.logger = false;
+	
+	if(has_delay_passed(tx_time.bms,TX_PERIOD_BMS))	{tx_ready.bms = true; //SYS_CONSOLE_PRINT("bms tx");
+    }
+	else												tx_ready.bms = false;
 }
 //=================================LOCAL FUNCTIONS==============================
 

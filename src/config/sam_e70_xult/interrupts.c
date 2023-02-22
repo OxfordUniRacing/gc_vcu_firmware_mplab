@@ -79,7 +79,7 @@ void __attribute__((optimize("-O1"),section(".text.Dummy_Handler"),long_call, no
 }
 
 /* MISRAC 2012 deviation block start */
-/* MISRA C-2012 Rule 8.6 deviated 67 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
+/* MISRA C-2012 Rule 8.6 deviated 66 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
 /* Device vectors list dummy definition*/
 extern void SVCall_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PendSV_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -133,7 +133,6 @@ extern void TC3_CH1_Handler            ( void ) __attribute__((weak, alias("Dumm
 extern void TC3_CH2_Handler            ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void AES_Handler                ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TRNG_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
-extern void XDMAC_Handler              ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void ISI_Handler                ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PWM1_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void FPU_Handler                ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -226,7 +225,7 @@ const H3DeviceVectors exception_table=
     .pfnTC3_CH2_Handler            = TC3_CH2_Handler,
     .pfnAES_Handler                = AES_Handler,
     .pfnTRNG_Handler               = TRNG_Handler,
-    .pfnXDMAC_Handler              = XDMAC_Handler,
+    .pfnXDMAC_Handler              = XDMAC_InterruptHandler,
     .pfnISI_Handler                = ISI_Handler,
     .pfnPWM1_Handler               = PWM1_Handler,
     .pfnFPU_Handler                = FPU_Handler,

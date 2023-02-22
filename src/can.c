@@ -6,20 +6,25 @@
 #include "user.h"
 #include "can.h"
 #include "timer.h"
+#include "inverter.h"
+#include "precharge.h"
 //==============================DEFINITIONS
 
-//CAN Ids
+//CAN receive Ids
 #define CAN_ID_PEDAL_BOARD	0x100
 #define CAN_ID_BMS_CELL_BROADCAST 0x6D0 
 #define CAN_ID_RELAY_STATE 0x009
 #define CAN_ID_AUX_STATES		0x900
-#define CAN_ID_RTD          0x469;
+#define CAN_ID_RTD          0x469
+
+//CAN send Ids
+#define CAN_ID_TX_TO_BMS    0x008
+#define CAN_ID_TX_TO_LOGGER_1   0xAA1
+#define CAN_ID_TX_TO_LOGGER_2   0xAA2
 
 #define CAN_RX_BUFFER_SIZE 16
 
 //=============================GLOBAL VAR
-
-bms_t bms = {0};
 
 //============================LOCAL VAR
 
@@ -42,28 +47,11 @@ MCAN_RX_BUFFER* can_rx_queue_push(void);
 void can_rx_queue_initialise(void);
 
 void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
+
+void send_can_message(uint16_t id, uint8_t data[],int length);
 //===========================================GLOBAL FUNC
 
-void send_can(void)
-{
-    uint8_t precharge;
-    
-    if(bms.precharge_enable)
-        precharge = 1;
-    else
-        precharge = 0;
-    
-    MCAN_TX_BUFFER temp_tx_buf = {
-		.data = {precharge,0,0,0,0,0,0,0},
-		.dlc = 8,
-		.id = 0x008,
-        .sof = 1
-	};
-	
-	MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
-}
-
-int handle_can(void)
+void handle_can(void)
 {	
 	
 	
@@ -74,6 +62,7 @@ int handle_can(void)
 	uint32_t error_counts;
 	error_counts = MCAN0_REGS->MCAN_ECR;
 	
+    //The commented code below is testing code
     //MCAN_RX_BUFFER can_temp = {0};
 	/*
     if((status & MCAN_PSR_LEC_Msk) == MCAN_ERROR_NONE)
@@ -106,6 +95,7 @@ int handle_can(void)
 	}
     */
 	
+    //If there are received CAN messages to handle
 	if(can_rx_queue_len > 0)
 	{
 		MCAN_RX_BUFFER *buf;
@@ -118,8 +108,7 @@ int handle_can(void)
                 comms_time.pb = current_time_ms();
                 if(buf->data[0]>>7&1){
                     int pedal_val = buf->data[1];
-                    
-                    return pedal_val;
+                    //update a struct with pedal_val and steering_val, not yet written
                 }
 				break;
             
@@ -152,7 +141,25 @@ int handle_can(void)
 		
 		
 	}
-    return -1;
+    
+    //Handle transmitting CAN messages
+    if(tx_ready.bms){
+        tx_time.bms = current_time_ms();
+        
+        uint8_t precharge_data_to_send[] = {0};
+    
+        if(bms.precharge_enable)
+            precharge_data_to_send[0] = 1;
+    
+        send_can_message(CAN_ID_TX_TO_BMS,precharge_data_to_send,1);
+    }
+    
+    if(tx_ready.logger){
+        tx_time.logger = current_time_ms();
+        
+        //send_can_message(CAN_ID_TX_TO_LOGGER_1,data from inverter 1)
+        //send_can_message(CAN_ID_TX_TO_LOGGER_2,data from inverter 2)
+    }
 }
 
 void init_can(void)
@@ -201,4 +208,22 @@ MCAN_RX_BUFFER* can_rx_queue_pop(void)
 		//&&Need a return case for if the length is 0
 	}	
 	return ret;
+}
+
+//helper function that sends a CAN message given an ID and a byte array of data
+//it will always send 8 bytes regardless of the length of the data passed to it
+//it fills any remaining bytes with 0s
+void send_can_message(uint16_t id, uint8_t data[],int length){
+    
+    MCAN_TX_BUFFER temp_tx_buf = {
+        .data = {0,0,0,0,0,0,0,0},
+        .dlc = 8,
+        .id = id,
+        .sof = 1
+    };
+    
+    for(int i = 0; i < length && i < 8; i++)
+        temp_tx_buf.data[i] = data[i];
+	
+    MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 }
