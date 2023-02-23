@@ -87,7 +87,8 @@ int get_thr_cmd(int desired_thr, char output[], size_t size){
 		
 		// decide number of '+'
 		int seconddec = (int)(desired_thr);
-		for(int i = length; i < length+seconddec; i++){
+		for(int i = length; i < length+seconddec; i++)
+		{
 			//output->buf[i] = '+';
             ptr += snprintf(ptr,2,"+");
 		}
@@ -96,7 +97,8 @@ int get_thr_cmd(int desired_thr, char output[], size_t size){
 		
         return length;
 	}
-    else{							// if 0.1% <= desired_thr <= 9.9%
+    else
+	{							// if 0.1% <= desired_thr <= 9.9%
 		//first letter must be '1'
 		//output->buf[0] = '1';
         ptr += snprintf(output,2,"1");

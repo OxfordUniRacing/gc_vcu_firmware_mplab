@@ -1,6 +1,7 @@
 //===============================INCLUDES
 #include "inverter.h"
 #include "user.h"
+#include "app.h"
 
 //==========================DEFINITIONS
 
@@ -14,6 +15,18 @@ inv_t inv2;
 uint16_t get_inv_lowest_voltage(void);
 
 //=========================GLOBAL FUNCTIONS
+void handle_inverter(void)
+{
+	if(car_control.ready_to_drive = false)
+	{
+		
+	}
+	else
+	{
+		
+	}
+}
+
 void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
 {
 	// IO DESCRIPTOR ARG Is for writing the s

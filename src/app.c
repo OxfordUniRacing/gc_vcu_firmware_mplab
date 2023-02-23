@@ -93,7 +93,7 @@
 
 /* TODO:  Add any necessary callback functions.
 */
-
+control_t car_control = {0};
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Local Functions

@@ -19,6 +19,7 @@ typedef struct
 	uint32_t inv2;
 	uint32_t pb;
 	uint32_t bms;
+	uint32_t dash;
 	
 }comms_time_t;
 

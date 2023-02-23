@@ -16,6 +16,9 @@ ass_t ass = {0};
 
 //============================LOCAL VAR
 
+#define INVERTER_PRECHARGE_CURRENT		0.04
+#define INVERTER_PRECHARGE_RESISTANCE	220
+
 //===================================LOCAL FUNC DECLARATIONS
 
 //===========================================GLOBAL FUNC
@@ -33,15 +36,43 @@ void handle_precharge(void)
 	
 	static uint32_t precharge_start_time = 0;
 
+	//=======================================================
+	//HANDLE THE TS LATCHING OFF
+	static bool old_ts;
+	if(PRECHARGE_STATE == PC_TS_OFF)
+	{
+		ass.break_loop_ts_deactive = false;
+	}
+	else if(ts_active() == true)	//If the ts is active, keep it active
+	{
+		ass.break_loop_ts_deactive = false;
+		old_ts = false;
+	}
+	else							//If at any point the ts has been deactivated, then latch it off
+	{
+		ass.break_loop_ts_deactive = true;
+		
+		if(old_ts == false)
+		{
+			old_ts = true;
+			SYS_CONSOLE_PRINT("TS DEACTIVE - EMSDC LATCHED\n\r");
+			SYS_CONSOLE_PRINT("POWER CYCLE TO RESET\n\r");
+		}
+	}
 	
+	//=====================================================
+	//Handles the precharge states
 	switch(PRECHARGE_STATE)
 	{
 		case PC_TS_OFF:
-			bms.precharge_enable = true;
-			ass.break_loop_precharge = false;
-            
-            
-		
+			/*
+			 * While waiting for the TS to turn on, ensure that our ASS relay is closed
+			 * 
+			 * Moved on when we detect the ts is active
+			 */
+			bms.precharge_enable = false;
+            ass.break_loop_precharge = false;
+			
 			if(ts_active())
 			{
 				PRECHARGE_STATE = PC_BMS_RELAY;
@@ -51,17 +82,34 @@ void handle_precharge(void)
 			break;
            
         case PC_BMS_RELAY:
-            if(bms.relay_state){
+			/*
+			 * Once the TS is active, start sending a command to the battery to enter precharge mode
+			 * 
+			 * Move on once the BMS has successfully entered precharge mode 
+			 */
+			bms.precharge_enable = true;
+			ass.break_loop_precharge = false;
+			
+            if(bms.relay_state)
+			{
                 PRECHARGE_STATE = PC_WAIT_FOR_INVERTERP;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
             }
-            if(has_delay_passed(precharge_start_time,250)){
+            if(has_delay_passed(precharge_start_time,250))
+			{
                 PRECHARGE_STATE = PC_FAILED;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_FAIL\n\r");
             }
             break;
             
         case PC_WAIT_FOR_INVERTERP:
+			/*
+			 * Once we have entered precharge mode, wait for both inverters to start communicating
+			 * 
+			 * Once inverters are commmunicating, move on
+			 * 
+			 * 
+			 */
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
 			
@@ -86,14 +134,20 @@ void handle_precharge(void)
 
 			break;
 		case PC_WAIT_FOR_FINAL_VOLTAGE:
-			bms.precharge_enable = true;
-			ass.break_loop_precharge = true;
-		
-			//Read battery voltage
-			//Check inverter voltage has reached 95% of battery voltage
-			//If not, check how much time has passed, exit if necessary
+			/*
+			 * Once inverters are communicating, wait until the inverters have reached 95% of the battery votlage
+			 * 
+			 * The inverters are being charged through a 220 ohm resistor, with approximately 40mA of current.
+			 *	-> have to add on an additional 9 Volts when checking if we have reached the final voltage
+			 * 
+			 * After this, the car is ready to start
+			 */
 			
-			if(get_inv_lowest_voltage() > bms.voltage * 0.95)
+			bms.precharge_enable = true;
+			ass.break_loop_precharge = false;
+			
+			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
+					> bms.voltage * 0.95)
 			{
 				PRECHARGE_STATE = PC_READY;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
@@ -113,8 +167,8 @@ void handle_precharge(void)
 			bms.precharge_enable = false;
 			ass.break_loop_precharge = false;
 			break;
-		case PC_FAILED:
-			bms.precharge_enable = true;
+		case PC_FAILED:			
+			bms.precharge_enable = true;	
 			ass.break_loop_precharge = true;
 			break;
 	}

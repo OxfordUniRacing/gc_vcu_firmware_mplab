@@ -8,6 +8,7 @@
 #include "timer.h"
 #include "inverter.h"
 #include "precharge.h"
+#include "app.h"
 //==============================DEFINITIONS
 
 //CAN receive Ids
@@ -52,49 +53,7 @@ void send_can_message(uint16_t id, uint8_t data[],int length);
 //===========================================GLOBAL FUNC
 
 void handle_can(void)
-{	
-	
-	
-	uint32_t status;
-	
-	status = MCAN0_ErrorGet();
-	
-	uint32_t error_counts;
-	error_counts = MCAN0_REGS->MCAN_ECR;
-	
-    //The commented code below is testing code
-    //MCAN_RX_BUFFER can_temp = {0};
-	/*
-    if((status & MCAN_PSR_LEC_Msk) == MCAN_ERROR_NONE)
-	{
-		//__builtin_software_breakpoint();
-		
-		if(MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, 1, &can_temp))
-		{
-			char temp_buf[256] = {0};
-			char *temp_ptr = temp_buf;
-			temp_ptr += snprintf(temp_buf,256,"Id: %u, MSG: ",can_temp.id);
-			for(uint8_t i = 0; i < 8; i++)
-			{
-				temp_ptr += snprintf(temp_ptr,5, "%02x ", can_temp.data[i]);
-			}
-			snprintf(temp_ptr, 5, "\n\r");
-			SYS_CONSOLE_PRINT(temp_buf);
-		}
-	}
-	else if((status & MCAN_PSR_LEC_Msk) != MCAN_ERROR_LEC_NO_CHANGE)
-	{
-		SYS_CONSOLE_PRINT("Can Error: %08x \n\r",status);
-	}
-	
-	if(( status & MCAN_PSR_EW_Msk) == MCAN_PSR_EW(1))
-	{
-		SYS_CONSOLE_PRINT("WARNING: Error CAN State \n\r");
-		init_can();
-		//MCAN0_SleepModeExit();
-	}
-    */
-	
+{		
     //If there are received CAN messages to handle
 	if(can_rx_queue_len > 0)
 	{
@@ -114,9 +73,6 @@ void handle_can(void)
             
             case CAN_ID_RELAY_STATE:
                 comms_time.bms = current_time_ms();
-                //char printbuf[10] = {0};
-                //snprintf(printbuf,10,"%u",buf->data[0]);
-                //SYS_CONSOLE_PRINT(printbuf);
                 if(buf->data[0] == 128){
                     bms.relay_state = true;
                 }
@@ -128,6 +84,13 @@ void handle_can(void)
 			case CAN_ID_BMS_CELL_BROADCAST:
                 comms_time.bms = current_time_ms();
                 bms.voltage = (((uint16_t)buf->data[2] << 8) + buf->data[3])/10;
+				break;
+				
+			case CAN_ID_RTD:
+				comms_time.dash = current_time_ms();
+				car_control.ready_to_drive = (!!buf->data[0]);
+				
+				
 				break;
 
 			//case CAN_ID_AUX_STATES:
@@ -143,18 +106,19 @@ void handle_can(void)
 	}
     
     //Handle transmitting CAN messages
-    if(tx_ready.bms){
+    if(tx_ready.bms)
+	{
         tx_time.bms = current_time_ms();
         
-        uint8_t precharge_data_to_send[] = {0};
+        uint8_t precharge_data_to_send[1] = {0};
     
-        if(bms.precharge_enable)
-            precharge_data_to_send[0] = 1;
+        if(bms.precharge_enable) precharge_data_to_send[0] = 1;
     
         send_can_message(CAN_ID_TX_TO_BMS,precharge_data_to_send,1);
     }
     
-    if(tx_ready.logger){
+    if(tx_ready.logger)
+	{
         tx_time.logger = current_time_ms();
         
         //send_can_message(CAN_ID_TX_TO_LOGGER_1,data from inverter 1)
@@ -223,7 +187,9 @@ void send_can_message(uint16_t id, uint8_t data[],int length){
     };
     
     for(int i = 0; i < length && i < 8; i++)
+	{
         temp_tx_buf.data[i] = data[i];
-	
+	}
+		
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 }
