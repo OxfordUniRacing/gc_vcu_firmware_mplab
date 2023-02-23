@@ -17,6 +17,7 @@
 #define CAN_ID_RELAY_STATE 0x009
 #define CAN_ID_AUX_STATES		0x900
 #define CAN_ID_RTD          0x469
+#define CAN_ID_BMS_DLC		0x6B1
 
 //CAN send Ids
 #define CAN_ID_TX_TO_BMS    0x008
@@ -65,9 +66,9 @@ void handle_can(void)
 		{
 			case CAN_ID_PEDAL_BOARD:
                 comms_time.pb = current_time_ms();
-                if(buf->data[0]>>7&1){
-                    int pedal_val = buf->data[1];
-                    //update a struct with pedal_val and steering_val, not yet written
+                if(buf->data[0]>>7&1)
+				{
+					car_control.user_pedal_value = buf->data[1];
                 }
 				break;
             
@@ -89,7 +90,13 @@ void handle_can(void)
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
 				car_control.ready_to_drive = (!!buf->data[0]);
+				break;
 				
+			case CAN_ID_BMS_DLC:
+				
+				bms.pack_dlc = 0;
+				bms.pack_dlc = (uint16_t)buf->data[0] << 8;
+				bms.pack_dlc += buf->data[1];
 				
 				break;
 

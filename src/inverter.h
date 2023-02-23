@@ -23,4 +23,6 @@ extern inv_t inv2;
 void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ); 
 uint16_t get_inv_lowest_voltage(void);
 
+void update_inverter_current_limit(void);
+
 #endif

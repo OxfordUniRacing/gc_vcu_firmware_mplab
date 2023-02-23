@@ -1,12 +1,6 @@
 #ifndef CAN_H
 #define CAN_H
 
-typedef struct
-{
-	
-	
-};
-
 
 
 void handle_can(void);

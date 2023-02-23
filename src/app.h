@@ -13,6 +13,9 @@
 typedef struct
 {
 	bool ready_to_drive;
+	
+	//User values
+	uint8_t user_pedal_value;
 }control_t;
 
 extern control_t car_control;

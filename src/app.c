@@ -130,7 +130,8 @@ void handle_console(void)
     {
 	    LED_TOGGLE();
 		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
-		//UART2_Write(console_rx_buf, 1);
+		UART2_Write(console_rx_buf, 1);
+		UART1_Write(console_rx_buf, 1);
     }
 }
 
@@ -178,6 +179,13 @@ void APP_Tasks ( void )
         send_uart(pedal_val);
     }*/
     
+	static uint32_t update_time = 0;
+	if(has_delay_passed(update_time, 10000))
+	{
+		update_time = current_time_ms();
+		update_inverter_current_limit();
+	}
+	
     handle_timeouts();
 }
 

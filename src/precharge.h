@@ -13,8 +13,13 @@ typedef struct {
 	uint16_t voltage;
     bool relay_state;
 	
+	uint16_t pack_dlc;	//Max current the battery can output
+	
 	//outputs
 	bool precharge_enable;
+	
+	
+	
     
 }bms_t;
 
