@@ -3,12 +3,14 @@
 #include "peripheral/mcan/plib_mcan_common.h"
 
 #include <xc.h>
+#include <stdbool.h>
 #include "user.h"
 #include "can.h"
 #include "timer.h"
 #include "inverter.h"
 #include "precharge.h"
 #include "app.h"
+#include "pio.h"
 //==============================DEFINITIONS
 
 //CAN receive Ids
@@ -29,8 +31,6 @@
 //=============================GLOBAL VAR
 
 //============================LOCAL VAR
-
-//uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)))__attribute__((space(data), section (".ram_nocache")));
 
 uint8_t Mcan0MessageRAM[MCAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)))__attribute__((space(data), section (".ram_nocache")));
 
@@ -66,7 +66,7 @@ void handle_can(void)
 		{
 			case CAN_ID_PEDAL_BOARD:
                 comms_time.pb = current_time_ms();
-                if(buf->data[0]>>7&1)
+                if(buf->data[0]&1)
 				{
 					car_control.user_pedal_value = buf->data[1];
                 }
@@ -89,7 +89,14 @@ void handle_can(void)
 				
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
-				car_control.ready_to_drive = (!!buf->data[0]);
+                bool rtd_switch_state = (!!buf->data[0]);
+                if(car_control.rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
+                    car_control.ready_to_drive = rtd_switch_state;
+                }
+                else{
+                    if(rtd_switch_state == false) car_control.rtd_startup_flag = true;
+                    else car_control.rtd_startup_flag = false;
+                }
 				break;
 				
 			case CAN_ID_BMS_DLC:
@@ -103,10 +110,6 @@ void handle_can(void)
 			//case CAN_ID_AUX_STATES:
 				//comms_time.bms = current_time_ms();
                // break;
-            
-            /*case CAN_ID_RTD:
-                
-                break;*/
 		}
 		
 		
@@ -120,8 +123,9 @@ void handle_can(void)
         uint8_t precharge_data_to_send[1] = {0};
     
         if(bms.precharge_enable) precharge_data_to_send[0] = 1;
-    
+        
         send_can_message(CAN_ID_TX_TO_BMS,precharge_data_to_send,1);
+        
     }
     
     if(tx_ready.logger)

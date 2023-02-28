@@ -11,7 +11,9 @@
 
 //=============================GLOBAL VAR
 
-bms_t bms = {0};
+bms_t bms = {
+    .pack_dlc = 10 //minimum value we can set inverters to
+};
 ass_t ass = {0};
 
 //============================LOCAL VAR

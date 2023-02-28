@@ -18,6 +18,7 @@
 #define TX_PERIOD_INV2  100
 #define TX_PERIOD_BMS   100
 #define TX_PERIOD_LOGGER    500
+#define TX_PERIOD_DCL   10000
 
 //=====================================GLOBAL VARIABLES========================
 
@@ -32,10 +33,10 @@ comms_time_t comms_time = {
 tx_ready_t tx_ready = {0};
 tx_time_t tx_time = {
     
-    .inv1 = -500,
-    .inv2 = -500,
-    .logger = -500,
-    .bms = -500,
+    .inv1 = 0,
+    .inv2 = 0,
+    .logger = 0,
+    .bms = 0,
 };
 
 //=====================================LOCAL VARIABLES=========================
@@ -63,8 +64,8 @@ bool has_delay_passed(uint32_t start_time, uint32_t delay)
 
 uint32_t current_time_ms(void)
 {
-	if(ms_timer_flipflop == 1)	return ms_timer_1;
-	else						return ms_timer_0;
+	if(ms_timer_flipflop == 1)	return ms_timer_1/4;
+	else						return ms_timer_0/4;
 }
 
 void handle_timeouts(void)
@@ -107,6 +108,12 @@ void handle_tx_timer(void){
 	if(has_delay_passed(tx_time.bms,TX_PERIOD_BMS))	{tx_ready.bms = true; //SYS_CONSOLE_PRINT("bms tx");
     }
 	else												tx_ready.bms = false;
+    if(has_delay_passed(tx_time.dcl_inv1,TX_PERIOD_DCL))	{tx_ready.dcl_inv1 = true; //SYS_CONSOLE_PRINT("dcl_inv1 tx");
+    }
+	else												tx_ready.dcl_inv1 = false;
+    if(has_delay_passed(tx_time.dcl_inv2,TX_PERIOD_DCL))	{tx_ready.dcl_inv2 = true; //SYS_CONSOLE_PRINT("dcl_inv1 tx");
+    }
+	else												tx_ready.dcl_inv2 = false;
 }
 //=================================LOCAL FUNCTIONS==============================
 
@@ -117,14 +124,4 @@ void timer_callback(TC_TIMER_STATUS status, uintptr_t context)
 	
 	ms_timer_flipflop ^= 1;
 	
-    
-	
-	static uint16_t ms_count = 0;
-	ms_count++;
-	if(ms_count >= 1000)
-	{
-		ms_count = 0;
-		
-		//SYS_CONSOLE_PRINT("New Time: %u\n", current_time_ms());
-	}
 }

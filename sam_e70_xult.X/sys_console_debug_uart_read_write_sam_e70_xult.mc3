@@ -945,7 +945,8 @@
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="!@#harmonyUserData"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;UserData&gt;
   &lt;UserData dnOrder=&quot;0&quot;&gt;
-    &lt;ComponentGraph dnOrder=&quot;0&quot; id=&quot;__ROOTVIEW&quot;&gt;
+    &lt;GraphSettings canvasHeight=&quot;681&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;0&quot;/&gt;
+    &lt;ComponentGraph dnOrder=&quot;1&quot; id=&quot;__ROOTVIEW&quot;&gt;
       &lt;ElementPositions dnOrder=&quot;0&quot;&gt;
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E70_Xplained&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;3&quot; y=&quot;72&quot;/&gt;
@@ -964,7 +965,6 @@
         &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
-    &lt;GraphSettings canvasHeight=&quot;681&quot; canvasWidth=&quot;820&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -4621,7 +4621,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;tc0&gt;
   &lt;tc0 dnOrder=&quot;0&quot; id=&quot;TC0_TIMER_PERIOD_COUNT&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;tc0&quot; value=&quot;65535&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;tc0&quot; value=&quot;37499&quot;/&gt;
     &lt;/Values&gt;
   &lt;/tc0&gt;
 &lt;/tc0&gt;
@@ -4633,11 +4633,22 @@
   &lt;tc0 dnOrder=&quot;0&quot; id=&quot;TC0_TIMER_PERIOD_MS&quot;&gt;
     &lt;Attributes dnOrder=&quot;0&quot;&gt;
       &lt;Float dnOrder=&quot;0&quot; id=&quot;max&quot;&gt;
-        &lt;Value dnOrder=&quot;0&quot;&gt;0.43690667&lt;/Value&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;436.90668&lt;/Value&gt;
       &lt;/Float&gt;
     &lt;/Attributes&gt;
     &lt;Values dnOrder=&quot;1&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1.0&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;250.0&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/tc0&gt;
+&lt;/tc0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="tc0" name="TC0_TIMER_UNIT"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;tc0&gt;
+  &lt;tc0 dnOrder=&quot;0&quot; id=&quot;TC0_TIMER_UNIT&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;microsecond&quot;/&gt;
     &lt;/Values&gt;
   &lt;/tc0&gt;
 &lt;/tc0&gt;
@@ -5135,7 +5146,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc0.c</file>
-         <hash>4946a271c7556bee386eba8766534729ac40361bb6c17b6ea94e3af6a94f89ac</hash>
+         <hash>d7ded005f2f524ed7ab4350d6cb56601a60c49ef7f98fa8ead1605fa70716fa9</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cmsis_gcc.h</file>
@@ -5799,7 +5810,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>926b8f6077372a2715a823f8cf1bbb95bae12a49859d1403b13d75dd3cadb1b0</hash>
+         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\uart3.h</file>

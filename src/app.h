@@ -13,6 +13,7 @@
 typedef struct
 {
 	bool ready_to_drive;
+    bool rtd_startup_flag;
 	
 	//User values
 	uint8_t user_pedal_value;

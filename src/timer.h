@@ -31,6 +31,8 @@ typedef struct
     bool inv2;
     bool logger;
 	bool bms;
+    bool dcl_inv1;
+    bool dcl_inv2;
 	
 }tx_ready_t;
 
@@ -42,6 +44,8 @@ typedef struct
     uint32_t inv2;
     uint32_t logger;
 	uint32_t bms;
+    uint32_t dcl_inv1;
+    uint32_t dcl_inv2;
 	
 }tx_time_t;
 

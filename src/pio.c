@@ -31,6 +31,7 @@ void handle_pio(void){
 	bool new_ass_state = ass_close ? ASS_CLOSED : ASS_OPEN;	
     
     PIO_PinWrite(ASS_PIN_RELAY_PIN, new_ass_state);
+    
 }
 
 bool ts_active(void){

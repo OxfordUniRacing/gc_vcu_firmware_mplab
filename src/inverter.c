@@ -2,8 +2,12 @@
 #include "inverter.h"
 #include "user.h"
 #include "app.h"
+#include "timer.h"
+#include <string.h>
+#include "pio.h"
 
 //==========================DEFINITIONS
+#define THR_DEADZONE 1 //throttle deadzone as percentage of max throttle
 
 //==========================GLOBAL VAR
 inv_t inv1;
@@ -13,117 +17,154 @@ inv_t inv2;
 //==========================LOCAL FUN DECLARATIONS
 
 int get_thr_cmd(int desired_thr, char output[], size_t size);
-void send_uart(int pedal_val);
 
 //=========================GLOBAL FUNCTIONS
-void update_inverter_current_limit(void)
-{
-	char* temp_str0 = "a";
-	char* temp_str1 = "cl010";
-	
-	/* 
-	 acl020er
-	 */
-
-	char* temp_str2 = "er";
-//	
-//	UART1_Write(temp_str0, sizeof(temp_str0));
-//	UART1_Write(temp_str1, sizeof(temp_str1));
-//	UART1_Write(temp_str2, sizeof(temp_str2));
-//	
-//	UART2_Write(temp_str0, sizeof(temp_str0));
-//	UART2_Write(temp_str1, sizeof(temp_str1));
-//	UART2_Write(temp_str2, sizeof(temp_str2));
-	
-	//SYS_CONSOLE_PRINT("RESET\n\r");
-}
 
 void handle_inverter(void)
-{
-	if(car_control.ready_to_drive == false)
+{   
+    if(car_control.ready_to_drive)
 	{
-		
+		//start with empty buffer long enough for any command
+        char thr_cmd[128] = {0};
+        //use helper function to fill buffer, actual length of command returned from
+        //helper function so that I don't write unnecessary characters
+        int length = get_thr_cmd(car_control.user_pedal_value,thr_cmd,128);
+        //write same command to both motors
+        
+        
+        if(tx_ready.inv1 && tx_ready.inv2){
+            tx_time.inv1 = current_time_ms();
+            tx_time.inv2 = current_time_ms();
+            if(inv1.pwm/10 != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
+            if(inv2.pwm/10 != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
+        }
 	}
 	else
 	{
-		
+		if(tx_ready.inv1 && tx_ready.inv2 && ts_active()){
+            char cmd[3] = "s0";
+            UART1_Write((uint8_t*)cmd, sizeof(cmd));
+            UART2_Write((uint8_t*)cmd, sizeof(cmd));
+        }
 	}
 }
 
-void inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
+//returns 0 if successful, -1 if we've read past the buffer, <-1 if there's something wrong with the message (i.e. it doesn't find a parameter), and a positive int if there's an error code 
+int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
 {
 	// IO DESCRIPTOR ARG Is for writing the s
 	
 	// Startup check - when the inverters start they send a menu with a * character which we should ignore, 
 	// Therefore, only do the rest of the code (pare into the struct) when st_c = 0;
+    // also leaves the flag as 1 if the inverters are in analog mode
 	int st_c = 1;
+    
+    char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
 	
     SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
 	
+    const char *possible_msg_starts[] = {"Error", "*", "T=", "S=", "t=", "s="};
+    int msg_start_case;
+    char *msg_start;
+    
+    for(msg_start_case = 0; msg_start_case < 6; msg_start_case++){
+        msg_start = strstr(msg,possible_msg_starts[msg_start_case]);
+        if(msg_start != NULL)
+            break;
+    }
+    
+    if(msg_start_case == 6){ //if we've made it all the way to the end of the loop, we have a bad message
+        return -3;
+    }
+    
 	// Check for garbage
-	switch(msg[0])
+	switch(msg_start_case)
 	{
-		case '*': // garbled start up message
+		case 1: // garbled start up message
 			st_c = 1;
 			break;
-		case 'T': // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
+		case 2: // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
+			st_c = 1;
+            io_write((uint8_t*)s_cmd,sizeof(s_cmd));
+			break;
+		case 3:
 			st_c = 0;
 			break;
-		case 'S':
-			st_c = 0;
-			break;
-		case 't': // inactive analogue
+		case 4: // inactive analogue
 			// Change to 's'
-			st_c = 0;
-			io_write("s\r\n",4); // length including null terminator 
+			st_c = 1;
+			io_write((uint8_t*)s_cmd,sizeof(s_cmd)); // length including null terminator 
 			break; 
-		case 's':
+		case 5:
 			st_c = 0;
 			break;
+        case 0:
+            return strtol(msg_start+sizeof("Errors= 0x"),NULL,16);
 		default:
-			return; // not any of those values so return (bad message!!!) 
+            SYS_CONSOLE_PRINT("msg_start_case: %d\n\r",msg_start_case);
+			return -2; // not any of those values so return (bad message!!!) 
 	}
 
 	
 	if (st_c == 0) //  if its not start up noise, do the good shit
 	{
-		char* curr = (char*) msg;
+		char *curr = (char*)msg_start;
 		
 			// Get the message and put in struct
-			#define ERROR_CHECK if ((uintptr_t)curr > (uintptr_t)msg+len) goto error;
-			inv->throttle_input = strtof(curr+2, &curr); // starts at curr 2 however many digits it taks to complete it it will increm cur pointer
-			ERROR_CHECK
-			inv->aux_input = strtof(curr+4, &curr); // check what string to long returns if garbled // check garbled maybe???
-			ERROR_CHECK
-			inv->pwm = strtol(curr+6, &curr, 10);
-			ERROR_CHECK
-			inv->voltage = strtof(curr+3, &curr);
-			ERROR_CHECK
-			inv->phase_current = strtof(curr+4, &curr);
-			ERROR_CHECK
-			inv->rpm = strtol(curr+6, &curr, 10);
-			ERROR_CHECK
-			inv->power_stage_temp = strtol(curr+5, &curr, 10);
-			ERROR_CHECK
-			inv->motor_temp = strtol(curr+7, &curr, 10); // debugged to +7
-			ERROR_CHECK
-			#undef ERROR_CHECK
-			// @@@@ NOTE: when testing in C ide, the compiler does not recognize the degree character
-		
-			//SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
-			//SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
-			//SYS_CONSOLE_PRINT("PWM: %f\n\r", inv->pwm);
-			//SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
-			//SYS_CONSOLE_PRINT("mot: %f\n\r", inv->motor_temp);
-			
-			
-			return;	
-			
-			
-			error:
-			//log_warn("mc_parser: read beyond the end of the string!!!");
-			return;
+			#define ERROR_CHECK_BUF_OVERFLOW if ((uintptr_t)curr > (uintptr_t)msg_start+len) return -1;
+            #define ERROR_CHECK_MISSING_PARAM if (curr == NULL) return -2;
+
+			inv->throttle_input = strtof(curr+sizeof("S="), &curr);
+            
+            curr = strstr(curr,"a=") != NULL ? strstr(curr,"a=") : strstr(curr,"A=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM  
+			inv->aux_input = strtof(curr+sizeof("a="), &curr);
+            
+            curr = strstr(curr,"PWM=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+			inv->pwm = strtol(curr+sizeof("PWM="), &curr, 10);
+            
+            curr = strstr(curr,"U=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+			inv->voltage = strtof(curr+sizeof("U="), &curr);
+            
+            curr = strstr(curr,"I=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+			inv->phase_current = strtof(curr+sizeof("I="), &curr);
+            
+            curr = strstr(curr,"RPM=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+			inv->rpm = strtol(curr+sizeof("RPM="), &curr, 10);
+            
+            curr = strstr(curr,"con=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+			inv->power_stage_temp = strtol(curr+sizeof("con="), &curr, 10);
+            
+            curr = strstr(curr,"mot=");
+			ERROR_CHECK_BUF_OVERFLOW
+            ERROR_CHECK_MISSING_PARAM
+            inv->motor_temp = strtol(curr+sizeof("mot="), &curr, 10);
+            
+			#undef ERROR_CHECK_BUF_OVERFLOW
+            #undef ERROR_CHECK_MISSING_PARAM
+            
+            //for debugging
+            
+			SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
+			SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
+			SYS_CONSOLE_PRINT("PWM: %d\n\r", inv->pwm);
+			SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
+            SYS_CONSOLE_PRINT("Current: %f\n\r", inv->phase_current);
+            SYS_CONSOLE_PRINT("RPM: %d\n\r", inv->rpm);
+			SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
 	}
+    return 0;
 }
 //=========================LOCAL FUNCTIONS
 
@@ -139,44 +180,46 @@ uint16_t get_inv_lowest_voltage(void)
 // Plettenberg motor command, and returns the length of the command
 int get_thr_cmd(int desired_thr, char output[], size_t size)
 {
+    desired_thr = desired_thr/5; //for low-speed workshop testing
+    
     char* ptr = output;
     
-    if(desired_thr > 100) desired_thr = 100;	// caps throttle at 99.9, cause why not
+    if(desired_thr > 100) desired_thr = 100;
     if(desired_thr == 100){
-        ptr += snprintf(output,2,"m");
-        return 1;
+        ptr += snprintf(ptr,3,"mr");
+        return 2;
     }
-	if(desired_thr < 5){// if throttle is 0 or lower, stop the car
-		ptr += snprintf(output,2,"0");
+	if(desired_thr < THR_DEADZONE){// if throttle is 0 or lower, stop the car
+		ptr += snprintf(ptr,2,"0");
 		return 1;
 	}
 	
 	int length = 0;
 	//decide first char: '1' - '9'
 	int firstdec = (int)(desired_thr / 10);
-	if(firstdec > 0){		// if 10.0% <= desired_thr <= 99.9%
-		//output->buf[0] = '0' + firstdec;
-        ptr += snprintf(output,1,"%d",firstdec);
+	if(firstdec > 0){		// if 10% <= desired_thr <= 99%
+        ptr += snprintf(ptr,2,"%d",firstdec);
 		desired_thr -= 10 * firstdec;
 		length += 1;
 		
 		// decide number of '+'
 		int seconddec = (int)(desired_thr);
-		for(int i = length; i < length+seconddec; i++)
+		for(int i = 0; i < seconddec; i++)
 		{
-			//output->buf[i] = '+';
             ptr += snprintf(ptr,2,"+");
 		}
 		desired_thr -= seconddec;
 		length += seconddec;
+        
+        ptr += snprintf(ptr,2,"r");
+        length++;
 		
         return length;
 	}
     else
-	{							// if 0.1% <= desired_thr <= 9.9%
+	{							// if 0% <= desired_thr <= 9%
 		//first letter must be '1'
-		//output->buf[0] = '1';
-        ptr += snprintf(output,2,"1");
+        ptr += snprintf(ptr,2,"1");
 		length += 1;
 		
 		// decide number of '+'
@@ -187,22 +230,10 @@ int get_thr_cmd(int desired_thr, char output[], size_t size)
 		}
 		desired_thr -= seconddec;
 		length += (10-seconddec);
+        
+        ptr += snprintf(ptr,2,"r");
+        length++;
 		
 		return length;
 	}
-	
 }
-
-
-void send_uart(int pedal_val)
-{
-    //start with empty buffer long enough for any command
-    char thr_cmd[128] = {0};
-    //use helper function to fill buffer, actual length of command returned from
-    //helper function so that I don't write unnecessary characters
-    int length = get_thr_cmd(pedal_val,thr_cmd,128);
-    //write same command to both motors
-    UART1_Write((uint8_t*)thr_cmd,length);
-    UART2_Write((uint8_t*)thr_cmd,length);
-}
-
