@@ -175,16 +175,7 @@ void APP_Tasks ( void )
 	
 	handle_can();
 	
-    /*if(pedal_val != -1){
-        send_uart(pedal_val);
-    }*/
-    
-	static uint32_t update_time = 0;
-	if(has_delay_passed(update_time, 10000))
-	{
-		update_time = current_time_ms();
-		update_inverter_current_limit();
-	}
+    handle_inverter();
 	
     handle_timeouts();
 }
