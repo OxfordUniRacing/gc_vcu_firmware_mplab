@@ -30,6 +30,7 @@ typedef struct
 	//Turn off VCU ass relay conditions
 	bool break_loop_precharge;				//True when we want to break ASS due to precharge
 	bool break_loop_ts_deactive;			//True when we want to break ASS due to TS cutting out
+	bool break_loop_inverter_error;			//True when we want to break ASS due to an inverter error
 	//bool break_loop_wantToStart;
 }ass_t;
 

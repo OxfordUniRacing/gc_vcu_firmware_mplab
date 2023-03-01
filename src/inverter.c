@@ -67,7 +67,8 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
     int msg_start_case;
     char *msg_start;
     
-    for(msg_start_case = 0; msg_start_case < 6; msg_start_case++){
+    for(msg_start_case = 0; msg_start_case < 6; msg_start_case++)
+	{
         msg_start = strstr(msg,possible_msg_starts[msg_start_case]);
         if(msg_start != NULL)
             break;
@@ -80,24 +81,30 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 	// Check for garbage
 	switch(msg_start_case)
 	{
+		//*
 		case 1: // garbled start up message
 			st_c = 1;
 			break;
+		// T=
 		case 2: // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
 			st_c = 1;
             io_write((uint8_t*)s_cmd,sizeof(s_cmd));
 			break;
+		// S=
 		case 3:
 			st_c = 0;
 			break;
+		//t=
 		case 4: // inactive analogue
 			// Change to 's'
 			st_c = 1;
 			io_write((uint8_t*)s_cmd,sizeof(s_cmd)); // length including null terminator 
 			break; 
+		//s=
 		case 5:
 			st_c = 0;
 			break;
+		//Error
         case 0:
             return strtol(msg_start+sizeof("Errors= 0x"),NULL,16);
 		default:

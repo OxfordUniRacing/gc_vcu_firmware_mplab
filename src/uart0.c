@@ -71,7 +71,7 @@ void handle_uart(void)
             comms_time.inv1 = current_time_ms();
         }
         else if(error_code > 0){ //the inverters have thrown an error code, which means the ass loop needs to be broken immediately
-            ass.break_loop_ts_deactive = true;
+            ass.break_loop_inverter_error = true; //&&This needs to be a new variable - break_loop_inverter_error
         }
         else{
             SYS_CONSOLE_PRINT("Non-critical error code from inverter 1: %d\n\r",error_code);
@@ -94,7 +94,7 @@ void handle_uart(void)
             comms_time.inv2 = current_time_ms();
         }
         else if(error_code > 0){ //the inverters have thrown an error code, which means the ass loop needs to be broken immediately
-            ass.break_loop_ts_deactive = true;
+            ass.break_loop_inverter_error = true;
         }
         else{
             SYS_CONSOLE_PRINT("Non-critical error code from inverter 2: %d\n\r",error_code);

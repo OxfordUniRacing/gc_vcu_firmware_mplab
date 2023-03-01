@@ -26,7 +26,8 @@ void init_pio(void){
 
 void handle_pio(void){
     bool ass_close =	!ass.break_loop_precharge &&
-						!ass.break_loop_ts_deactive;
+						!ass.break_loop_ts_deactive &&
+						!ass.break_loop_inverter_error;
 	
 	bool new_ass_state = ass_close ? ASS_CLOSED : ASS_OPEN;	
     
