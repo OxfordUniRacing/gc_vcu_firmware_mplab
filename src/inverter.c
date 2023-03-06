@@ -61,7 +61,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
     
     char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
 	
-    SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
+    //SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
 	
     const char *possible_msg_starts[] = {"Error", "*", "T=", "S=", "t=", "s="};
     int msg_start_case;
@@ -163,13 +163,13 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
             
             //for debugging
             
-			SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
-			SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
-			SYS_CONSOLE_PRINT("PWM: %d\n\r", inv->pwm);
-			SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
-            SYS_CONSOLE_PRINT("Current: %f\n\r", inv->phase_current);
-            SYS_CONSOLE_PRINT("RPM: %d\n\r", inv->rpm);
-			SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
+			//SYS_CONSOLE_PRINT("Throttle Input: %f\n\r", inv->throttle_input);
+			//SYS_CONSOLE_PRINT("Aux Input: %f\n\r", inv->aux_input);
+			//SYS_CONSOLE_PRINT("PWM: %d\n\r", inv->pwm);
+			//SYS_CONSOLE_PRINT("Voltage: %f\n\r", inv->voltage);
+            //SYS_CONSOLE_PRINT("Current: %f\n\r", inv->phase_current);
+            //SYS_CONSOLE_PRINT("RPM: %d\n\r", inv->rpm);
+			//SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
 	}
     return 0;
 }

@@ -15,7 +15,7 @@
 
 //CAN receive Ids
 #define CAN_ID_PEDAL_BOARD	0x100
-#define CAN_ID_BMS_CELL_BROADCAST 0x6D0 
+#define CAN_ID_BMS_CELL_BROADCAST 0x6B0 
 #define CAN_ID_RELAY_STATE 0x009
 #define CAN_ID_AUX_STATES		0x900
 #define CAN_ID_RTD          0x469
@@ -84,7 +84,7 @@ void handle_can(void)
 
 			case CAN_ID_BMS_CELL_BROADCAST:
                 comms_time.bms = current_time_ms();
-                bms.voltage = (((uint16_t)buf->data[2] << 8) + buf->data[3])/10;
+                bms.voltage = (((uint16_t)buf->data[2] << 8) + buf->data[3])/10.0f;
 				break;
 				
 			case CAN_ID_RTD:

@@ -12,7 +12,8 @@
 //=============================GLOBAL VAR
 
 bms_t bms = {
-    .pack_dlc = 10 //minimum value we can set inverters to
+    .pack_dlc = 10, //minimum value we can set inverters to
+    .precharge_enable = true
 };
 ass_t ass = {0};
 
@@ -27,7 +28,9 @@ ass_t ass = {0};
 
 void handle_precharge(void)
 {
-	static enum {
+	
+    
+    static enum {
 		PC_TS_OFF,						//The TS is not active
         PC_BMS_RELAY,                   //For handling the BMS relay
 		PC_WAIT_FOR_INVERTERP,			//Waiting for communication from the inverters
@@ -37,6 +40,10 @@ void handle_precharge(void)
 	} PRECHARGE_STATE = PC_TS_OFF;		//Different possible precharge states
 	
 	static uint32_t precharge_start_time = 0;
+    
+    if((bms.voltage < 75 || bms.voltage > 115) && ts_active()){
+        PRECHARGE_STATE = PC_FAILED;
+    }
 
 	//=======================================================
 	//HANDLE THE TS LATCHING OFF
@@ -72,7 +79,7 @@ void handle_precharge(void)
 			 * 
 			 * Moved on when we detect the ts is active
 			 */
-			bms.precharge_enable = false;
+			bms.precharge_enable = true;
             ass.break_loop_precharge = false;
 			
 			if(ts_active())

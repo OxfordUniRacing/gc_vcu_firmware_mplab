@@ -10,7 +10,7 @@
 
 typedef struct {
 	//inputs
-	uint16_t voltage;
+	float voltage;
     bool relay_state;
 	
 	uint16_t pack_dlc;	//Max current the battery can output

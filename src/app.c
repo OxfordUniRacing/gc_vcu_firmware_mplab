@@ -166,6 +166,7 @@ void APP_Initialize ( void )
 void APP_Tasks ( void )
 {
     handle_tx_timer();
+    handle_can();
     handle_precharge();
     handle_pio();
     
@@ -173,7 +174,13 @@ void APP_Tasks ( void )
 	
 	handle_console();
 	
-	handle_can();
+	/*static uint32_t send_can_timer = 0;
+    if(current_time_ms() - send_can_timer > 1000){
+        SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
+        send_can_timer = current_time_ms();
+    }*/
+    
+    
 	
     handle_inverter();
 	
