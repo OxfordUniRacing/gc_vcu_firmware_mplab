@@ -5,6 +5,7 @@
 #include "timer.h"
 #include <string.h>
 #include "pio.h"
+#include <math.h>
 
 //==========================DEFINITIONS
 #define THR_DEADZONE 1 //throttle deadzone as percentage of max throttle
@@ -22,30 +23,23 @@ int get_thr_cmd(int desired_thr, char output[], size_t size);
 
 void handle_inverter(void)
 {   
-    if(car_control.ready_to_drive)
-	{
-		//start with empty buffer long enough for any command
+    if(comms_active.inv1 && comms_active.inv2 && car_control.ready_to_drive && ts_active()){ 
+        //start with empty buffer long enough for any command
         char thr_cmd[128] = {0};
         //use helper function to fill buffer, actual length of command returned from
         //helper function so that I don't write unnecessary characters
         int length = get_thr_cmd(car_control.user_pedal_value,thr_cmd,128);
         //write same command to both motors
-        
-        
-        if(tx_ready.inv1 && tx_ready.inv2){
+    
+        if(tx_ready.inv1){
             tx_time.inv1 = current_time_ms();
+            if(round(inv1.pwm/10.0f) != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
+        }
+    
+        if(tx_ready.inv2){
             tx_time.inv2 = current_time_ms();
-            if(inv1.pwm/10 != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
-            if(inv2.pwm/10 != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
-        }
-	}
-	else
-	{
-		if(tx_ready.inv1 && tx_ready.inv2 && ts_active()){
-            char cmd[3] = "s0";
-            UART1_Write((uint8_t*)cmd, sizeof(cmd));
-            UART2_Write((uint8_t*)cmd, sizeof(cmd));
-        }
+            if(round(inv2.pwm/10.0f) != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
+        }        
 	}
 }
 
@@ -61,7 +55,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
     
     char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
 	
-    //SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
+    SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
 	
     const char *possible_msg_starts[] = {"Error", "*", "T=", "S=", "t=", "s="};
     int msg_start_case;
@@ -87,7 +81,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 			break;
 		// T=
 		case 2: // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
-			st_c = 1;
+			st_c = 0;
             io_write((uint8_t*)s_cmd,sizeof(s_cmd));
 			break;
 		// S=
@@ -97,7 +91,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 		//t=
 		case 4: // inactive analogue
 			// Change to 's'
-			st_c = 1;
+			st_c = 0;
 			io_write((uint8_t*)s_cmd,sizeof(s_cmd)); // length including null terminator 
 			break; 
 		//s=
@@ -175,7 +169,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 }
 //=========================LOCAL FUNCTIONS
 
-uint16_t get_inv_lowest_voltage(void)
+float get_inv_lowest_voltage(void)
 {
 	if( inv1.voltage < inv2.voltage) return inv1.voltage;
 	else return inv2.voltage;

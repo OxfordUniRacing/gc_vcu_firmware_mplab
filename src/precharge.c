@@ -6,6 +6,7 @@
 #include "user.h"
 #include "timer.h"
 #include "inverter.h"
+#include "user.h"
 
 //==============================DEFINITIONS
 
@@ -99,7 +100,7 @@ void handle_precharge(void)
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
 			
-            if(bms.relay_state)
+            if(bms.ams_precharge_enabled)
 			{
                 PRECHARGE_STATE = PC_WAIT_FOR_INVERTERP;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
@@ -151,6 +152,16 @@ void handle_precharge(void)
 			 * 
 			 * After this, the car is ready to start
 			 */
+            /*if(tx_ready.dcl_inv1){
+                UART1_Write("sa",2);
+                UART1_Write("ov120",5);
+                UART1_Write("wp",2);
+                
+                UART2_Write("sa",2);
+                UART2_Write("ov120",5);
+                UART2_Write("wp",2);
+            }*/
+            
 			
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
@@ -164,7 +175,7 @@ void handle_precharge(void)
 			else
 			{
 				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
-				if(has_delay_passed(precharge_start_time, 3743))
+				if(has_delay_passed(precharge_start_time, 10000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");

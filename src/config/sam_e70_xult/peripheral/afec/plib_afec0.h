@@ -74,10 +74,6 @@ extern "C" {
 /*  The following data type definitions are used by the functions in this
     interface and should be considered part it.
 */
-#define AFEC0_CH0_MAX_OUTPUT (65535U)
-#define AFEC0_CH0_MIN_OUTPUT (0U)
-#define CHANNEL_0 (0U)
-/***********************************************************************/
 #define AFEC0_CH8_MAX_OUTPUT (65535U)
 #define AFEC0_CH8_MIN_OUTPUT (0U)
 #define CHANNEL_8 (8U)

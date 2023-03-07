@@ -75,13 +75,9 @@ void AFEC0_Initialize(void)
     AFEC0_REGS->AFEC_ACR = AFEC_ACR_PGA0EN_Msk | AFEC_ACR_PGA1EN_Msk | AFEC_ACR_IBCTL(0x3U);
 
     /* Gain */
-    AFEC0_REGS->AFEC_CGR = AFEC_CGR_GAIN0(AFEC_CGR_GAIN_X1) | 
-		AFEC_CGR_GAIN8(AFEC_CGR_GAIN_X1) | 
+    AFEC0_REGS->AFEC_CGR = AFEC_CGR_GAIN8(AFEC_CGR_GAIN_X1) | 
 		AFEC_CGR_GAIN10(AFEC_CGR_GAIN_X1);
 
-    /* Offset */
-    AFEC0_REGS->AFEC_CSELR = (uint32_t)AFEC_CH0;
-    AFEC0_REGS->AFEC_COCR = 512U;
     /* Offset */
     AFEC0_REGS->AFEC_CSELR = (uint32_t)AFEC_CH8;
     AFEC0_REGS->AFEC_COCR = 512U;
@@ -92,7 +88,7 @@ void AFEC0_Initialize(void)
 
 
     /* Enable channel */
-    AFEC0_REGS->AFEC_CHER = AFEC_CHER_CH0_Msk | AFEC_CHER_CH8_Msk | AFEC_CHER_CH10_Msk;
+    AFEC0_REGS->AFEC_CHER = AFEC_CHER_CH8_Msk | AFEC_CHER_CH10_Msk;
 }
 
 /* Enable AFEC channels */

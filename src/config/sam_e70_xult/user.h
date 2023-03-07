@@ -22,6 +22,7 @@
 #include "peripheral/uart/plib_uart_common.h"
 #include "peripheral/uart/plib_uart1.h"
 #include "peripheral/uart/plib_uart2.h"
+#include "peripheral/pio/plib_pio.h"
 
 #include "system/debug/sys_debug.h"
 
