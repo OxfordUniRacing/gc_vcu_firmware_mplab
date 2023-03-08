@@ -81,7 +81,7 @@ void handle_can(void)
             case CAN_ID_RELAY_STATE:
                 comms_time.bms = current_time_ms();
                 //SYS_CONSOLE_PRINT("BMS STATE: %d\n\r",buf->data[0]);
-                if(buf->data[0] >> 7 == 1){
+                if(buf->data[0] >> 7 == 0){
                     bms.ams_precharge_enabled = true;
                 }
                 else{

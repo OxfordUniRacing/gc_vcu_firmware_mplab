@@ -4,6 +4,7 @@
 #include "pio.h"
 #include "timer.h"
 #include "precharge.h"
+#include "user.h"
 
 #include "peripheral/pio/plib_pio.h"
 
@@ -43,6 +44,7 @@ void handle_pio(void){
             if(has_delay_passed(debounce_timer,TS_ACTIVE_BOUNCE_TIME)){
                 ts_active_local = TS_INPUT_Get();
                 debounce_countdown_started = false;
+				SYS_CONSOLE_PRINT("TS CHANGED: %d\n\r", TS_INPUT_Get());
             }
         }
         else{

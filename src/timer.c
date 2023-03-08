@@ -14,8 +14,8 @@
 #define TIMEOUT_PB		500
 #define TIMEOUT_BMS		500
 
-#define TX_PERIOD_INV1  100
-#define TX_PERIOD_INV2  100
+#define TX_PERIOD_INV1  500
+#define TX_PERIOD_INV2  500
 #define TX_PERIOD_BMS   100
 #define TX_PERIOD_LOGGER    500
 #define TX_PERIOD_DCL   500

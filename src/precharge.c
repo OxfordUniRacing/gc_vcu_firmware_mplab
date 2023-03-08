@@ -67,6 +67,7 @@ void handle_precharge(void)
 			old_ts = true;
 			SYS_CONSOLE_PRINT("TS DEACTIVE - EMSDC LATCHED\n\r");
 			SYS_CONSOLE_PRINT("POWER CYCLE TO RESET\n\r");
+			PRECHARGE_STATE = PC_FAILED;
 		}
 	}
 	
@@ -125,6 +126,8 @@ void handle_precharge(void)
 			
 			if(comms_active.inv1 && comms_active.inv2)
 			{
+				
+				
 				PRECHARGE_STATE = PC_WAIT_FOR_FINAL_VOLTAGE;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_SUCCESS\n\r");
 			}
@@ -172,6 +175,17 @@ void handle_precharge(void)
 			{
 				PRECHARGE_STATE = PC_READY;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
+				
+				UART1_Write("sa",2);
+				UART1_Write("il200",5);
+				UART1_Write("wp",2);
+				UART1_Write("e",2);
+				
+				UART2_Write("sa",2);
+				UART2_Write("il200",5);
+				UART2_Write("wp",2);
+				UART2_Write("e",2);
+				
 			}
 			else
 			{

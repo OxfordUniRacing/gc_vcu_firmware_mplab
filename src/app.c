@@ -188,7 +188,7 @@ void APP_Tasks ( void )
     }
     
     
-    handle_inverter();
+    //handle_inverter();
 	
     handle_timeouts();
 }

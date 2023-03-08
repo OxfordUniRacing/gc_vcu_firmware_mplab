@@ -32,13 +32,21 @@ void handle_inverter(void)
         //write same command to both motors
     
         if(tx_ready.inv1){
-            tx_time.inv1 = current_time_ms();
-            if(round(inv1.pwm/10.0f) != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
+			
+			if(round(inv1.pwm/10.0f) != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
+				
+			tx_time.inv1 = current_time_ms();
+			
+			
+            
         }
     
         if(tx_ready.inv2){
-            tx_time.inv2 = current_time_ms();
-            if(round(inv2.pwm/10.0f) != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
+            
+			if(round(inv2.pwm/10.0f) != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
+				
+			tx_time.inv2 = current_time_ms();
+			
         }        
 	}
 }
@@ -51,6 +59,10 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 	// Startup check - when the inverters start they send a menu with a * character which we should ignore, 
 	// Therefore, only do the rest of the code (pare into the struct) when st_c = 0;
     // also leaves the flag as 1 if the inverters are in analog mode
+	
+	
+	
+	
 	int st_c = 1;
     
     char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
@@ -165,6 +177,15 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
             //SYS_CONSOLE_PRINT("RPM: %d\n\r", inv->rpm);
 			//SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
 	}
+	
+	
+	if(car_control.ready_to_drive && ts_active())
+	{
+		char thr_cmd[128] = {0};
+		int length = get_thr_cmd(car_control.user_pedal_value,thr_cmd,128);
+		if(round(inv->pwm/10.0f) != car_control.user_pedal_value) io_write((uint8_t*)thr_cmd,length);
+	}
+	
     return 0;
 }
 //=========================LOCAL FUNCTIONS
@@ -181,7 +202,7 @@ float get_inv_lowest_voltage(void)
 // Plettenberg motor command, and returns the length of the command
 int get_thr_cmd(int desired_thr, char output[], size_t size)
 {
-    desired_thr = desired_thr/5; //for low-speed workshop testing
+    //desired_thr = desired_thr/5; //for low-speed workshop testing
     
     char* ptr = output;
     
