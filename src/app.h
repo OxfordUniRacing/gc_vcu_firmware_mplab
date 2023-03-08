@@ -17,6 +17,7 @@ typedef struct
 	
 	//User values
 	uint8_t user_pedal_value;
+    uint16_t user_steering_value;
 }control_t;
 
 extern control_t car_control;

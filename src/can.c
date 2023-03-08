@@ -20,6 +20,7 @@
 #define CAN_ID_AUX_STATES		0x900
 #define CAN_ID_RTD          0x469
 #define CAN_ID_BMS_DLC		0x6B1
+#define CAN_ID_STEERING_SENSOR  0x101
 
 //CAN send Ids
 #define CAN_ID_TX_TO_BMS    0x008
@@ -71,6 +72,11 @@ void handle_can(void)
 					car_control.user_pedal_value = buf->data[1];
                 }
 				break;
+            
+            case CAN_ID_STEERING_SENSOR:
+                car_control.user_steering_value = buf->data[0]*256 + buf->data[1];
+                SYS_CONSOLE_PRINT("Steering value: %d\n\r",car_control.user_steering_value);
+                break;
             
             case CAN_ID_RELAY_STATE:
                 comms_time.bms = current_time_ms();
@@ -139,7 +145,7 @@ void handle_can(void)
             inv1_current_inflated/256, inv1_current_inflated%256,
             inv1_voltage_inflated/256, inv1_voltage_inflated%256,
             inv1.rpm/256, inv1.rpm%256};
-        send_can_message(CAN_ID_TX_TO_LOGGER_1,inv1_data);
+        send_can_message(CAN_ID_TX_TO_LOGGER_1,inv1_data,8);
         
         uint16_t inv2_current_inflated = inv2.phase_current*10;
         uint16_t inv2_voltage_inflated = inv2.voltage*10;
@@ -147,7 +153,7 @@ void handle_can(void)
             inv2_current_inflated/256, inv2_current_inflated%256,
             inv2_voltage_inflated/256, inv2_voltage_inflated%256,
             inv2.rpm/256, inv2.rpm%256};
-        send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data);
+        send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
     }
 }
 
