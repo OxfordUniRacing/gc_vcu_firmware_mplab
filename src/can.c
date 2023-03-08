@@ -23,8 +23,8 @@
 
 //CAN send Ids
 #define CAN_ID_TX_TO_BMS    0x008
-#define CAN_ID_TX_TO_LOGGER_1   0xAA1
-#define CAN_ID_TX_TO_LOGGER_2   0xAA2
+#define CAN_ID_TX_TO_LOGGER_1   0x7A1
+#define CAN_ID_TX_TO_LOGGER_2   0x7A2
 
 #define CAN_RX_BUFFER_SIZE 16
 
@@ -75,7 +75,7 @@ void handle_can(void)
             case CAN_ID_RELAY_STATE:
                 comms_time.bms = current_time_ms();
                 //SYS_CONSOLE_PRINT("BMS STATE: %d\n\r",buf->data[0]);
-                if(buf->data[0] == 0){
+                if(buf->data[0] >> 7 == 1){
                     bms.ams_precharge_enabled = true;
                 }
                 else{
