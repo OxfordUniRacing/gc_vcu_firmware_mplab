@@ -132,7 +132,8 @@ void handle_precharge(void)
 			{
 				//@@ Needs to calculate total delay
 				//t = RC ln ( Vbat / (Vbat - 30*1.2) ) * 1000
-				if(has_delay_passed(precharge_start_time, 5000))
+                
+				if(has_delay_passed(precharge_start_time, 2000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_FAIL\n\r");
@@ -175,7 +176,7 @@ void handle_precharge(void)
 			else
 			{
 				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
-				if(has_delay_passed(precharge_start_time, 10000))
+				if(has_delay_passed(precharge_start_time, 5000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");

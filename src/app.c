@@ -178,12 +178,8 @@ void APP_Tasks ( void )
 	
 	static uint32_t send_can_timer = 0;
     if(current_time_ms() - send_can_timer > 1000){
-        bool ts_temp;
-        
-        ts_temp = TS_INPUT_Get();
-        
-        //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_temp);
-        //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
+        SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
+        SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
         //SYS_CONSOLE_PRINT("Inverter voltage: %f\n\r",get_inv_lowest_voltage());
         //SYS_CONSOLE_PRINT("Inverter 1 voltage: %f\n\r", inv1.voltage);

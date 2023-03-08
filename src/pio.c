@@ -15,9 +15,9 @@
 //===================GLOBAL VARIABLES===========================================
 
 //===================LOCAL VARIABLES============================================
-static bool ts_active = false;
-static bool debounce_countdown_started = false;
-static uint32_t debounce_timer = -500;
+static volatile bool ts_active_local = false;
+static volatile bool debounce_countdown_started = false;
+static volatile uint32_t debounce_timer = -500;
 
 //===================LOCAL FUNCTION DECLARATIONS================================
 
@@ -38,13 +38,11 @@ void handle_pio(void){
     
     PIO_PinWrite(ASS_PIN_RELAY_PIN, new_ass_state);
     
-    if(ts_active != TS_INPUT_Get()){
+    if(ts_active_local != TS_INPUT_Get()){
         if(debounce_countdown_started){
             if(has_delay_passed(debounce_timer,TS_ACTIVE_BOUNCE_TIME)){
-                ts_active = TS_INPUT_Get();
-            }
-            else{
-                debounce_timer = current_time_ms();
+                ts_active_local = TS_INPUT_Get();
+                debounce_countdown_started = false;
             }
         }
         else{
@@ -55,5 +53,5 @@ void handle_pio(void){
 }
 
 bool ts_active(void){
-    return ts_active;
+    return ts_active_local;
 }
