@@ -58,8 +58,34 @@ void handle_uart(void)
         UART2_Write("wp",2);
     }*/
     
-    uart2_rx_char();	//Interrupts not working, so just poll the rx
+	
+	uart2_rx_char();
+	if(uart2_ready)
+	{
+        char inv2_rx_buf_cpy[256];
+        strcpy(inv2_rx_buf_cpy,inv2_rx_buf);
+        int error_code = inv_parse_rx(inv2_rx_buf_cpy, inv2_rx_ptr, &inv2, &UART2_Write);
+        
+        if(error_code == 0){ //successful inverter read
+            comms_time.inv2 = current_time_ms();
+        }
+        else if(error_code > 0){ //the inverters have thrown an error code, which means the ass loop needs to be broken immediately
+            ass.break_loop_inverter_error = true;
+        }
+        else{
+            SYS_CONSOLE_PRINT("Non-critical error code from inverter 2: %d\n\r",error_code);
+            /* This will print -1 if the parse function tried to read past the
+             length of the inverter buffer, and will print -2 if the parse
+             function encountered some other problem e.g. an unexpected message.
+             Either way, this else statement deliberately does not update
+             comms_time so that if this condition persists, a timeout occurs*/
+        }
+		inv2_rx_ptr = 0;
+		uart2_ready = false;
+	}
+	
 	uart1_rx_char();
+    	//Interrupts not working, so just poll the rx
 	
     if(uart1_ready)	//If the uart 1 interrupt has been called
 	{
@@ -83,29 +109,6 @@ void handle_uart(void)
         }
 		inv1_rx_ptr = 0;
 		uart1_ready = false;
-	}
-	if(uart2_ready)
-	{
-        char inv2_rx_buf_cpy[256];
-        strcpy(inv2_rx_buf_cpy,inv2_rx_buf);
-        int error_code = inv_parse_rx(inv2_rx_buf_cpy, inv2_rx_ptr, &inv2, &UART2_Write);
-        
-        if(error_code == 0){ //successful inverter read
-            comms_time.inv2 = current_time_ms();
-        }
-        else if(error_code > 0){ //the inverters have thrown an error code, which means the ass loop needs to be broken immediately
-            ass.break_loop_inverter_error = true;
-        }
-        else{
-            SYS_CONSOLE_PRINT("Non-critical error code from inverter 2: %d\n\r",error_code);
-            /* This will print -1 if the parse function tried to read past the
-             length of the inverter buffer, and will print -2 if the parse
-             function encountered some other problem e.g. an unexpected message.
-             Either way, this else statement deliberately does not update
-             comms_time so that if this condition persists, a timeout occurs*/
-        }
-		inv2_rx_ptr = 0;
-		uart2_ready = false;
 	}
     
     
