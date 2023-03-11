@@ -10,18 +10,6 @@
 #include "configuration.h"
 #include "system/console/sys_console.h"
 
-typedef struct
-{
-	bool ready_to_drive;
-    bool rtd_startup_flag;
-	
-	//User values
-	uint8_t user_pedal_value;
-    uint16_t user_steering_value;
-}control_t;
-
-extern control_t car_control;
-
 void APP_Initialize ( void );
 
 

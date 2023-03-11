@@ -1,14 +1,12 @@
 //===============================INCLUDES
 #include "inverter.h"
 #include "user.h"
-#include "app.h"
 #include "timer.h"
 #include <string.h>
 #include "pio.h"
-#include <math.h>
+#include "car_control.h"
 
 //==========================DEFINITIONS
-#define THR_DEADZONE 1 //throttle deadzone as percentage of max throttle
 
 //==========================GLOBAL VAR
 inv_t inv1;
@@ -17,37 +15,30 @@ inv_t inv2;
 
 //==========================LOCAL FUN DECLARATIONS
 
-int get_thr_cmd(int desired_thr, char output[], size_t size);
-
 //=========================GLOBAL FUNCTIONS
 
-void handle_inverter(void)
+void handle_inactive_inverters(void)
 {   
-    if(comms_active.inv1 && comms_active.inv2 && car_control.ready_to_drive && ts_active()){ 
-        //start with empty buffer long enough for any command
-        char thr_cmd[128] = {0};
-        //use helper function to fill buffer, actual length of command returned from
-        //helper function so that I don't write unnecessary characters
-        int length = get_thr_cmd(car_control.user_pedal_value,thr_cmd,128);
-        //write same command to both motors
-    
-        if(tx_ready.inv1){
-			
-			//if(round(inv1.pwm/10.0f) != car_control.user_pedal_value) UART1_Write((uint8_t*)thr_cmd,length);
-				
-			tx_time.inv1 = current_time_ms();
-			
-			
-            
+    if(car_control.ready_to_drive && (ts_active() || true)){ 
+        if(!inv1.active_drive && get_inv1_cmd() > 0){
+            //start with empty buffer long enough for any command
+            char thr_cmd[128] = {0};
+            //use helper function to fill buffer, actual length of command returned from
+            //helper function so that I don't write unnecessary characters
+            int length = get_thr_cmd_str(car_control.user_pedal_value,thr_cmd,128);
+            UART1_Write((uint8_t*)thr_cmd,length);	
+            inv1.active_drive = true;
         }
-    
-        if(tx_ready.inv2){
-            
-			//if(round(inv2.pwm/10.0f) != car_control.user_pedal_value) UART2_Write((uint8_t*)thr_cmd,length);
-				
-			tx_time.inv2 = current_time_ms();
-			
-        }        
+        
+        if(!inv2.active_drive && get_inv2_cmd() > 0){
+            //start with empty buffer long enough for any command
+            char thr_cmd[128] = {0};
+            //use helper function to fill buffer, actual length of command returned from
+            //helper function so that I don't write unnecessary characters
+            int length = get_thr_cmd_str(car_control.user_pedal_value,thr_cmd,128);
+            UART2_Write((uint8_t*)thr_cmd,length);	
+            inv2.active_drive = true;
+        }
 	}
 }
 
@@ -67,7 +58,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
     
     char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
 	
-    SYS_CONSOLE_PRINT("INC: %s\r",msg);   //Print the message to the console
+    SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
 	
     const char *possible_msg_starts[] = {"Error", "*", "T=", "S=", "t=", "s="};
     int msg_start_case;
@@ -178,18 +169,8 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 			//SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
 	}
 	
-	
-	if(car_control.ready_to_drive && ts_active())
-	{
-		char thr_cmd[128] = {0};
-		int length = get_thr_cmd(car_control.user_pedal_value,thr_cmd,128);
-		//if(round(inv->pwm/10.0f) != car_control.user_pedal_value) 
-		io_write((uint8_t*)thr_cmd,length);
-	}
-	
     return 0;
 }
-//=========================LOCAL FUNCTIONS
 
 float get_inv_lowest_voltage(void)
 {
@@ -197,22 +178,17 @@ float get_inv_lowest_voltage(void)
 	else return inv2.voltage;
 }
 
-
-
 // This function takes an integer between 0 and 100, fills a buffer with a 
 // Plettenberg motor command, and returns the length of the command
-int get_thr_cmd(int desired_thr, char output[], size_t size)
+int get_thr_cmd_str(int desired_thr, char output[], size_t size)
 {
-    //desired_thr = desired_thr/5; //for low-speed workshop testing
-    
     char* ptr = output;
     
-    if(desired_thr > 100) desired_thr = 100;
     if(desired_thr == 100){
-        ptr += snprintf(ptr,3,"mr");
-        return 2;
+        ptr += snprintf(ptr,2,"m");
+        return 1;
     }
-	if(desired_thr < THR_DEADZONE){// if throttle is 0 or lower, stop the car
+	if(desired_thr == 0){
 		ptr += snprintf(ptr,2,"0");
 		return 1;
 	}
@@ -237,8 +213,8 @@ int get_thr_cmd(int desired_thr, char output[], size_t size)
         ptr += snprintf(ptr,2,"r");
         length++;
 		
-		snprintf(ptr,2,"\n\r");
-		length += 2;
+		//snprintf(ptr,2,"\n\r");
+		//length += 2;
 		
         return length;
 	}
@@ -260,9 +236,11 @@ int get_thr_cmd(int desired_thr, char output[], size_t size)
         ptr += snprintf(ptr,2,"r");
         length++;
 		
-		snprintf(ptr,2,"\n\r");
-		length += 2;
+		//snprintf(ptr,2,"\n\r");
+		//length += 2;
 		
 		return length;
 	}
 }
+
+//=========================LOCAL FUNCTIONS======================================

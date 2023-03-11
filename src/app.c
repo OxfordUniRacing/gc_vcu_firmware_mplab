@@ -61,6 +61,7 @@
 #include "pio.h"
 #include "inverter.h"
 #include "precharge.h"
+#include "car_control.h"
 
 
 // *****************************************************************************
@@ -93,7 +94,6 @@
 
 /* TODO:  Add any necessary callback functions.
 */
-control_t car_control = {0};
 // *****************************************************************************
 // *****************************************************************************
 // Section: Application Local Functions
@@ -129,9 +129,9 @@ void handle_console(void)
     if (SYS_CONSOLE_Read(0, console_rx_buf, 1) >= 1)
     {
 	    LED_TOGGLE();
-		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
-		//UART2_Write(console_rx_buf, 1);
-		//UART1_Write(console_rx_buf, 1);
+		//SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
+		UART2_Write(console_rx_buf, 1);
+		UART1_Write(console_rx_buf, 1);
     }
 }
 
@@ -140,6 +140,7 @@ void APP_Initialize ( void )
 {   
 	//SETUP Uart
 	init_uart();
+    //@@ Try using interrupts with read notifications enabled
 	
 	//Timer
 	init_timer();
@@ -178,17 +179,14 @@ void APP_Tasks ( void )
 	
 	static uint32_t send_can_timer = 0;
     if(current_time_ms() - send_can_timer > 1000){
-        SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
-        SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
+        //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
+        //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
-        //SYS_CONSOLE_PRINT("Inverter voltage: %f\n\r",get_inv_lowest_voltage());
-        //SYS_CONSOLE_PRINT("Inverter 1 voltage: %f\n\r", inv1.voltage);
-        //SYS_CONSOLE_PRINT("Inverter 2 voltage: %f\n\r",inv2.voltage);
         send_can_timer = current_time_ms();
     }
     
     
-    //handle_inverter();
+    handle_inactive_inverters();
 	
     handle_timeouts();
 }

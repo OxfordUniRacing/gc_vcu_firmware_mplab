@@ -178,13 +178,13 @@ void handle_precharge(void)
 				
 				UART1_Write("sa",2);
 				//UART1_Write("il200",5);
-				UART1_Write("ot075",5);
+				UART1_Write("ot050",5);
 				UART1_Write("wp",2);
 				UART1_Write("e",2);
 				
 				UART2_Write("sa",2);
 				//UART2_Write("il200",5);
-				UART2_Write("ot075",5);
+				UART2_Write("ot050",5);
 				UART2_Write("wp",2);
 				UART2_Write("e",2);
 				
