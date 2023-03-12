@@ -41,6 +41,7 @@
 #include "device.h"
 #include "plib_uart1.h"
 #include "interrupts.h"
+#include "user.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -265,6 +266,35 @@ size_t UART1_Read(uint8_t* pRdBuffer, const size_t size)
         else
         {
             UART1_RX_INT_ENABLE();
+            break;
+        }
+    }
+
+    return nBytesRead;
+}
+
+size_t UART1_Peek(uint8_t* pRdBuffer)
+{
+    size_t nBytesRead = 0;
+	uint32_t rdOutIndex;
+	uint32_t rdInIndex;
+
+    while (nBytesRead < 1)
+    {
+        //UART1_RX_INT_DISABLE();
+		
+		rdOutIndex = uart1Obj.rdOutIndex;
+		rdInIndex = uart1Obj.rdInIndex;
+
+        if (rdOutIndex != rdInIndex)
+        {
+            pRdBuffer[nBytesRead++] = UART1_ReadBuffer[(rdOutIndex+UART1_ReadCountGet()-1)%UART1_READ_BUFFER_SIZE];
+
+            //UART1_RX_INT_ENABLE();
+        }
+        else
+        {
+            //UART1_RX_INT_ENABLE();
             break;
         }
     }

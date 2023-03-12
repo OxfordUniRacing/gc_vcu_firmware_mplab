@@ -168,7 +168,8 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
             //SYS_CONSOLE_PRINT("RPM: %d\n\r", inv->rpm);
 			//SYS_CONSOLE_PRINT("mot: %d\n\r", inv->motor_temp);	
 	}
-	
+    
+ 
     return 0;
 }
 

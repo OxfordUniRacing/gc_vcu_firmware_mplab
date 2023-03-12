@@ -272,6 +272,35 @@ size_t UART2_Read(uint8_t* pRdBuffer, const size_t size)
     return nBytesRead;
 }
 
+size_t UART2_Peek(uint8_t* pRdBuffer)
+{
+    size_t nBytesRead = 0;
+	uint32_t rdOutIndex;
+	uint32_t rdInIndex;
+
+    while (nBytesRead < 1)
+    {
+        //UART2_RX_INT_DISABLE();
+		
+		rdOutIndex = uart2Obj.rdOutIndex;
+		rdInIndex = uart2Obj.rdInIndex;
+
+        if (rdOutIndex != rdInIndex)
+        {
+            pRdBuffer[nBytesRead++] = UART2_ReadBuffer[(rdOutIndex+UART2_ReadCountGet()-1)%UART2_READ_BUFFER_SIZE];
+
+            //UART2_RX_INT_ENABLE();
+        }
+        else
+        {
+            //UART2_RX_INT_ENABLE();
+            break;
+        }
+    }
+
+    return nBytesRead;
+}
+
 size_t UART2_ReadCountGet(void)
 {
     size_t nUnreadBytesAvailable;

@@ -85,6 +85,8 @@ void UART1_WriteCallbackRegister( UART_RING_BUFFER_CALLBACK callback, uintptr_t 
 
 size_t UART1_Read(uint8_t* pRdBuffer, const size_t size);
 
+size_t UART1_Peek(uint8_t* pRdBuffer);
+
 size_t UART1_ReadCountGet(void);
 
 size_t UART1_ReadFreeBufferCountGet(void);

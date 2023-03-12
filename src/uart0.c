@@ -20,8 +20,8 @@
 
 static volatile bool uart1_ready;
 static volatile bool uart2_ready;
-static bool uart1_rdNotificationEnabled = false;
-static bool uart2_rdNotificationEnabled = false;
+static volatile bool uart1_rdNotificationEnabled = false;
+static volatile bool uart2_rdNotificationEnabled = false;
 
 static volatile char inv1_rx_buf[128];
 static volatile uint8_t inv1_rx_ptr = 0;
@@ -101,8 +101,9 @@ void handle_uart(void)
 	{
         int error_code = inv_parse_rx(inv2_rx_buf, inv2_rx_ptr, &inv2, &UART2_Write);
         
-        if(error_code == 0){ //successful inverter read
+        if(error_code == 0){ //successful inverter read, send a pedal command
             comms_time.inv2 = current_time_ms();
+            
             if(car_control.ready_to_drive && (ts_active() || true)){
                 int cmd_val = get_inv2_cmd();
                 char thr_cmd[128] = {0};
@@ -130,8 +131,9 @@ void handle_uart(void)
 	{
         int error_code = inv_parse_rx(inv1_rx_buf, inv1_rx_ptr, &inv1, &UART1_Write);
         
-        if(error_code == 0){ //successful inverter read
+        if(error_code == 0){ //successful inverter read, send a pedal command
             comms_time.inv1 = current_time_ms();
+            
             if(car_control.ready_to_drive && (ts_active() || true)){
                 int cmd_val = get_inv1_cmd();
                 char thr_cmd[128] = {0};
@@ -173,9 +175,8 @@ static volatile void uart1_rx_char(void)
     while(UART1_Read(&temp_char, 1))
     {
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        
-        inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         //SYS_CONSOLE_PRINT("%c",temp_char);
+        inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr + 1 < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		else inv1_rx_ptr = 0;
 		
@@ -188,21 +189,44 @@ static volatile void uart1_rx_char(void)
     }
 }
 
+/* The interrupt makes use of three cases.
+    Case 1: UART_EVENT_READ_THRESHOLD_REACHED
+    This happens when the uart line sees at least one unread byte. When this
+    occurs, the function UART1_Peek is used to look at the last unread character
+    in the buffer. It was found that if uart1_rx_char is called on every read
+    threshold interrupt, characters could be skipped by uart1_rx_char. If
+    we use UART1_Peek to search for \n, a character that appears once at the end
+    of every message, then uart1_rx_char only gets called once per message
+    and we're good to go. 
+    
+    Case 2: UART_EVENT_READ_BUFFER_FULL
+    This only happens when the code isn't working.
+ 
+    Case 3: UART_EVENT_READ_ERROR
+    This occurs whenever the inverters startup or shutdown. The error does not
+    persist once the inverters have carried on communicating, however interrupts
+    won't work anymore unless the error is cleared. UART1_ErrorGet() clears the
+    error. */
 static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
 {   
+    uint8_t temp_char = ' ';
     switch(event)
     {
         case UART_EVENT_READ_THRESHOLD_REACHED: //If we have reached our threshold (of 1 byte))
-            uart1_rx_char();
+            UART1_Peek(&temp_char);
+            if(temp_char == '\n'){
+                uart1_rx_char();
+            }
             break;
             
         case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
-			uart1_rx_char();
+			SYS_CONSOLE_PRINT("uart1 Buffer full\n\r");
+            uart1_rx_char();
             //Should never happen
             break;
             
         case UART_EVENT_READ_ERROR:     //If there is a reading errror
-            //Probably should have something here to reset the module
+            UART1_ErrorGet();
             break;
             
         case UART_EVENT_WRITE_THRESHOLD_REACHED:    //If the number of write free spaces reaches the theshold
@@ -237,19 +261,24 @@ static void uart2_rx_char(void)
 
 static void uart2_rx_interrupt_handler(UART_EVENT event, uintptr_t context)
 {
+    uint8_t temp_char = ' ';
     switch(event)
     {
         case UART_EVENT_READ_THRESHOLD_REACHED: //If we have reached our threshold (of 1 byte))
-            uart2_rx_char();
+            UART2_Peek(&temp_char);
+            if(temp_char == '\n'){
+                uart2_rx_char();
+            }
             break;
             
         case UART_EVENT_READ_BUFFER_FULL:   //If the read buffer is full
-			uart2_rx_char();
+			SYS_CONSOLE_PRINT("uart2 Buffer full\n\r");
+            uart2_rx_char();
             //Should never happen
             break;
             
         case UART_EVENT_READ_ERROR:     //If there is a reading errror
-            //Probably should have something here to reset the module
+            UART2_ErrorGet();
             break;
             
         case UART_EVENT_WRITE_THRESHOLD_REACHED:    //If the number of write free spaces reaches the theshold

@@ -182,6 +182,7 @@ void APP_Tasks ( void )
         //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
         //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
+        //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
         send_can_timer = current_time_ms();
     }
     
