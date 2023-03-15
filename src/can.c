@@ -141,7 +141,7 @@ void handle_can(void)
         
         uint16_t inv1_current_inflated = inv1.phase_current*10;
         uint16_t inv1_voltage_inflated = inv1.voltage*10;
-        uint8_t inv1_data = {inv1.motor_temp*4+inv1.pwm/256, inv1.pwm%256,
+        uint8_t inv1_data[] = {inv1.motor_temp*4+inv1.pwm/256, inv1.pwm%256,
             inv1_current_inflated/256, inv1_current_inflated%256,
             inv1_voltage_inflated/256, inv1_voltage_inflated%256,
             inv1.rpm/256, inv1.rpm%256};
@@ -149,7 +149,7 @@ void handle_can(void)
         
         uint16_t inv2_current_inflated = inv2.phase_current*10;
         uint16_t inv2_voltage_inflated = inv2.voltage*10;
-        uint8_t inv2_data = {inv2.motor_temp*4+inv2.pwm/256, inv2.pwm%256,
+        uint8_t inv2_data[] = {inv2.motor_temp*4+inv2.pwm/256, inv2.pwm%256,
             inv2_current_inflated/256, inv2_current_inflated%256,
             inv2_voltage_inflated/256, inv2_voltage_inflated%256,
             inv2.rpm/256, inv2.rpm%256};
