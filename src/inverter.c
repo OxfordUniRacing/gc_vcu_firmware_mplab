@@ -19,7 +19,7 @@ inv_t inv2;
 
 void handle_inactive_inverters(void)
 {   
-    if(car_control.ready_to_drive && (ts_active() || true)){ 
+    if(car_control.ready_to_drive && ts_active()){ 
         if(!inv1.active_drive && get_inv1_cmd() > 0){
             //start with empty buffer long enough for any command
             char thr_cmd[128] = {0};
@@ -118,42 +118,42 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 			#define ERROR_CHECK_BUF_OVERFLOW if ((uintptr_t)curr > (uintptr_t)msg_start+len) return -1;
             #define ERROR_CHECK_MISSING_PARAM if (curr == NULL) return -2;
 
-			inv->throttle_input = strtof(curr+sizeof("S="), &curr);
+			inv->throttle_input = strtof(curr+sizeof("S"), &curr);
             
             curr = strstr(curr,"a=") != NULL ? strstr(curr,"a=") : strstr(curr,"A=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM  
-			inv->aux_input = strtof(curr+sizeof("a="), &curr);
+			inv->aux_input = strtof(curr+sizeof("a"), &curr);
             
             curr = strstr(curr,"PWM=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-			inv->pwm = strtol(curr+sizeof("PWM="), &curr, 10);
+			inv->pwm = strtol(curr+sizeof("PWM"), &curr, 10);
             
             curr = strstr(curr,"U=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-			inv->voltage = strtof(curr+sizeof("U="), &curr);
+			inv->voltage = strtof(curr+sizeof("U"), &curr);
             
             curr = strstr(curr,"I=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-			inv->phase_current = strtof(curr+sizeof("I="), &curr);
+			inv->phase_current = strtof(curr+sizeof("I"), &curr);
             
             curr = strstr(curr,"RPM=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-			inv->rpm = strtol(curr+sizeof("RPM="), &curr, 10);
+			inv->rpm = strtol(curr+sizeof("RPM"), &curr, 10);
             
             curr = strstr(curr,"con=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-			inv->power_stage_temp = strtol(curr+sizeof("con="), &curr, 10);
+			inv->power_stage_temp = strtol(curr+sizeof("con"), &curr, 10);
             
             curr = strstr(curr,"mot=");
 			ERROR_CHECK_BUF_OVERFLOW
             ERROR_CHECK_MISSING_PARAM
-            inv->motor_temp = strtol(curr+sizeof("mot="), &curr, 10);
+            inv->motor_temp = strtol(curr+sizeof("mot"), &curr, 10);
             
 			#undef ERROR_CHECK_BUF_OVERFLOW
             #undef ERROR_CHECK_MISSING_PARAM

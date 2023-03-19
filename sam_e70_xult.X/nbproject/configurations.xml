@@ -14,9 +14,9 @@
             <itemPath>../src/config/sam_e70_xult/driver/driver_common.h</itemPath>
           </logicalFolder>
           <logicalFolder name="osal" displayName="osal" projectFiles="true">
+            <itemPath>../src/config/sam_e70_xult/osal/osal_definitions.h</itemPath>
             <itemPath>../src/config/sam_e70_xult/osal/osal.h</itemPath>
             <itemPath>../src/config/sam_e70_xult/osal/osal_impl_basic.h</itemPath>
-            <itemPath>../src/config/sam_e70_xult/osal/osal_definitions.h</itemPath>
           </logicalFolder>
           <logicalFolder name="f4" displayName="peripheral" projectFiles="true">
             <logicalFolder name="afec" displayName="afec" projectFiles="true">
@@ -77,8 +77,8 @@
               <itemPath>../src/config/sam_e70_xult/system/int/sys_int_mapping.h</itemPath>
             </logicalFolder>
             <itemPath>../src/config/sam_e70_xult/system/system_module.h</itemPath>
-            <itemPath>../src/config/sam_e70_xult/system/system_common.h</itemPath>
             <itemPath>../src/config/sam_e70_xult/system/system.h</itemPath>
+            <itemPath>../src/config/sam_e70_xult/system/system_common.h</itemPath>
           </logicalFolder>
           <itemPath>../src/config/sam_e70_xult/device_cache.h</itemPath>
           <itemPath>../src/config/sam_e70_xult/toolchain_specifics.h</itemPath>
@@ -212,7 +212,6 @@
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
-      <itemPath>../src/app.h</itemPath>
       <itemPath>../src/timer.h</itemPath>
       <itemPath>../src/uart0.h</itemPath>
       <itemPath>../src/inverter.h</itemPath>
@@ -220,6 +219,7 @@
       <itemPath>../src/pio.h</itemPath>
       <itemPath>../src/precharge.h</itemPath>
       <itemPath>../src/car_control.h</itemPath>
+      <itemPath>../src/app.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -314,7 +314,6 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>../src/main.c</itemPath>
-      <itemPath>../src/app.c</itemPath>
       <itemPath>../src/timer.c</itemPath>
       <itemPath>../src/uart0.c</itemPath>
       <itemPath>../src/inverter.c</itemPath>
@@ -322,6 +321,7 @@
       <itemPath>../src/pio.c</itemPath>
       <itemPath>../src/precharge.c</itemPath>
       <itemPath>../src/car_control.c</itemPath>
+      <itemPath>../src/app.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
@@ -337,7 +337,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>EdbgTool</platformTool>
         <languageToolchain>XC32</languageToolchain>
-        <languageToolchainVersion>4.20</languageToolchainVersion>
+        <languageToolchainVersion>4.21</languageToolchainVersion>
         <platform>3</platform>
       </toolsSet>
       <packs>

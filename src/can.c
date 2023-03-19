@@ -75,7 +75,7 @@ void handle_can(void)
             
             case CAN_ID_STEERING_SENSOR:
                 car_control.user_steering_value = buf->data[0]*256 + buf->data[1];
-                SYS_CONSOLE_PRINT("Steering value: %d\n\r",car_control.user_steering_value);
+                //SYS_CONSOLE_PRINT("Steering value: %d\n\r",car_control.user_steering_value);
                 break;
             
             case CAN_ID_RELAY_STATE:
@@ -141,7 +141,9 @@ void handle_can(void)
         
         uint16_t inv1_current_inflated = inv1.phase_current*10;
         uint16_t inv1_voltage_inflated = inv1.voltage*10;
-        uint8_t inv1_data[] = {inv1.motor_temp*4+inv1.pwm/256, inv1.pwm%256,
+        uint16_t inv1_pwm_deflated = inv1.pwm/2;
+        uint8_t inv1_data[] = 
+            {inv1.motor_temp*2+inv1_pwm_deflated/256, inv1_pwm_deflated%256,
             inv1_current_inflated/256, inv1_current_inflated%256,
             inv1_voltage_inflated/256, inv1_voltage_inflated%256,
             inv1.rpm/256, inv1.rpm%256};
@@ -149,7 +151,9 @@ void handle_can(void)
         
         uint16_t inv2_current_inflated = inv2.phase_current*10;
         uint16_t inv2_voltage_inflated = inv2.voltage*10;
-        uint8_t inv2_data[] = {inv2.motor_temp*4+inv2.pwm/256, inv2.pwm%256,
+        uint16_t inv2_pwm_deflated = inv2.pwm/2;
+        uint8_t inv2_data[] = 
+            {inv2.motor_temp*2+inv2_pwm_deflated/256, inv2_pwm_deflated%256,
             inv2_current_inflated/256, inv2_current_inflated%256,
             inv2_voltage_inflated/256, inv2_voltage_inflated%256,
             inv2.rpm/256, inv2.rpm%256};

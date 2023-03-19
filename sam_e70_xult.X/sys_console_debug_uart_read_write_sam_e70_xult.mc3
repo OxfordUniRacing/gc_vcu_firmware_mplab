@@ -1,4 +1,4 @@
-<config configName="sam_e70_xult" projectName="sys_console_debug_uart_read_write_sam_e70_xult" configVersion="1.1" device="ATSAME70Q21B" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.14">
+<config configName="sam_e70_xult" projectName="sys_console_debug_uart_read_write_sam_e70_xult" configVersion="1.1" device="ATSAME70Q21B" deviceLibraryClass="com.microchip.mcc.harmony.Harmony3Library" coreVersion="5.4.3">
    <usedPackages class="java.util.ArrayList"/>
    <usedClasses class="java.util.TreeMap">
       <entry>
@@ -5123,7 +5123,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\definitions.h</file>
-         <hash>44614317f3e251e9420b3bd240232e697d2a3f1739d3f4f881aee575f1b0a642</hash>
+         <hash>2702b93d147b437c90d738dc8556b6b45da75c87c54f18db07d87d1e1e35c24d</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\fuses.h</file>
@@ -5171,7 +5171,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>28a33e07ea67633bfd157bfc430f8112e35808cc74abed234e9d0507f194f301</hash>
+         <hash>9951f5b9a003fac65b6bfab82961c6bec79245cabb1b3452637a3ea2cac15add</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.h</file>
@@ -5606,12 +5606,12 @@
          <hash>e64db8df7309625b10e2c9686d0bb01b6824769ea9691033b6086e9d988507b5</hash>
       </entry>
       <entry>
-         <file>..\src\config\sam_e70_xult\bsp\bsp.h</file>
-         <hash>748b0bf0d026c9d1f428d7274ec55926a9017d6149259fc9cc314b92c0217710</hash>
-      </entry>
-      <entry>
          <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc_common.h</file>
          <hash>18de4e464f8009ae88ff57f51eade38db795cae08b4a09570ef487e4e980d086</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\bsp\bsp.h</file>
+         <hash>748b0bf0d026c9d1f428d7274ec55926a9017d6149259fc9cc314b92c0217710</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.h</file>
@@ -5799,7 +5799,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
+         <hash>926b8f6077372a2715a823f8cf1bbb95bae12a49859d1403b13d75dd3cadb1b0</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\uart3.h</file>

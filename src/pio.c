@@ -11,7 +11,7 @@
 //===================DEFINITIONS================================================
 #define ASS_CLOSED 1
 #define ASS_OPEN 0
-#define TS_ACTIVE_BOUNCE_TIME 30
+#define TS_ACTIVE_BOUNCE_TIME 50
 
 //===================GLOBAL VARIABLES===========================================
 
