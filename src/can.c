@@ -70,6 +70,10 @@ void handle_can(void)
                 if(buf->data[0]&1)
 				{
 					car_control.user_pedal_value = buf->data[1];
+                    //SYS_CONSOLE_PRINT("%d",car_control.user_pedal_value);
+                }
+                else{
+                    car_control.user_pedal_value = 0;
                 }
 				break;
             

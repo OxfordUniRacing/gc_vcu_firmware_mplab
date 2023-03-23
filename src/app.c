@@ -129,9 +129,9 @@ void handle_console(void)
     if (SYS_CONSOLE_Read(0, console_rx_buf, 1) >= 1)
     {
 	    LED_TOGGLE();
-		//SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
-		UART2_Write(console_rx_buf, 1);
-		UART1_Write(console_rx_buf, 1);
+		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
+		//UART2_Write(console_rx_buf, 1);
+		//UART1_Write(console_rx_buf, 1);
     }
 }
 
@@ -177,13 +177,15 @@ void APP_Tasks ( void )
     
     //if(bms.ams_precharge_enabled != bms.)
 	
-	static uint32_t send_can_timer = 0;
-    if(current_time_ms() - send_can_timer > 1000){
+	static uint32_t send_debug_timer = 0;
+    if(current_time_ms() - send_debug_timer > 1000){
         //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
         //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
         //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
-        send_can_timer = current_time_ms();
+        //SYS_CONSOLE_PRINT("Steering sensor value: %d\n\r",car_control.user_steering_value);
+        //SYS_CONSOLE_PRINT("RTD: %d\n\r",car_control.ready_to_drive);
+        send_debug_timer = current_time_ms();
     }
     
     
