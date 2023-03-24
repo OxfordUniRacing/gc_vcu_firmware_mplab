@@ -11,6 +11,7 @@
 typedef struct {
 	//inputs
 	float voltage;
+    float current;
     bool ams_precharge_enabled;
 	
 	uint16_t pack_dlc;	//Max current the battery can output

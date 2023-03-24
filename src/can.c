@@ -96,6 +96,7 @@ void handle_can(void)
 			case CAN_ID_BMS_CELL_BROADCAST:
                 comms_time.bms = current_time_ms();
                 bms.voltage = (((uint16_t)buf->data[2] << 8) + buf->data[3])/10.0f;
+                bms.current (buf->data[0]*256 + buf->data[1])/10.0f;
 				break;
 				
 			case CAN_ID_RTD:
