@@ -10,6 +10,8 @@
 #include "peripheral/pio/plib_pio.h"
 #include "peripheral/pwm/plib_pwm0.h"
 #include "peripheral/pwm/plib_pwm_common.h"
+#include "peripheral/afec/plib_afec0.h"
+#include "peripheral/afec/plib_afec_common.h"
 
 //===================DEFINITIONS================================================
 #define ASS_CLOSED 1
@@ -36,10 +38,19 @@ static volatile uint32_t ass_timer = 0;
 void init_pio(void){
     TS_INPUT_InputEnable();
     ASS_PIN_RELAY_OutputEnable();
-    PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
+    BRAKE_LIGHT_OutputEnable();
+    PWM0_ChannelsStop(PWM_CHANNEL_1_MASK); //disable buzzer pwm to start
+    AFEC0_ChannelsEnable(AFEC_CH8_MASK); //enable ADC on brake pressure sensor
 }
 
 void handle_pio(void){
+    AFEC0_ConversionStart();
+    while(!AFEC0_ChannelResultIsReady(AFEC_CH8)); //wait for reading
+    car_control.brake_pressure = //result*3.3/65535 gets voltage, *2.36 provides the factor for the potential divider
+                                //subtracting 0.5 takes away the constant term from the affine conversion
+                                //multiplying by 25 gives the answer in bar
+            ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
+    
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
 						!ass.break_loop_inverter_error &&
@@ -92,6 +103,12 @@ void handle_pio(void){
         }
     }
     
+    if(car_control.brake_pressure > 1){
+        PIO_PinWrite(BRAKE_LIGHT_PIN,1);
+    }
+    else{
+        PIO_PinWrite(BRAKE_LIGHT_PIN,0);
+    }
 }
 
 bool ts_active(void){

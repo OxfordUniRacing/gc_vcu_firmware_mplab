@@ -14,10 +14,6 @@
          <string>class com.microchip.mcc.harmony.HarmonyModule</string>
       </entry>
       <entry>
-         <string>afec1</string>
-         <string>class com.microchip.mcc.harmony.HarmonyModule</string>
-      </entry>
-      <entry>
          <string>cmsis</string>
          <string>class com.microchip.mcc.harmony.HarmonyModule</string>
       </entry>
@@ -634,7 +630,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec0&gt;
   &lt;afec0 dnOrder=&quot;0&quot; id=&quot;AFEC_10_CHER&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/afec0&gt;
 &lt;/afec0&gt;
@@ -696,6 +692,38 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec0" name="AFEC_8_COCR_AOFF"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec0&gt;
+  &lt;afec0 dnOrder=&quot;0&quot; id=&quot;AFEC_8_COCR_AOFF&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;visible&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+    &lt;Values dnOrder=&quot;1&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;514&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/afec0&gt;
+&lt;/afec0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec0" name="AFEC_8_IER_EOC"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec0&gt;
+  &lt;afec0 dnOrder=&quot;0&quot; id=&quot;AFEC_8_IER_EOC&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;visible&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;true&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+    &lt;Values dnOrder=&quot;1&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/afec0&gt;
+&lt;/afec0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec0" name="AFEC_CLK"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec0&gt;
   &lt;afec0 dnOrder=&quot;0&quot; id=&quot;AFEC_CLK&quot;&gt;
@@ -751,197 +779,6 @@
 </value>
       </entry>
       <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="#&amp;__MCC_Group_Parrent_id"/>
-         <value>__ROOTVIEW</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_CALLBACK_API"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_CALLBACK_API&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC1_CallbackRegister&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_CH_PHASE_U"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_CH_PHASE_U&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC_CH0&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_CH_PHASE_V"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_CH_PHASE_V&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC_CH6&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_CH_POT"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_CH_POT&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC_CH10&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_CH_VDC_BUS"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_CH_VDC_BUS&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC_CH7&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_GET_RESULT_API"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_GET_RESULT_API&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC1_ChannelResultGet&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_IS_RESULT_READY_API"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_IS_RESULT_READY_API&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC1_ChannelResultIsReady&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="ADC_START_CONV_API"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;ADC_START_CONV_API&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC1_ConversionStart&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_0_CHER"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_0_CHER&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_1_CHER"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_1_CHER&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_3_CHER"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_3_CHER&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_5_CHER"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_5_CHER&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_6_CHER"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_6_CHER&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_CLK"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_CLK&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;18750000&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_CONV_MODE"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_CONV_MODE&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="AFEC_EMR_RES_VALUE"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;AFEC_EMR_RES_VALUE&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;7&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
-         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="afec1" name="INTERRUPT_ADC_RESULT"/>
-         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;afec1&gt;
-  &lt;afec1 dnOrder=&quot;0&quot; id=&quot;INTERRUPT_ADC_RESULT&quot;&gt;
-    &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec1&quot; value=&quot;AFEC1_IRQn&quot;/&gt;
-    &lt;/Values&gt;
-  &lt;/afec1&gt;
-&lt;/afec1&gt;
-</value>
-      </entry>
-      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="cmsis" name="#&amp;__MCC_Group_Parrent_id"/>
          <value>__ROOTVIEW</value>
       </entry>
@@ -954,22 +791,21 @@
         &lt;ElementPosition dnOrder=&quot;0&quot; id=&quot;BSP_SAM_E70_Xplained&quot; x=&quot;640&quot; y=&quot;20&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;1&quot; id=&quot;HarmonyCore&quot; x=&quot;3&quot; y=&quot;72&quot;/&gt;
         &lt;ElementPosition dnOrder=&quot;2&quot; id=&quot;afec0&quot; x=&quot;624&quot; y=&quot;153&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;3&quot; id=&quot;afec1&quot; x=&quot;626&quot; y=&quot;223&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;4&quot; id=&quot;cmsis&quot; x=&quot;340&quot; y=&quot;20&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;5&quot; id=&quot;core&quot; x=&quot;240&quot; y=&quot;20&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;6&quot; id=&quot;dfp&quot; x=&quot;20&quot; y=&quot;20&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;7&quot; id=&quot;efc&quot; x=&quot;480&quot; y=&quot;20&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;8&quot; id=&quot;mcan0&quot; x=&quot;625&quot; y=&quot;392&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;9&quot; id=&quot;pwm0&quot; x=&quot;625&quot; y=&quot;75&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;10&quot; id=&quot;sys_console&quot; x=&quot;183&quot; y=&quot;168&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;11&quot; id=&quot;sys_debug&quot; x=&quot;370&quot; y=&quot;171&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;12&quot; id=&quot;tc0&quot; x=&quot;624&quot; y=&quot;294&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;13&quot; id=&quot;uart1&quot; x=&quot;8&quot; y=&quot;314&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;uart2&quot; x=&quot;15&quot; y=&quot;391&quot;/&gt;
-        &lt;ElementPosition dnOrder=&quot;15&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;3&quot; id=&quot;cmsis&quot; x=&quot;340&quot; y=&quot;20&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;4&quot; id=&quot;core&quot; x=&quot;240&quot; y=&quot;20&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;5&quot; id=&quot;dfp&quot; x=&quot;20&quot; y=&quot;20&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;6&quot; id=&quot;efc&quot; x=&quot;480&quot; y=&quot;20&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;7&quot; id=&quot;mcan0&quot; x=&quot;625&quot; y=&quot;325&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;8&quot; id=&quot;pwm0&quot; x=&quot;625&quot; y=&quot;75&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;9&quot; id=&quot;sys_console&quot; x=&quot;183&quot; y=&quot;168&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;10&quot; id=&quot;sys_debug&quot; x=&quot;370&quot; y=&quot;171&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;11&quot; id=&quot;tc0&quot; x=&quot;626&quot; y=&quot;227&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;12&quot; id=&quot;uart1&quot; x=&quot;8&quot; y=&quot;314&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;13&quot; id=&quot;uart2&quot; x=&quot;15&quot; y=&quot;391&quot;/&gt;
+        &lt;ElementPosition dnOrder=&quot;14&quot; id=&quot;usart1&quot; x=&quot;4&quot; y=&quot;228&quot;/&gt;
       &lt;/ElementPositions&gt;
     &lt;/ComponentGraph&gt;
-    &lt;GraphSettings canvasHeight=&quot;575&quot; canvasWidth=&quot;688&quot; dnOrder=&quot;1&quot;/&gt;
+    &lt;GraphSettings canvasHeight=&quot;503&quot; canvasWidth=&quot;762&quot; dnOrder=&quot;1&quot;/&gt;
   &lt;/UserData&gt;
 &lt;/UserData&gt;
 </value>
@@ -1017,6 +853,50 @@
   &lt;core dnOrder=&quot;0&quot; id=&quot;AFEC0_CLOCK_FREQUENCY&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
       &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;150000000&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="AFEC0_INTERRUPT_ENABLE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;AFEC0_INTERRUPT_ENABLE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec0&quot; value=&quot;false&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="AFEC0_INTERRUPT_ENABLE_UPDATE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;AFEC0_INTERRUPT_ENABLE_UPDATE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;true&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="AFEC0_INTERRUPT_HANDLER"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;AFEC0_INTERRUPT_HANDLER&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec0&quot; value=&quot;AFEC0_Handler&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="AFEC0_INTERRUPT_HANDLER_LOCK"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;AFEC0_INTERRUPT_HANDLER_LOCK&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;afec0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1504,6 +1384,39 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="NVIC_29_0_ENABLE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;NVIC_29_0_ENABLE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;false&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="NVIC_29_0_HANDLER"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;NVIC_29_0_HANDLER&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;AFEC0_Handler&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="NVIC_29_0_HANDLER_LOCK"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;NVIC_29_0_HANDLER_LOCK&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;false&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="NVIC_35_0_ENABLE"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;NVIC_35_0_ENABLE&quot;&gt;
@@ -1915,7 +1828,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_14_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC1_AD6&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1926,7 +1839,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_14_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1937,7 +1850,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_15_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC1_AD5&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1948,7 +1861,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_15_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1959,7 +1872,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_17_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC1_AD3&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1970,7 +1883,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_17_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1981,7 +1894,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_19_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC1_AD1&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -1992,7 +1905,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_19_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2003,7 +1916,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_20_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC1_AD0&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2014,7 +1927,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_20_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2025,7 +1938,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_21_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;AFEC0_AD10&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2036,7 +1949,18 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_21_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;Alternate&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_23_FUNCTION_NAME"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_23_FUNCTION_NAME&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;BRAKE_PRESSURE_IN&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2422,6 +2346,50 @@
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_82_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
       &lt;User dnOrder=&quot;0&quot; value=&quot;LED_AL&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_86_DIR"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_86_DIR&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_86_FUNCTION_NAME"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_86_FUNCTION_NAME&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;BRAKE_LIGHT&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_86_FUNCTION_TYPE"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_86_FUNCTION_TYPE&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_86_PERIPHERAL_FUNCTION"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_86_PERIPHERAL_FUNCTION&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -3053,7 +3021,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PMC_PCER1&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;4392&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;67113000&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -5586,7 +5554,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\definitions.h</file>
-         <hash>a4c77df47a836cab463193f777e7ee8ba1c40b86cf4565b3f34eefb4cfcf216d</hash>
+         <hash>7dd84395e6b3dc9ba40f5d60187a366aec9bcd7d66215fc97b506c26edf95e27</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\fuses.h</file>
@@ -5634,11 +5602,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>055bcc19efc1ece913f5d2d287edb109ab65c30d73752ae320dd3bea4a96f75f</hash>
+         <hash>ec5640c3e2fdedda2b6fb252077cdfbcc60569f8b8a40e259e657321203c3a59</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.h</file>
-         <hash>eae4a5e343da3dd162948b2d90e33b39947e5fe156d9450f62dc5002ed7d6278</hash>
+         <hash>ff39e5abfa12ccb3ce969042a0c37f1fff2ad8dd6d67f014ef86ff4670f4fd88</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\gmac.h</file>
@@ -5702,7 +5670,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\pin_configurations.csv</file>
-         <hash>c51dbee019d5255b6c632af507f55f5195f1f323cca0ef10e916cadca16b8270</hash>
+         <hash>b41704e9bcdc8f43c23093abaadafa973706def91fc86e0efa65f1cd7e4548c6</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\afec.h</file>
@@ -5729,10 +5697,6 @@
          <hash>71e36331ee689ae305b3d8ec49948e3dde0324b65f51bf38f4472b900a421ed6</hash>
       </entry>
       <entry>
-         <file>..\src\config\sam_e70_xult\peripheral\afec\plib_afec1.h</file>
-         <hash>82d2e5832d862b14ca5cd939611f53ff1ecde38e9fbf890de97d8c9561cc18ea</hash>
-      </entry>
-      <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\utmi.h</file>
          <hash>d3e0b422fc0f0ccf381f58ecc76a3f39234f45860426f89107fee5035543f0e2</hash>
       </entry>
@@ -5747,10 +5711,6 @@
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\usbhs.h</file>
          <hash>987bb07b0cdb9ef15bd81fdedb21f9d0044cc363d6b69bbc630cf63d16115f7f</hash>
-      </entry>
-      <entry>
-         <file>..\src\config\sam_e70_xult\peripheral\afec\plib_afec1.c</file>
-         <hash>c21858a35bbfbfad117e70646cab195b20d2f8f158b1cd819a4e316e9b1b51fa</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\int\src\sys_int.c</file>
@@ -5894,7 +5854,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\afec\plib_afec0.h</file>
-         <hash>a486945d9c9fb7247ee0f20b80f59352169c4c5046a4797e7ad039da698c4576</hash>
+         <hash>602541ddbe93576024ddf70e294ee168412f9c117902bba542ff04f7e9157951</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\qspi.h</file>
@@ -5910,7 +5870,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\afec\plib_afec0.c</file>
-         <hash>f1b6ccd2ab56b18042d8bbc7690ab784f880ccf93eb22f4dfd1008f80d384340</hash>
+         <hash>8b67ebf82dae0ea9543b1b81adbb098c7bfbf1c40edd1c88585d05cd4a2d9293</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\i2sc.h</file>
@@ -6081,12 +6041,12 @@
          <hash>e64db8df7309625b10e2c9686d0bb01b6824769ea9691033b6086e9d988507b5</hash>
       </entry>
       <entry>
-         <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc_common.h</file>
-         <hash>18de4e464f8009ae88ff57f51eade38db795cae08b4a09570ef487e4e980d086</hash>
-      </entry>
-      <entry>
          <file>..\src\config\sam_e70_xult\bsp\bsp.h</file>
          <hash>748b0bf0d026c9d1f428d7274ec55926a9017d6149259fc9cc314b92c0217710</hash>
+      </entry>
+      <entry>
+         <file>..\src\config\sam_e70_xult\peripheral\tc\plib_tc_common.h</file>
+         <hash>18de4e464f8009ae88ff57f51eade38db795cae08b4a09570ef487e4e980d086</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.h</file>
@@ -6158,7 +6118,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\clk\plib_clk.c</file>
-         <hash>75fd7b33f3297d411aa63adfe20ee9f0716116ca65a28df5b9591e74b2ad9a58</hash>
+         <hash>63bb1e1f2b9618c6ebb5f8fa617bb40de143b24a1fd69635669b48fdf52c8939</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\pwm.h</file>

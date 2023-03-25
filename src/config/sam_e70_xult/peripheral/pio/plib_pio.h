@@ -62,6 +62,10 @@
 // *****************************************************************************
 
 
+/*** Macros for BRAKE_PRESSURE_IN pin ***/
+#define BRAKE_PRESSURE_IN_Get()               ((PIOA_REGS->PIO_PDSR >> 19) & 0x1)
+#define BRAKE_PRESSURE_IN_PIN                  PIO_PIN_PA19
+
 /*** Macros for TS_INPUT pin ***/
 #define TS_INPUT_Set()               (PIOD_REGS->PIO_SODR = (1<<30))
 #define TS_INPUT_Clear()             (PIOD_REGS->PIO_CODR = (1<<30))
@@ -70,6 +74,15 @@
 #define TS_INPUT_InputEnable()       (PIOD_REGS->PIO_ODR = (1<<30))
 #define TS_INPUT_Get()               ((PIOD_REGS->PIO_PDSR >> 30) & 0x1)
 #define TS_INPUT_PIN                  PIO_PIN_PD30
+
+/*** Macros for BRAKE_LIGHT pin ***/
+#define BRAKE_LIGHT_Set()               (PIOC_REGS->PIO_SODR = (1<<9))
+#define BRAKE_LIGHT_Clear()             (PIOC_REGS->PIO_CODR = (1<<9))
+#define BRAKE_LIGHT_Toggle()            (PIOC_REGS->PIO_ODSR ^= (1<<9))
+#define BRAKE_LIGHT_OutputEnable()      (PIOC_REGS->PIO_OER = (1<<9))
+#define BRAKE_LIGHT_InputEnable()       (PIOC_REGS->PIO_ODR = (1<<9))
+#define BRAKE_LIGHT_Get()               ((PIOC_REGS->PIO_PDSR >> 9) & 0x1)
+#define BRAKE_LIGHT_PIN                  PIO_PIN_PC9
 
 /*** Macros for RTD_SOUND_PIN pin ***/
 #define RTD_SOUND_PIN_Get()               ((PIOA_REGS->PIO_PDSR >> 2) & 0x1)

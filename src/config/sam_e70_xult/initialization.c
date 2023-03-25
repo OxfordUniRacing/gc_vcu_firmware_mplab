@@ -171,16 +171,14 @@ void SYS_Initialize ( void* data )
 
     PWM0_Initialize();
 
+	BSP_Initialize();
   
 
  
     TC0_CH0_TimerInitialize(); 
      
     
-	BSP_Initialize();
     AFEC0_Initialize();
-
-    AFEC1_Initialize();
 
 	UART1_Initialize();
 
