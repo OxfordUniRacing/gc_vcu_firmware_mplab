@@ -33,7 +33,8 @@ typedef struct
     bool break_loop_bms_not_responding_to_precharge_message;
 	bool break_loop_ts_deactive;			//True when we want to break ASS due to TS cutting out
 	bool break_loop_inverter_error;			//True when we want to break ASS due to an inverter error
-	//bool break_loop_wantToStart;
+	bool break_loop_timeout;
+    bool break_loop_pedal_invalid;
 }ass_t;
 
 extern ass_t ass;

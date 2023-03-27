@@ -28,6 +28,7 @@
 #define CAN_ID_TX_TO_LOGGER_1   0x7A1
 #define CAN_ID_TX_TO_LOGGER_2   0x7A2
 #define CAN_ID_TX_TO_LOGGER_3   0x7A3
+#define CAN_ID_TX_STATUS        0x7A4
 
 #define CAN_RX_BUFFER_SIZE 16
 
@@ -76,11 +77,13 @@ void handle_can(void)
                 }
                 else{
                     car_control.user_pedal_value = 0;
+                    ass.break_loop_pedal_invalid = true;
                 }
 				break;
             
             case CAN_ID_STEERING_SENSOR:
-                car_control.user_steering_value = buf->data[0]*256 + buf->data[1];
+                comms_time.steering = current_time_ms();
+                car_control.user_steering_value = (buf->data[0]*256 + buf->data[1] - 440)/390.0f;
                 //SYS_CONSOLE_PRINT("Steering value: %d\n\r",car_control.user_steering_value);
                 break;
             
@@ -180,6 +183,19 @@ void handle_can(void)
         brake_pres_data[1] = 0;
         memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
         send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
+    }
+    
+    if(tx_ready.status){
+        uint8_t status_data[] =
+            {ass.break_loop_bms_not_responding_to_precharge_message,
+            ass.break_loop_inverter_error,
+            ass.break_loop_pedal_invalid,
+            ass.break_loop_precharge,
+            ass.break_loop_timeout,
+            ass.break_loop_ts_deactive,
+            0,
+            comms_active.bms<<5+comms_active.dash<<4+comms_active.inv1<<3+comms_active.inv2<<2+comms_active.pb<<1+comms_active.steering};
+        send_can_message(CAN_ID_TX_STATUS,status_data,8);
     }
 }
 

@@ -8,6 +8,8 @@ typedef struct
 	bool inv2;
 	bool pb;
 	bool bms;
+    bool dash;
+    bool steering;
 	
 }comms_active_t;
 
@@ -20,6 +22,7 @@ typedef struct
 	uint32_t pb;
 	uint32_t bms;
 	uint32_t dash;
+    uint32_t steering;
 	
 }comms_time_t;
 
@@ -33,6 +36,7 @@ typedef struct
 	bool bms;
     bool dcl_inv1;
     bool dcl_inv2;
+    bool status;
 	
 }tx_ready_t;
 
@@ -46,6 +50,7 @@ typedef struct
 	uint32_t bms;
     uint32_t dcl_inv1;
     uint32_t dcl_inv2;
+    uint32_t status;
 	
 }tx_time_t;
 

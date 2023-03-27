@@ -55,7 +55,9 @@ void handle_pio(void){
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
 						!ass.break_loop_inverter_error &&
-                        !ass.break_loop_bms_not_responding_to_precharge_message;
+                        !ass.break_loop_bms_not_responding_to_precharge_message &&
+                        !ass.break_loop_timeout &&
+                        !ass.break_loop_pedal_invalid;
     
     if(!ass_close){ //a condition to break the loop has been met
         if(ass_latched_open){ //the timer to break the loop has started
