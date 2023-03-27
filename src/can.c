@@ -43,7 +43,7 @@ uint8_t can_rx_queue_tail = 0;
 uint8_t can_rx_queue_len = 0;
 
 
-
+static volatile bool rtd_startup_flag = false;
 
 //===================================LOCAL FUNC DECLARATIONS
 
@@ -105,15 +105,15 @@ void handle_can(void)
 				comms_time.dash = current_time_ms();
                 bool rtd_switch_state = (!!buf->data[0]);
                 if(car_control.precharge_ready){
-                    if(car_control.rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
+                    if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
                         car_control.ready_to_drive = rtd_switch_state;
                     }
                     else{
-                        if(rtd_switch_state == false) car_control.rtd_startup_flag = true;
-                        else car_control.rtd_startup_flag = false;
+                        if(rtd_switch_state == false && car_control.brake_on) rtd_startup_flag = true;
+                        else rtd_startup_flag = false;
                     }
                 }
-                else if(car_control.rtd_startup_flag) car_control.rtd_startup_flag = false; //reset condition for startup flag
+                else if(rtd_startup_flag) rtd_startup_flag = false; //reset condition for startup flag
 				break;
             
             case CAN_ID_IGNITION:
@@ -175,9 +175,11 @@ void handle_can(void)
             inv2.rpm/256, inv2.rpm%256};
         send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
         
-        uint8_t brake_pres_data[sizeof(float)];
-        memcpy(brake_pres_data,&car_control.brake_pressure,sizeof(float));
-        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float));
+        uint8_t brake_pres_data[sizeof(float)+2];
+        brake_pres_data[0] = car_control.brake_on;
+        brake_pres_data[1] = 0;
+        memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
+        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
     }
 }
 

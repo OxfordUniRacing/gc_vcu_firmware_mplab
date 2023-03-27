@@ -14,14 +14,13 @@
 typedef struct
 {
 	bool ready_to_drive;
-    bool rtd_startup_flag;
     bool precharge_ready;
     bool ignition;
 	
 	//User values
 	uint8_t user_pedal_value;
     uint16_t user_steering_value;
-    
+    bool brake_on;
     float brake_pressure;
 }control_t;
 

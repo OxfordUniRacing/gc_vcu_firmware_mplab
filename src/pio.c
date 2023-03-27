@@ -16,7 +16,7 @@
 //===================DEFINITIONS================================================
 #define ASS_CLOSED 1
 #define ASS_OPEN 0
-#define TS_ACTIVE_BOUNCE_TIME 50
+#define TS_ACTIVE_BOUNCE_TIME 20
 #define RTD_SOUND_TIME 1500
 #define ASS_LOOP_STOP_TIME  300
 
@@ -50,6 +50,7 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
+    car_control.brake_on = car_control.brake_pressure > 1;
     
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
@@ -106,12 +107,7 @@ void handle_pio(void){
         }
     }
     
-    if(car_control.brake_pressure > 1){
-        PIO_PinWrite(BRAKE_LIGHT_PIN,1);
-    }
-    else{
-        PIO_PinWrite(BRAKE_LIGHT_PIN,0);
-    }
+    PIO_PinWrite(BRAKE_LIGHT_PIN,car_control.brake_on);
 }
 
 bool ts_active(void){
