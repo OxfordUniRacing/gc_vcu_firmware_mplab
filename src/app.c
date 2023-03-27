@@ -185,7 +185,7 @@ void APP_Tasks ( void )
         //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
         //SYS_CONSOLE_PRINT("Steering sensor value: %d\n\r",car_control.user_steering_value);
         //SYS_CONSOLE_PRINT("RTD: %d\n\r",car_control.ready_to_drive);
-        SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
+        //SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
         send_debug_timer = current_time_ms();
     }
     

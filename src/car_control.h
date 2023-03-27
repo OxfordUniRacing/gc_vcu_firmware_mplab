@@ -15,6 +15,8 @@ typedef struct
 {
 	bool ready_to_drive;
     bool rtd_startup_flag;
+    bool precharge_ready;
+    bool ignition;
 	
 	//User values
 	uint8_t user_pedal_value;

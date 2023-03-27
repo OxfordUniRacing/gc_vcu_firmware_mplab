@@ -19,7 +19,7 @@ inv_t inv2;
 
 void handle_inactive_inverters(void)
 {   
-    if(car_control.ready_to_drive && ts_active()){ 
+    if(car_control.ready_to_drive){ 
         if(!inv1.active_drive && get_inv1_cmd() > 0){
             //start with empty buffer long enough for any command
             char thr_cmd[128] = {0};

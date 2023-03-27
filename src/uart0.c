@@ -74,7 +74,7 @@ void handle_uart(void)
      let interrupts take care of things for us. Note that we only enable or
      disable interrupts once per state change - spamming changing this flag
      causes bad behavior.*/
-    if(!(car_control.ready_to_drive && ts_active())){
+    if(!car_control.ready_to_drive){
         uart1_rx_char();
         uart2_rx_char();
         if(uart1_rdNotificationEnabled) {
@@ -104,7 +104,7 @@ void handle_uart(void)
         if(error_code == 0){ //successful inverter read, send a pedal command
             comms_time.inv2 = current_time_ms();
             
-            if(car_control.ready_to_drive && ts_active()){
+            if(car_control.ready_to_drive){
                 int cmd_val = get_inv2_cmd();
                 char thr_cmd[128] = {0};
                 int length = get_thr_cmd_str(cmd_val,thr_cmd,128);
@@ -134,7 +134,7 @@ void handle_uart(void)
         if(error_code == 0){ //successful inverter read, send a pedal command
             comms_time.inv1 = current_time_ms();
             
-            if(car_control.ready_to_drive && ts_active()){
+            if(car_control.ready_to_drive){
                 int cmd_val = get_inv1_cmd();
                 char thr_cmd[128] = {0};
                 int length = get_thr_cmd_str(cmd_val,thr_cmd,128);

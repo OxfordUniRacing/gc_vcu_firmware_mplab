@@ -7,6 +7,7 @@
 #include "timer.h"
 #include "inverter.h"
 #include "user.h"
+#include "car_control.h"
 
 //==============================DEFINITIONS
 
@@ -39,6 +40,18 @@ void handle_precharge(void)
 		PC_READY,						//Ready to for BMS to exit precharge
 		PC_FAILED						//A timeout has occured, set flag for VCU relay to open 
 	} PRECHARGE_STATE = PC_TS_OFF;		//Different possible precharge states
+    
+    if(!car_control.ignition){
+         //driver stopped the car safely, reset the precharge sequence
+        if(PRECHARGE_STATE == PC_READY){         
+            PRECHARGE_STATE = PC_TS_OFF;
+            car_control.precharge_ready = false;
+        }
+        //ts button state cycled during precharge process, probably safe to fail it
+        else if(PRECHARGE_STATE != PC_TS_OFF){   
+            PRECHARGE_STATE = PC_FAILED;
+        }
+    }
 	
 	static uint32_t precharge_start_time = 0;
     
@@ -49,7 +62,7 @@ void handle_precharge(void)
 	//=======================================================
 	//HANDLE THE TS LATCHING OFF
 	static bool old_ts;
-	if(PRECHARGE_STATE == PC_TS_OFF)
+	if(!car_control.ignition)
 	{
 		ass.break_loop_ts_deactive = false;
 	}
@@ -203,6 +216,7 @@ void handle_precharge(void)
 		case PC_READY:
 			bms.precharge_enable = false;
 			ass.break_loop_precharge = false;
+            car_control.precharge_ready = true;
 			break;
 		case PC_FAILED:			
 			bms.precharge_enable = true;	

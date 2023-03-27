@@ -7,6 +7,16 @@
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/precharge.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/pio.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/can.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/precharge.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/timer.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/pio/plib_pio.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/afec/plib_afec0.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/afec/plib_afec_common.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/afec/plib_afec0.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/uart0.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/inverter.c</file>
         </group>
     </open-files>
 </project-private>

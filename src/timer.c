@@ -17,7 +17,7 @@
 #define TX_PERIOD_INV1  50
 #define TX_PERIOD_INV2  50
 #define TX_PERIOD_BMS   100
-#define TX_PERIOD_LOGGER    500
+#define TX_PERIOD_LOGGER    100
 #define TX_PERIOD_DCL   500
 
 //=====================================GLOBAL VARIABLES========================

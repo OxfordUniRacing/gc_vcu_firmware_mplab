@@ -73,8 +73,11 @@ void handle_pio(void){
             ass_timer = current_time_ms();
         }
     }
-    else{ //the ass loop can safely remain closed, keep writing this pin state
-        PIO_PinWrite(ASS_PIN_RELAY_PIN, ASS_CLOSED);
+    else{ //the ass loop can safely remain closed, provided the driver has started the car
+        if(car_control.ignition)    PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);
+        //the below is to keep the driver from somehow deactivating the car with the ignition switch while current is flowing
+        //if the driver actually wants to do that they should use the e-stop
+        else if(bms.current < 1)    PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_OPEN);
     }
     
     if(ts_active_local != TS_INPUT_Get()){
@@ -91,7 +94,7 @@ void handle_pio(void){
         }
     }
     
-    if(car_control.ready_to_drive && !rtd_sounded && ts_active()){
+    if(car_control.ready_to_drive && !rtd_sounded){
         PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
         rtd_sounded = true;
         rtd_sound_timer = current_time_ms();

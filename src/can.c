@@ -19,6 +19,7 @@
 #define CAN_ID_RELAY_STATE 0x009
 #define CAN_ID_AUX_STATES		0x900
 #define CAN_ID_RTD          0x469
+#define CAN_ID_IGNITION     0x500
 #define CAN_ID_BMS_DLC		0x6B1
 #define CAN_ID_STEERING_SENSOR  0x101
 
@@ -26,6 +27,7 @@
 #define CAN_ID_TX_TO_BMS    0x008
 #define CAN_ID_TX_TO_LOGGER_1   0x7A1
 #define CAN_ID_TX_TO_LOGGER_2   0x7A2
+#define CAN_ID_TX_TO_LOGGER_3   0x7A3
 
 #define CAN_RX_BUFFER_SIZE 16
 
@@ -102,14 +104,23 @@ void handle_can(void)
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
                 bool rtd_switch_state = (!!buf->data[0]);
-                if(car_control.rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
-                    car_control.ready_to_drive = rtd_switch_state;
+                if(car_control.precharge_ready){
+                    if(car_control.rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
+                        car_control.ready_to_drive = rtd_switch_state;
+                    }
+                    else{
+                        if(rtd_switch_state == false) car_control.rtd_startup_flag = true;
+                        else car_control.rtd_startup_flag = false;
+                    }
                 }
-                else{
-                    if(rtd_switch_state == false) car_control.rtd_startup_flag = true;
-                    else car_control.rtd_startup_flag = false;
-                }
+                else if(car_control.rtd_startup_flag) car_control.rtd_startup_flag = false; //reset condition for startup flag
 				break;
+            
+            case CAN_ID_IGNITION:
+                comms_time.dash = current_time_ms();
+                car_control.ignition = buf->data[0];
+                break;
+                
 				
 			case CAN_ID_BMS_DLC:
 				
@@ -163,6 +174,10 @@ void handle_can(void)
             inv2_voltage_inflated/256, inv2_voltage_inflated%256,
             inv2.rpm/256, inv2.rpm%256};
         send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
+        
+        uint8_t brake_pres_data[sizeof(float)];
+        memcpy(brake_pres_data,&car_control.brake_pressure,sizeof(float));
+        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float));
     }
 }
 
@@ -221,7 +236,7 @@ void send_can_message(uint16_t id, uint8_t data[],int length){
     
     MCAN_TX_BUFFER temp_tx_buf = {
         .data = {0,0,0,0,0,0,0,0},
-        .dlc = 8,
+        .dlc = length,
         .id = id,
         .sof = 1
     };
