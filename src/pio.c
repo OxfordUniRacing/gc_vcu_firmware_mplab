@@ -52,7 +52,7 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
-    car_control.brake_on = car_control.brake_pressure > 3;
+    car_control.brake_on = car_control.brake_pressure > 2;
     
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
@@ -93,9 +93,8 @@ void handle_pio(void){
                 bms.ams_precharge_enabled = true;
             }
         }
-        //the below is to keep the driver from somehow deactivating the car with the ignition switch while current is flowing
-        //if the driver actually wants to do that they should use the e-stop
-        else if(bms.current < 1){ 
+        
+        else { 
             PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_OPEN);
             ignition_local = false;
         }

@@ -7,14 +7,16 @@
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/precharge.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/timer.h</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/pio.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/mcan/plib_mcan0.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/can.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/precharge.h</file>
-            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/uart0.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/timer.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/mcan/plib_mcan_common.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.h</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/uart0.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/inverter.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/uart/plib_uart1.c</file>
-            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.h</file>
         </group>
     </open-files>
 </project-private>

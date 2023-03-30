@@ -30,7 +30,7 @@
 #define CAN_ID_TX_TO_LOGGER_3   0x7A3
 #define CAN_ID_TX_STATUS        0x7A4
 
-#define CAN_RX_BUFFER_SIZE 16
+#define CAN_RX_BUFFER_SIZE 64
 
 //=============================GLOBAL VAR
 
@@ -50,7 +50,6 @@ static volatile bool rtd_startup_flag = false;
 
 MCAN_RX_BUFFER* can_rx_queue_pop(void);
 MCAN_RX_BUFFER* can_rx_queue_push(void);
-void can_rx_queue_initialise(void);
 
 void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 
@@ -101,7 +100,6 @@ void handle_can(void)
                 break;
 
 			case CAN_ID_BMS_CELL_BROADCAST:
-                comms_time.bms = current_time_ms();
                 bms.voltage = (((uint16_t)buf->data[2] << 8) + buf->data[3])/10.0f;
                 bms.current = (buf->data[0]*256 + buf->data[1])/10.0f;
 				break;
@@ -111,16 +109,16 @@ void handle_can(void)
                 bool rtd_switch_state = (!!buf->data[0]);
                 if(car_control.precharge_ready){
                     if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
-                        if(rtd_switch_state == true && car_control.brake_on){
+                        if(rtd_switch_state == true && car_control.brake_on && car_control.user_pedal_value == 0){
                             car_control.ready_to_drive = true;
                         }
                         else if(rtd_switch_state == false) {
                             car_control.ready_to_drive = false;
-                            rtd_startup_flag = car_control.brake_on;
+                            rtd_startup_flag = car_control.brake_on && car_control.user_pedal_value == 0;
                         }
                     }
                     else{
-                        if(rtd_switch_state == false && car_control.brake_on) rtd_startup_flag = true;
+                        if(rtd_switch_state == false && car_control.brake_on && car_control.user_pedal_value == 0) rtd_startup_flag = true;
                         else rtd_startup_flag = false;
                     }
                 }
@@ -198,16 +196,18 @@ void handle_can(void)
     
     if(tx_ready.status){
         uint8_t status_data[] =
-            {ass.break_loop_bms_not_responding_to_precharge_message,
+            {
             ass.break_loop_inverter_error,
             ass.break_loop_pedal_invalid,
             ass.break_loop_precharge,
             ass.break_loop_timeout,
             ass.break_loop_ts_deactive,
             0,
-            (comms_active_snapshot.bms<<5)+(comms_active_snapshot.dash<<4)+(
-                    comms_active_snapshot.inv1<<3)+(comms_active_snapshot.inv2<<2)
-                    +(comms_active_snapshot.pb<<1)+comms_active_snapshot.steering};
+            0,
+            (comms_active_snapshot.bms<<5)
+                    +(comms_active_snapshot.dash<<4)+(comms_active_snapshot.inv1<<3)
+                    +(comms_active_snapshot.inv2<<2)+(comms_active_snapshot.pb<<1)
+                    +comms_active_snapshot.steering};
         send_can_message(CAN_ID_TX_STATUS,status_data,8);
     }
 }
@@ -227,7 +227,7 @@ void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle)
 	MCAN_RX_BUFFER* can_temp;
 	can_temp = can_rx_queue_push();
 	
-	MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, can_temp);	
+	MCAN0_MessageReceiveFifo(MCAN_RX_FIFO_0, numberOfMessage, can_temp);
 }
 
 

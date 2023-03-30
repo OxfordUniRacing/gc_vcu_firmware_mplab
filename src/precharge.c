@@ -191,7 +191,7 @@ void handle_precharge(void)
 				PRECHARGE_STATE = PC_READY;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
 				
-				UART1_Write("sa",2);
+				/*UART1_Write("sa",2);
 				//UART1_Write("il200",5);
 				UART1_Write("ot050",5);
 				UART1_Write("wp",2);
@@ -201,7 +201,7 @@ void handle_precharge(void)
 				//UART2_Write("il200",5);
 				UART2_Write("ot050",5);
 				UART2_Write("wp",2);
-				UART2_Write("e",2);
+				UART2_Write("e",2);*/
 				
 			}
 			else

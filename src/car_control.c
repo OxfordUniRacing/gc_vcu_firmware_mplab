@@ -16,12 +16,12 @@ control_t car_control = {0};
 
 int get_inv1_cmd(void){
     if(car_control.user_pedal_value < THR_DEADZONE) return 0;
-    if(car_control.user_pedal_value > 100) return 100;
-    return car_control.user_pedal_value;
+    if(car_control.user_pedal_value > 100) return 100/12;
+    return car_control.user_pedal_value/12;
 }
 
 int get_inv2_cmd(void){
     if(car_control.user_pedal_value < THR_DEADZONE) return 0;
-    if(car_control.user_pedal_value > 100) return 100;
-    return car_control.user_pedal_value;
+    if(car_control.user_pedal_value > 100) return 100/12;
+    return car_control.user_pedal_value/12;
 }

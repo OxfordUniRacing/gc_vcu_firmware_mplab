@@ -63,13 +63,6 @@ void init_timer(void)
 	TC0_CH0_TimerCallbackRegister(timer_callback, (uintptr_t)(NULL));
 	TC0_CH0_TimerStart();
     
-    comms_time.inv1 = current_time_ms();
-    comms_time.inv2 = current_time_ms();
-    comms_time.pb = current_time_ms();
-    comms_time.bms = current_time_ms();
-    comms_time.dash = current_time_ms();
-    comms_time.steering = current_time_ms();
-    
 }
 
 bool has_delay_passed(uint32_t start_time, uint32_t delay)
@@ -126,7 +119,9 @@ void handle_timeouts(void)
                                 !comms_active.bms ||
                                 !comms_active.pb;
     if(has_delay_passed(startup_timer,STARTUP_GRACE_PERIOD) && ass_break_loop_condition){
-        if(!ass.break_loop_timeout) comms_active_snapshot = comms_active;
+        if(!ass.break_loop_timeout){ 
+            comms_active_snapshot = comms_active;
+        }
         ass.break_loop_timeout = true;
     }
 }
