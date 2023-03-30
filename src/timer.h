@@ -14,6 +14,7 @@ typedef struct
 }comms_active_t;
 
 extern comms_active_t comms_active;
+extern comms_active_t comms_active_snapshot;
 
 typedef struct
 {

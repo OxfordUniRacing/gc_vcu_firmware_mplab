@@ -10,6 +10,8 @@
 #include "car_control.h"
 
 //==============================DEFINITIONS
+#define INVERTER_PRECHARGE_CURRENT		0.04
+#define INVERTER_PRECHARGE_RESISTANCE	220
 
 //=============================GLOBAL VAR
 
@@ -21,8 +23,9 @@ ass_t ass = {0};
 
 //============================LOCAL VAR
 
-#define INVERTER_PRECHARGE_CURRENT		0.04
-#define INVERTER_PRECHARGE_RESISTANCE	220
+
+
+static volatile uint32_t precharge_start_time = 0;
 
 //===================================LOCAL FUNC DECLARATIONS
 
@@ -35,7 +38,7 @@ void handle_precharge(void)
     static enum {
 		PC_TS_OFF,						//The TS is not active
         PC_BMS_RELAY,                   //For handling the BMS relay
-		PC_WAIT_FOR_INVERTERP,			//Waiting for communication from the inverters
+		PC_WAIT_FOR_INVERTER,			//Waiting for communication from the inverters
 		PC_WAIT_FOR_FINAL_VOLTAGE,		//Waiting for the inverter voltage to reach 95% of battery voltage
 		PC_READY,						//Ready to for BMS to exit precharge
 		PC_FAILED						//A timeout has occured, set flag for VCU relay to open 
@@ -45,28 +48,25 @@ void handle_precharge(void)
          //driver stopped the car safely, reset the precharge sequence
         if(PRECHARGE_STATE == PC_READY){         
             PRECHARGE_STATE = PC_TS_OFF;
-            car_control.precharge_ready = false;
         }
         //ts button state cycled during precharge process, probably safe to fail it
         else if(PRECHARGE_STATE != PC_TS_OFF){   
             PRECHARGE_STATE = PC_FAILED;
         }
     }
-	
-	static uint32_t precharge_start_time = 0;
     
-    if((bms.voltage < 75 || bms.voltage > 115) && ts_active()){
+    if((bms.voltage < 75 || bms.voltage > 125) && ts_active() && !car_control.precharge_ready){
         PRECHARGE_STATE = PC_FAILED;
     }
 
 	//=======================================================
 	//HANDLE THE TS LATCHING OFF
-	static bool old_ts;
+	/*static bool old_ts;
 	if(!car_control.ignition)
 	{
 		ass.break_loop_ts_deactive = false;
 	}
-	else if(ts_active() == true)	//If the ts is active, keep it active
+	else if(PRECHARGE_STATE != PC_TS_OFF && PRECHARGE_STATE != PC_FAILED )	//If the ts is active, keep it active
 	{
 		ass.break_loop_ts_deactive = false;
 		old_ts = false;
@@ -82,7 +82,7 @@ void handle_precharge(void)
 			SYS_CONSOLE_PRINT("POWER CYCLE TO RESET\n\r");
 			PRECHARGE_STATE = PC_FAILED;
 		}
-	}
+	}*/
 	
 	//=====================================================
 	//Handles the precharge states
@@ -96,8 +96,9 @@ void handle_precharge(void)
 			 */
 			bms.precharge_enable = true;
             ass.break_loop_precharge = false;
+            car_control.precharge_ready = false;
 			
-			if(ts_active())
+			if(car_control.ignition)
 			{
 				PRECHARGE_STATE = PC_BMS_RELAY;
 				precharge_start_time = current_time_ms();
@@ -114,9 +115,10 @@ void handle_precharge(void)
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
 			
-            if(bms.ams_precharge_enabled)
+            //bms.ams_precharge_enabled included for clarity, but ts_active() will always imply bms.ams_precharge_enabled
+            if(ts_active() && bms.ams_precharge_enabled)
 			{
-                PRECHARGE_STATE = PC_WAIT_FOR_INVERTERP;
+                PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
             }
             if(has_delay_passed(precharge_start_time,250))
@@ -126,7 +128,7 @@ void handle_precharge(void)
             }
             break;
             
-        case PC_WAIT_FOR_INVERTERP:
+        case PC_WAIT_FOR_INVERTER:
 			/*
 			 * Once we have entered precharge mode, wait for both inverters to start communicating
 			 * 

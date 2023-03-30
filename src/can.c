@@ -69,15 +69,17 @@ void handle_can(void)
 		switch(buf->id)
 		{
 			case CAN_ID_PEDAL_BOARD:
-                comms_time.pb = current_time_ms();
+                
                 if(buf->data[0]&1)
 				{
 					car_control.user_pedal_value = buf->data[1];
+                    comms_time.pb = current_time_ms();
                     //SYS_CONSOLE_PRINT("%d",car_control.user_pedal_value);
                 }
                 else{
-                    car_control.user_pedal_value = 0;
-                    ass.break_loop_pedal_invalid = true;
+                    //car_control.user_pedal_value = 0;
+                    //ass.break_loop_pedal_invalid = true;
+                    
                 }
 				break;
             
@@ -109,14 +111,23 @@ void handle_can(void)
                 bool rtd_switch_state = (!!buf->data[0]);
                 if(car_control.precharge_ready){
                     if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
-                        car_control.ready_to_drive = rtd_switch_state;
+                        if(rtd_switch_state == true && car_control.brake_on){
+                            car_control.ready_to_drive = true;
+                        }
+                        else if(rtd_switch_state == false) {
+                            car_control.ready_to_drive = false;
+                            rtd_startup_flag = car_control.brake_on;
+                        }
                     }
                     else{
                         if(rtd_switch_state == false && car_control.brake_on) rtd_startup_flag = true;
                         else rtd_startup_flag = false;
                     }
                 }
-                else if(rtd_startup_flag) rtd_startup_flag = false; //reset condition for startup flag
+                else{
+                    rtd_startup_flag = false;
+                    car_control.ready_to_drive = false;
+                }
 				break;
             
             case CAN_ID_IGNITION:
@@ -194,7 +205,9 @@ void handle_can(void)
             ass.break_loop_timeout,
             ass.break_loop_ts_deactive,
             0,
-            comms_active.bms<<5+comms_active.dash<<4+comms_active.inv1<<3+comms_active.inv2<<2+comms_active.pb<<1+comms_active.steering};
+            (comms_active_snapshot.bms<<5)+(comms_active_snapshot.dash<<4)+(
+                    comms_active_snapshot.inv1<<3)+(comms_active_snapshot.inv2<<2)
+                    +(comms_active_snapshot.pb<<1)+comms_active_snapshot.steering};
         send_can_message(CAN_ID_TX_STATUS,status_data,8);
     }
 }

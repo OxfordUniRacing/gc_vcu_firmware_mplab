@@ -50,7 +50,7 @@
 
 UART_RING_BUFFER_OBJECT uart2Obj;
 
-#define UART2_READ_BUFFER_SIZE      128
+#define UART2_READ_BUFFER_SIZE      256
 /* Disable Read, Overrun, Parity and Framing error interrupts */
 #define UART2_RX_INT_DISABLE()      UART2_REGS->UART_IDR = (UART_IDR_RXRDY_Msk | UART_IDR_FRAME_Msk | UART_IDR_PARE_Msk | UART_IDR_OVRE_Msk);
 /* Enable Read, Overrun, Parity and Framing error interrupts */
@@ -58,7 +58,7 @@ UART_RING_BUFFER_OBJECT uart2Obj;
 
 static uint8_t UART2_ReadBuffer[UART2_READ_BUFFER_SIZE];
 
-#define UART2_WRITE_BUFFER_SIZE     128
+#define UART2_WRITE_BUFFER_SIZE     256
 #define UART2_TX_INT_DISABLE()      UART2_REGS->UART_IDR = UART_IDR_TXEMPTY_Msk;
 #define UART2_TX_INT_ENABLE()       UART2_REGS->UART_IER = UART_IER_TXEMPTY_Msk;
 

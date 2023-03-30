@@ -13,6 +13,7 @@
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/timer.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/inverter.c</file>
+            <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/config/sam_e70_xult/peripheral/uart/plib_uart1.c</file>
             <file>file:/C:/Users/ecapp/Documents/GitHub/gc_vcu_firmware_mplab/src/car_control.h</file>
         </group>
     </open-files>

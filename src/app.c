@@ -168,8 +168,8 @@ void APP_Tasks ( void )
 {
     handle_tx_timer();
     handle_can();
-    handle_precharge();
     handle_pio();
+    handle_precharge();
     
     handle_uart();
 	
@@ -180,12 +180,14 @@ void APP_Tasks ( void )
 	static uint32_t send_debug_timer = 0;
     if(current_time_ms() - send_debug_timer > 1000){
         //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
-        //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive);
+        //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive,ass.break_loop_timeout,ass.break_loop_pedal_invalid);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
         //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
         //SYS_CONSOLE_PRINT("Steering sensor value: %d\n\r",car_control.user_steering_value);
         //SYS_CONSOLE_PRINT("RTD: %d\n\r",car_control.ready_to_drive);
         //SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
+        //SYS_CONSOLE_PRINT("bms.ams_precharge_enabled: %d\n\r",bms.ams_precharge_enabled);
+        //SYS_CONSOLE_PRINT("%d\t%d\t%d\t%d\t%d\t%d\n\r",comms_active.bms,comms_active.dash,comms_active.inv1,comms_active.inv2,comms_active.pb,comms_active.steering);
         send_debug_timer = current_time_ms();
     }
     

@@ -12,8 +12,8 @@
 #include "car_control.h"
 
 //====================================DEFINITIONS===============================
-#define TIMEOUT_INV1_ACTIVE	200
-#define TIMEOUT_INV2_ACTIVE	200
+#define TIMEOUT_INV1_ACTIVE	2500
+#define TIMEOUT_INV2_ACTIVE	2500
 #define TIMEOUT_INV1_INACTIVE   2500
 #define TIMEOUT_INV2_INACTIVE   2500
 #define TIMEOUT_PB		200
@@ -28,18 +28,13 @@
 #define TX_PERIOD_DCL   500
 #define TX_PERIOD_STATUS    1000
 
+#define STARTUP_GRACE_PERIOD    2000
+
 //=====================================GLOBAL VARIABLES========================
 
 comms_active_t comms_active = {0};
-comms_time_t comms_time = {
-    
-    .inv1 = -500,
-    .inv2 = -500,
-    .bms = -500,
-    .pb = -500,
-    .dash = -500,
-    .steering = -500
-};
+comms_active_t comms_active_snapshot = {0};
+comms_time_t comms_time = {0};
 tx_ready_t tx_ready = {0};
 tx_time_t tx_time = {
     
@@ -55,6 +50,9 @@ static volatile uint32_t ms_timer_0 = 0;
 static volatile uint32_t ms_timer_1 = 1;
 static volatile bool ms_timer_flipflop;
 
+static volatile bool startup_flag = false;
+static volatile uint32_t startup_timer = 0;
+
 //================================LOCAL FUNCTION DECLARATIONS===================
 void timer_callback(TC_TIMER_STATUS status, uintptr_t context);
 
@@ -64,6 +62,14 @@ void init_timer(void)
 {
 	TC0_CH0_TimerCallbackRegister(timer_callback, (uintptr_t)(NULL));
 	TC0_CH0_TimerStart();
+    
+    comms_time.inv1 = current_time_ms();
+    comms_time.inv2 = current_time_ms();
+    comms_time.pb = current_time_ms();
+    comms_time.bms = current_time_ms();
+    comms_time.dash = current_time_ms();
+    comms_time.steering = current_time_ms();
+    
 }
 
 bool has_delay_passed(uint32_t start_time, uint32_t delay)
@@ -80,7 +86,10 @@ uint32_t current_time_ms(void)
 
 void handle_timeouts(void)
 {
-    
+    if(!startup_flag){
+        startup_flag = true;
+        startup_timer = current_time_ms();
+    }
     
     
 	if(has_delay_passed(comms_time.inv1,TIMEOUT_INV1_ACTIVE) && inv1.active_drive)	{comms_active.inv1 = false; //SYS_CONSOLE_PRINT("inv1 active timeout");
@@ -91,7 +100,7 @@ void handle_timeouts(void)
 	
 	if(has_delay_passed(comms_time.inv2,TIMEOUT_INV2_ACTIVE) && inv2.active_drive)	{comms_active.inv2 = false; //SYS_CONSOLE_PRINT("inv2 active timeout");
     }
-    else if(has_delay_passed(comms_time.inv1,TIMEOUT_INV1_INACTIVE) && !inv1.active_drive)  {comms_active.inv1 = false; //SYS_CONSOLE_PRINT("inv1 inactive timeout");
+    else if(has_delay_passed(comms_time.inv2,TIMEOUT_INV1_INACTIVE) && !inv2.active_drive)  {comms_active.inv2 = false; //SYS_CONSOLE_PRINT("inv1 inactive timeout");
     }
 	else												comms_active.inv2 = true;
 	
@@ -112,10 +121,14 @@ void handle_timeouts(void)
 	else												comms_active.steering = true;
     
     //handle all of the vital timeouts breaking the ass loop
-    ass.break_loop_timeout =    (!comms_active.inv1 && car_control.precharge_ready) || 
+    bool ass_break_loop_condition = (!comms_active.inv1 && car_control.precharge_ready) || 
                                 (!comms_active.inv2 && car_control.precharge_ready) ||
                                 !comms_active.bms ||
                                 !comms_active.pb;
+    if(has_delay_passed(startup_timer,STARTUP_GRACE_PERIOD) && ass_break_loop_condition){
+        if(!ass.break_loop_timeout) comms_active_snapshot = comms_active;
+        ass.break_loop_timeout = true;
+    }
 }
 
 void handle_tx_timer(void){

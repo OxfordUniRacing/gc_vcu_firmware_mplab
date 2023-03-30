@@ -30,6 +30,8 @@ static volatile bool rtd_sounded = false;
 static volatile uint32_t rtd_sound_timer = 0;
 static volatile bool ass_latched_open = false;
 static volatile uint32_t ass_timer = 0;
+static volatile bool ignition_local = false;
+static volatile uint32_t ignition_timer = 0;
 
 //===================LOCAL FUNCTION DECLARATIONS================================
 
@@ -50,16 +52,18 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
-    car_control.brake_on = car_control.brake_pressure > 1;
+    car_control.brake_on = car_control.brake_pressure > 3;
     
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
 						!ass.break_loop_inverter_error &&
-                        !ass.break_loop_bms_not_responding_to_precharge_message &&
+                        //!ass.break_loop_bms_not_responding_to_precharge_message &&
                         !ass.break_loop_timeout &&
                         !ass.break_loop_pedal_invalid;
     
-    if(!ass_close){ //a condition to break the loop has been met
+    //if(ass_latched_open) SYS_CONSOLE_PRINT("%d",ass_latched_open);
+    if(!ass_close || ass_latched_open){ //a condition to break the loop has been met
+        //SYS_CONSOLE_PRINT("ASS_CLOSE: %d\n\rASS_LATCHED_OPEN: %d\n\r",ass_close,ass_latched_open);
         if(ass_latched_open){ //the timer to break the loop has started
             uint8_t zero[] = {'0'}; //send 0s to the motors to try to get them to stop within 300ms
             UART1_Write(zero,1);
@@ -77,13 +81,27 @@ void handle_pio(void){
         }
     }
     else{ //the ass loop can safely remain closed, provided the driver has started the car
-        if(car_control.ignition)    PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);
+        if(car_control.ignition && (bms.ams_precharge_enabled || car_control.precharge_ready)){
+            PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);
+            //SYS_CONSOLE_PRINT("ASS_CLOSED");
+            if(!ignition_local){
+                ignition_local = true;
+                ignition_timer = current_time_ms();
+            }
+            else if(!ts_active() && has_delay_passed(ignition_timer,TS_ACTIVE_BOUNCE_TIME)){
+                ass.break_loop_ts_deactive = true;
+                bms.ams_precharge_enabled = true;
+            }
+        }
         //the below is to keep the driver from somehow deactivating the car with the ignition switch while current is flowing
         //if the driver actually wants to do that they should use the e-stop
-        else if(bms.current < 1)    PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_OPEN);
+        else if(bms.current < 1){ 
+            PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_OPEN);
+            ignition_local = false;
+        }
     }
     
-    if(ts_active_local != TS_INPUT_Get()){
+    /*if(ts_active_local != TS_INPUT_Get()){
         if(debounce_countdown_started){
             if(has_delay_passed(debounce_timer,TS_ACTIVE_BOUNCE_TIME)){
                 ts_active_local = TS_INPUT_Get();
@@ -95,7 +113,7 @@ void handle_pio(void){
             debounce_countdown_started = true;
             debounce_timer = current_time_ms();
         }
-    }
+    }*/
     
     if(car_control.ready_to_drive && !rtd_sounded){
         PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
@@ -113,5 +131,6 @@ void handle_pio(void){
 }
 
 bool ts_active(void){
-    return ts_active_local;
+    //return ts_active_local;
+    return TS_INPUT_Get();
 }
