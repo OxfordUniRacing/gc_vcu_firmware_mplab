@@ -22,6 +22,10 @@
 #define CAN_ID_IGNITION     0x500
 #define CAN_ID_BMS_DLC		0x6B1
 #define CAN_ID_STEERING_SENSOR  0x101
+#define CAN_ID_SBG_IMU_DELTA_ANGLE 0x124
+#define CAN_ID_SBG_IMU_DELTA_VEL    0x123
+#define CAN_ID_SBG_EKF_VEL_BODY 0x139
+#define CAN_ID_SBG_EKF_VEL_NED_ACC  0x138
 
 //CAN send Ids
 #define CAN_ID_TX_TO_BMS    0x008
@@ -45,6 +49,11 @@ uint8_t can_rx_queue_len = 0;
 
 
 static volatile bool rtd_startup_flag = false;
+
+union {
+    int16_t i;
+    uint8_t bytes[2];
+} int16_bytes_converter;
 
 //===================================LOCAL FUNC DECLARATIONS
 
@@ -145,6 +154,34 @@ void handle_can(void)
 			//case CAN_ID_AUX_STATES:
 				//comms_time.bms = current_time_ms();
                // break;
+                
+            case CAN_ID_SBG_IMU_DELTA_ANGLE:
+                int16_bytes_converter.bytes[0] = buf->data[4];
+                int16_bytes_converter.bytes[1] = buf->data[5];
+                car_control.yaw_rate = (int16_bytes_converter.i)*0.001f;
+                break;
+                
+            case CAN_ID_SBG_IMU_DELTA_VEL:
+                int16_bytes_converter.bytes[0] = buf->data[0];
+                int16_bytes_converter.bytes[1] = buf->data[1];
+                car_control.a_x = (int16_bytes_converter.i)*0.01f;
+                break;
+            
+            case CAN_ID_SBG_EKF_VEL_BODY:
+                int16_bytes_converter.bytes[0] = buf->data[0];
+                int16_bytes_converter.bytes[1] = buf->data[1];
+                car_control.v_x = (int16_bytes_converter.i)*0.01f;
+                break;
+                
+            case CAN_ID_SBG_EKF_VEL_NED_ACC:
+                int16_bytes_converter.bytes[0] = buf->data[0];
+                int16_bytes_converter.bytes[1] = buf->data[1];
+                float v_n_acc = int16_bytes_converter.i*0.01f;
+                int16_bytes_converter.bytes[0] = buf->data[2];
+                int16_bytes_converter.bytes[1] = buf->data[3];
+                float v_e_acc = int16_bytes_converter.i*0.01f;
+                car_control.v_acc = (v_n_acc+v_e_acc)/2;
+                break;
 		}
 		
 		
@@ -202,7 +239,7 @@ void handle_can(void)
             ass.break_loop_precharge,
             ass.break_loop_timeout,
             ass.break_loop_ts_deactive,
-            0,
+            car_control.ins_error_code,
             0,
             (comms_active_snapshot.bms<<5)
                     +(comms_active_snapshot.dash<<4)+(comms_active_snapshot.inv1<<3)

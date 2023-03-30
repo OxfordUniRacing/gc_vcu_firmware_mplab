@@ -17,7 +17,7 @@ inv_t inv2;
 
 //=========================GLOBAL FUNCTIONS
 
-void handle_inactive_inverters(void)
+void handle_inverters(void)
 {   
     if(car_control.ready_to_drive){ 
         if(!inv1.active_drive && get_inv1_cmd() > 0){
@@ -40,6 +40,13 @@ void handle_inactive_inverters(void)
             inv2.active_drive = true;
         }
 	}
+    
+    else if(inv1.active_drive || inv2.active_drive){
+        UART1_Write("0",1);
+        UART2_Write("0",1);
+        inv1.active_drive = false;
+        inv2.active_drive = false;
+    }
 }
 
 //returns 0 if successful, -1 if we've read past the buffer, <-1 if there's something wrong with the message (i.e. it doesn't find a parameter), and a positive int if there's an error code 

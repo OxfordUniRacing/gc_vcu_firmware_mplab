@@ -25,6 +25,6 @@ extern inv_t inv2;
 int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ); 
 float get_inv_lowest_voltage(void);
 int get_thr_cmd_str(int desired_thr, char output[], size_t size);
-void handle_inactive_inverters(void);
+void handle_inverters(void);
 
 #endif

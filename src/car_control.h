@@ -16,12 +16,19 @@ typedef struct
 	bool ready_to_drive;
     bool precharge_ready;
     bool ignition;
+    uint8_t ins_error_code;
 	
 	//User values
 	uint8_t user_pedal_value;
     uint16_t user_steering_value;
     bool brake_on;
     float brake_pressure;
+    
+    //car state data
+    float yaw_rate;
+    float v_x;
+    float v_acc;
+    float a_x;
 }control_t;
 
 extern control_t car_control;
