@@ -17,14 +17,14 @@ control_t car_control = {0};
 
 int get_inv1_cmd(void){
     if(car_control.user_pedal_value < THR_DEADZONE) return 0;
-    if(car_control.user_pedal_value > 100) return 100/12;
-    return car_control.user_pedal_value/12;
+    if(car_control.user_pedal_value > 100) return 100/6;
+    return car_control.user_pedal_value/6;
 }
 
 int get_inv2_cmd(void){
     if(car_control.user_pedal_value < THR_DEADZONE) return 0;
-    if(car_control.user_pedal_value > 100) return 100/12;
-    return car_control.user_pedal_value/12;
+    if(car_control.user_pedal_value > 100) return 100/6;
+    return car_control.user_pedal_value/6;
 }
 
 void handle_ins(void){
@@ -38,13 +38,13 @@ void handle_ins(void){
         car_control.ins_error_code = 2;
     }
     
-    if(car_control.v_x > 2.2 - 2*car_control.v_acc && car_control.v_acc < 0.1){
-        ass.break_loop_ins_detect;
+    if(car_control.v_x > 5.3 && car_control.v_acc < 0.1){
+        ass.break_loop_ins_detect = true;
         car_control.ins_error_code = 3;
     }
     
     if(car_control.a_x > 4.9){
-        ass.break_loop_ins_detect;
+        ass.break_loop_ins_detect = true;
         car_control.ins_error_code = 4;
     }
 }

@@ -171,15 +171,15 @@ void handle_precharge(void)
 			 * 
 			 * After this, the car is ready to start
 			 */
-            /*if(tx_ready.dcl_inv1){
-                UART1_Write("sa",2);
-                UART1_Write("ov120",5);
+            if(tx_ready.dcl_inv1){
+                /*UART1_Write("sa",2);
+                UART1_Write("ri200",5);
                 UART1_Write("wp",2);
                 
                 UART2_Write("sa",2);
-                UART2_Write("ov120",5);
-                UART2_Write("wp",2);
-            }*/
+                UART2_Write("ri200",5);
+                UART2_Write("wp",2);*/
+            }
             
 			
 			bms.precharge_enable = true;
