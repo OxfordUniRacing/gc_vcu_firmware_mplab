@@ -13,6 +13,11 @@
 #define INVERTER_PRECHARGE_CURRENT		0.04
 #define INVERTER_PRECHARGE_RESISTANCE	220
 
+#define INVERTER_POSITIVE_SLEW_RATE_COMMAND     "ri200"
+#define INVERTER_NEGATIVE_SLEW_RATE_COMMAND     "rd400"
+#define INVERTER_RESPONSE_TIME_COMMAND          "ot050"
+#define INVERTER_CURRENT_LIMIT_COMMAND          "il"    //we don't specify the number here, we instead check it on startup from the battery
+
 //=============================GLOBAL VAR
 
 bms_t bms = {
@@ -171,15 +176,6 @@ void handle_precharge(void)
 			 * 
 			 * After this, the car is ready to start
 			 */
-            if(tx_ready.dcl_inv1){
-                /*UART1_Write("sa",2);
-                UART1_Write("ri200",5);
-                UART1_Write("wp",2);
-                
-                UART2_Write("sa",2);
-                UART2_Write("ri200",5);
-                UART2_Write("wp",2);*/
-            }
             
 			
 			bms.precharge_enable = true;
@@ -191,17 +187,29 @@ void handle_precharge(void)
 				PRECHARGE_STATE = PC_READY;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
 				
-				/*UART1_Write("sa",2);
-				//UART1_Write("il200",5);
-				UART1_Write("ot050",5);
+                char input_limit[5];
+                snprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+                
+				UART1_Write("sa",2);
+                UART2_Write("sa",2);
+                pause(100);
+				UART1_Write(input_limit,5);
+                UART2_Write(input_limit,5);
+                pause(100);
+				UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                pause(100);
+                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                pause(100);
+                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                pause(100);
 				UART1_Write("wp",2);
-				UART1_Write("e",2);
-				
-				UART2_Write("sa",2);
-				//UART2_Write("il200",5);
-				UART2_Write("ot050",5);
-				UART2_Write("wp",2);
-				UART2_Write("e",2);*/
+                UART2_Write("wp",2);
+                pause(100);
+				UART1_Write("e",1);
+				UART2_Write("e",1);
 				
 			}
 			else

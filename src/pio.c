@@ -89,7 +89,7 @@ void handle_pio(void){
             }
             else if(!ts_active() && has_delay_passed(ignition_timer,TS_ACTIVE_BOUNCE_TIME)){
                 ass.break_loop_ts_deactive = true;
-                bms.ams_precharge_enabled = true;
+                bms.precharge_enable = true;
             }
         }
         
