@@ -84,11 +84,6 @@ void handle_can(void)
                     comms_time.pb = current_time_ms();
                     //SYS_CONSOLE_PRINT("%d",car_control.user_pedal_value);
                 }
-                else{
-                    //car_control.user_pedal_value = 0;
-                    //ass.break_loop_pedal_invalid = true;
-                    
-                }
 				break;
             
             case CAN_ID_STEERING_SENSOR:
@@ -242,11 +237,11 @@ void handle_can(void)
         uint8_t status_data[] =
             {
             ass.break_loop_inverter_error,
-            ass.break_loop_pedal_invalid,
             ass.break_loop_precharge,
             ass.break_loop_timeout,
             ass.break_loop_ts_deactive,
             car_control.ins_error_code,
+            0,
             0,
             (comms_active_snapshot.bms<<5)
                     +(comms_active_snapshot.dash<<4)+(comms_active_snapshot.inv1<<3)

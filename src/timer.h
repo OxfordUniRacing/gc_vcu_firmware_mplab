@@ -35,8 +35,6 @@ typedef struct
     bool inv2;
     bool logger;
 	bool bms;
-    bool dcl_inv1;
-    bool dcl_inv2;
     bool status;
 	
 }tx_ready_t;
@@ -49,8 +47,6 @@ typedef struct
     uint32_t inv2;
     uint32_t logger;
 	uint32_t bms;
-    uint32_t dcl_inv1;
-    uint32_t dcl_inv2;
     uint32_t status;
 	
 }tx_time_t;
@@ -59,6 +55,7 @@ extern tx_time_t tx_time;
 
 uint32_t current_time_ms(void);
 bool has_delay_passed(uint32_t start_time, uint32_t delay);
+void pause(uint32_t delay_ms);
 void init_timer(void);
 void handle_timeouts(void);
 void handle_tx_timer(void);

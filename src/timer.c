@@ -25,7 +25,6 @@
 #define TX_PERIOD_INV2  50
 #define TX_PERIOD_BMS   100
 #define TX_PERIOD_LOGGER    100
-#define TX_PERIOD_DCL   500
 #define TX_PERIOD_STATUS    1000
 
 #define STARTUP_GRACE_PERIOD    2000
@@ -69,6 +68,11 @@ bool has_delay_passed(uint32_t start_time, uint32_t delay)
 {
 	if ((current_time_ms() - start_time) > delay) return true;
 	else return false;
+}
+
+void pause(uint32_t delay_ms){
+    uint32_t start_time = current_time_ms();
+    while(!has_delay_passed(start_time,delay_ms));
 }
 
 uint32_t current_time_ms(void)
@@ -143,12 +147,7 @@ void handle_tx_timer(void){
 	if(has_delay_passed(tx_time.bms,TX_PERIOD_BMS))	{tx_ready.bms = true; //SYS_CONSOLE_PRINT("bms tx");
     }
 	else												tx_ready.bms = false;
-    if(has_delay_passed(tx_time.dcl_inv1,TX_PERIOD_DCL))	{tx_ready.dcl_inv1 = true; //SYS_CONSOLE_PRINT("dcl_inv1 tx");
-    }
-	else												tx_ready.dcl_inv1 = false;
-    if(has_delay_passed(tx_time.dcl_inv2,TX_PERIOD_DCL))	{tx_ready.dcl_inv2 = true; //SYS_CONSOLE_PRINT("dcl_inv1 tx");
-    }
-	else												tx_ready.dcl_inv2 = false;
+    
     if(has_delay_passed(tx_time.status,TX_PERIOD_STATUS))	{tx_ready.status = true; //SYS_CONSOLE_PRINT("status tx");
     }
 	else												tx_ready.status = false;

@@ -23,7 +23,7 @@
 //===================GLOBAL VARIABLES===========================================
 
 //===================LOCAL VARIABLES============================================
-static volatile bool ts_active_local = false;
+//static volatile bool ts_active_local = false;
 static volatile bool debounce_countdown_started = false;
 static volatile uint32_t debounce_timer = -500;
 static volatile bool rtd_sounded = false;
@@ -58,8 +58,7 @@ void handle_pio(void){
 						!ass.break_loop_ts_deactive &&
 						!ass.break_loop_inverter_error &&
                         !ass.break_loop_ins_detect &&
-                        !ass.break_loop_timeout &&
-                        !ass.break_loop_pedal_invalid;
+                        !ass.break_loop_timeout;
     
     //if(ass_latched_open) SYS_CONSOLE_PRINT("%d",ass_latched_open);
     if(!ass_close || ass_latched_open){ //a condition to break the loop has been met
