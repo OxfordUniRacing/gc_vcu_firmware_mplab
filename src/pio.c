@@ -83,14 +83,14 @@ void handle_pio(void){
         if(car_control.ignition && (bms.ams_precharge_enabled || car_control.precharge_ready)){
             PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);
             //SYS_CONSOLE_PRINT("ASS_CLOSED");
-            if(!ignition_local){
+            /*if(!ignition_local){
                 ignition_local = true;
                 ignition_timer = current_time_ms();
             }
             else if(!ts_active() && has_delay_passed(ignition_timer,TS_ACTIVE_BOUNCE_TIME)){
                 ass.break_loop_ts_deactive = true;
-                bms.ams_precharge_enabled = true;
-            }
+                bms.precharge_enable = true;
+            }*/
         }
         
         else { 

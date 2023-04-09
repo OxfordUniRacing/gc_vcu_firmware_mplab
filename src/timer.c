@@ -120,7 +120,7 @@ void handle_timeouts(void)
     //handle all of the vital timeouts breaking the ass loop
     bool ass_break_loop_condition = (!comms_active.inv1 && car_control.precharge_ready) || 
                                 (!comms_active.inv2 && car_control.precharge_ready) ||
-                                !comms_active.bms ||
+                                //!comms_active.bms ||
                                 !comms_active.pb;
     if(has_delay_passed(startup_timer,STARTUP_GRACE_PERIOD) && ass_break_loop_condition){
         if(!ass.break_loop_timeout){ 

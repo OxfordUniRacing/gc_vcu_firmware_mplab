@@ -58,9 +58,6 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
 	// Therefore, only do the rest of the code (pare into the struct) when st_c = 0;
     // also leaves the flag as 1 if the inverters are in analog mode
 	
-	
-	
-	
 	int st_c = 1;
     
     char s_cmd[3] = "s0"; //command to set the inverters to serial and stop the motors just to be safe
@@ -78,16 +75,17 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
             break;
     }
     
-    if(msg_start_case == 6){ //if we've made it all the way to the end of the loop, we have a bad message
-        return -3;
-    }
-    
 	// Check for garbage
 	switch(msg_start_case)
 	{
 		//*
 		case 1: // garbled start up message
 			st_c = 1;
+            char *id_loc = strstr(msg,"ID =");
+            if(id_loc != NULL){
+                inv->id = strtol(id_loc+sizeof("ID =")-1,NULL,10);
+                return 0;
+            }
 			break;
 		// T=
 		case 2: // big letter active - we want to change but maybe we cant @@ as a future safety thing, may want to turn off inverter, send lowercase s and then turn on
@@ -112,8 +110,8 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
         case 0:
             return strtol(msg_start+sizeof("Errors= 0x"),NULL,16);
 		default:
-            SYS_CONSOLE_PRINT("msg_start_case: %d\n\r",msg_start_case);
-			return -2; // not any of those values so return (bad message!!!) 
+            return -3;
+            //return 0;
 	}
 
 	

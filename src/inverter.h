@@ -16,6 +16,7 @@ typedef struct {
 	int power_stage_temp;
 	int motor_temp; // this is the one we want for dash display (to be sent across can)
     bool active_drive; //the inverter sends messages at a higher rate when they are in active drive - this is important for our control strategy
+    long id;
 	
 }inv_t;
 

@@ -23,15 +23,17 @@ static volatile bool uart2_ready;
 static volatile bool uart1_rdNotificationEnabled = false;
 static volatile bool uart2_rdNotificationEnabled = false;
 
-static volatile char inv1_rx_buf[128];
-static volatile uint8_t inv1_rx_ptr = 0;
-static volatile char inv2_rx_buf[128];
-static volatile uint8_t inv2_rx_ptr = 0;
+static volatile char inv1_rx_buf[1199];
+static volatile uint16_t inv1_rx_ptr = 0;
+static volatile char inv2_rx_buf[1199];
+static volatile uint16_t inv2_rx_ptr = 0;
 
 //================================LOCAL FUNCTION DECLARATIONS===================
-static volatile void uart1_rx_char(void);
+static void uart1_rx_char(void);
+static void uart1_rx_char_startup(void);
 static void uart1_rx_interrupt_handler(UART_EVENT event, uintptr_t context);
 static void uart2_rx_char(void);
+static void uart2_rx_char_startup(void);
 static void uart2_rx_interrupt_handler(UART_EVENT event, uintptr_t context);
 //=================================GLOBAL FUNCTIONS=============================
 
@@ -74,9 +76,15 @@ void handle_uart(void)
      let interrupts take care of things for us. Note that we only enable or
      disable interrupts once per state change - spamming changing this flag
      causes bad behavior.*/
-    if(!car_control.ready_to_drive){
-        uart1_rx_char();
-        uart2_rx_char();
+    if(!car_control.precharge_ready){
+        if(!comms_active.inv1)
+            uart1_rx_char_startup();
+        else
+            uart1_rx_char();
+        if(!comms_active.inv2)
+            uart2_rx_char_startup();
+        else
+            uart2_rx_char();
         if(uart1_rdNotificationEnabled) {
             UART1_ReadNotificationEnable(false,false);
             uart1_rdNotificationEnabled = false;
@@ -164,11 +172,30 @@ void handle_uart(void)
 
 
 //=================================LOCAL FUNCTIONS==============================
-
-
-static volatile void uart1_rx_char(void)
-{
+static void uart1_rx_char_startup(void){
+    uint8_t temp_char;
     
+    //Read through all characters in buffers from the uart and add them to a new buffer
+    while(UART1_Read(&temp_char, 1))
+    {
+        if(inv1_rx_ptr == sizeof(inv1_rx_buf)) inv1_rx_ptr = 0;
+        //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
+        //SYS_CONSOLE_PRINT("%c",temp_char);
+        inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
+        if(inv1_rx_ptr < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
+		if(inv1_rx_ptr == sizeof(inv1_rx_buf)){ 
+            uart1_ready = true;
+        }
+        
+        /*if(inv1_rx_ptr%695 == 0) // the end termination character is newline not /0 like we thought hahaha im in pain
+		{
+			uart1_ready = true;
+			inv1_rx_buf[inv1_rx_ptr] = '\0';
+		}*/
+    }
+}
+
+static void uart1_rx_char(void){
     uint8_t temp_char;
     
     //Read through all characters in buffers from the uart and add them to a new buffer
@@ -179,13 +206,37 @@ static volatile void uart1_rx_char(void)
         inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr + 1 < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		else inv1_rx_ptr = 0;
-		
-        //If we recieve '\n', then the main line code is ready to read the buffers. This only works because WE don't send \n
-		if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
+        
+        if(temp_char == '\n') // the end termination character is newline not /0 like we thought hahaha im in pain
 		{
 			uart1_ready = true;
 			inv1_rx_buf[inv1_rx_ptr] = '\0';
 		}
+    }
+}
+
+static void uart2_rx_char_startup(void)
+{
+    
+    uint8_t temp_char;
+    
+    //Read through all characters in buffers from the uart and add them to a new buffer
+    while(UART2_Read(&temp_char, 1))
+    {
+        if(inv2_rx_ptr == sizeof(inv2_rx_buf)) inv2_rx_ptr = 0;
+        //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
+        //SYS_CONSOLE_PRINT("%c",temp_char);
+        inv2_rx_buf[inv2_rx_ptr] = temp_char;                       //Set next location to the inputted character
+        if(inv2_rx_ptr < sizeof(inv2_rx_buf)) inv2_rx_ptr++;    //Increment the pointer, overlapping if overflows
+		if(inv2_rx_ptr == sizeof(inv2_rx_buf)){ 
+            uart2_ready = true;
+        }
+        //If we recieve '\n', then the main line code is ready to read the buffers. This only works because WE don't send \n
+		/*if(inv2_rx_ptr%700 == 0) // the end termination character is newline not /0 like we thought hahaha im in pain
+		{
+			uart2_ready = true;
+			inv2_rx_buf[inv2_rx_ptr] = '\0';
+		}*/
     }
 }
 
