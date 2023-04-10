@@ -245,99 +245,81 @@ void handle_precharge(void)
 
 static bool handle_inverter_parameters(void){
     static enum{
-        NOT_STARTED,
         START_COMMAND,
-        START_COMMAND_WAIT,
         POSITIVE_SLEW_RATE_COMMAND,
-        POSITIVE_SLEW_RATE_COMMAND_WAIT,
         NEGATIVE_SLEW_RATE_COMMAND,
-        NEGATIVE_SLEW_RATE_COMMAND_WAIT,
         RESPONSE_TIME_COMMAND,
-        RESPONSE_TIME_COMMAND_WAIT,
         CURRENT_LIMIT_COMMAND,
-        CURRENT_LIMIT_COMMAND_WAIT,
+        SAVE_COMMAND,
         END_COMMAND        
-    } INVERTER_COMMAND_STATE = NOT_STARTED;
+    } INVERTER_COMMAND_STATE = START_COMMAND;
     
     char input_limit[5];
     sprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
             
     
     switch(INVERTER_COMMAND_STATE){
-        case NOT_STARTED:
-            parameter_write_start_time = current_time_ms();
-            INVERTER_COMMAND_STATE = START_COMMAND;
-            return false;
-            
         case START_COMMAND:
             UART1_Write("sa",2);
             UART2_Write("sa",2);
-            INVERTER_COMMAND_STATE = START_COMMAND_WAIT;
-            return false;
-            
-        case START_COMMAND_WAIT:
-            if(has_delay_passed(parameter_write_start_time,100)){
-                parameter_write_start_time = current_time_ms();
-                INVERTER_COMMAND_STATE = POSITIVE_SLEW_RATE_COMMAND;
-            }
-            return false;
+            parameter_write_start_time = current_time_ms();
+            INVERTER_COMMAND_STATE = POSITIVE_SLEW_RATE_COMMAND;
+            break;
             
         case POSITIVE_SLEW_RATE_COMMAND:
-            UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
-            UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
-            INVERTER_COMMAND_STATE = POSITIVE_SLEW_RATE_COMMAND_WAIT;
-            return false;
-            
-        case POSITIVE_SLEW_RATE_COMMAND_WAIT:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
                 INVERTER_COMMAND_STATE = NEGATIVE_SLEW_RATE_COMMAND;
             }
-            return false;
-        
-        case NEGATIVE_SLEW_RATE_COMMAND:
-            UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
-            UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
-            INVERTER_COMMAND_STATE = NEGATIVE_SLEW_RATE_COMMAND_WAIT;
-            return false;
+            break;
             
-        case NEGATIVE_SLEW_RATE_COMMAND_WAIT:
+        case NEGATIVE_SLEW_RATE_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
                 INVERTER_COMMAND_STATE = RESPONSE_TIME_COMMAND;
             }
-            return false;
-            
+            break;
+                        
         case RESPONSE_TIME_COMMAND:
-            UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
-            UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
-            INVERTER_COMMAND_STATE = RESPONSE_TIME_COMMAND_WAIT;
-            return false;
-            
-        case RESPONSE_TIME_COMMAND_WAIT:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
                 INVERTER_COMMAND_STATE = CURRENT_LIMIT_COMMAND;
             }
-            return false;
+            break;
             
         case CURRENT_LIMIT_COMMAND:
-            UART1_Write(input_limit,5);
-            UART2_Write(input_limit,5);
-            INVERTER_COMMAND_STATE = CURRENT_LIMIT_COMMAND_WAIT;
-            return false;
+            if(has_delay_passed(parameter_write_start_time,100)){    
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(input_limit,5);
+                UART2_Write(input_limit,5);
+                INVERTER_COMMAND_STATE = SAVE_COMMAND;
+            }
+            break;
             
-        case CURRENT_LIMIT_COMMAND_WAIT:
+        case SAVE_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
+                UART1_Write("wp",2);
+                UART2_Write("wp",2);
                 INVERTER_COMMAND_STATE = END_COMMAND;
             }
-            return false;
+            break;
             
         case END_COMMAND:
-            UART1_Write("e",1);
-            UART2_Write("e",1);
-            INVERTER_COMMAND_STATE = NOT_STARTED;
-            return true;
+            if(has_delay_passed(parameter_write_start_time,30)){    
+                UART1_Write("s0",2);
+                UART2_Write("s0",2);
+                INVERTER_COMMAND_STATE = START_COMMAND;
+                return true;
+            }
+            break;
     }
+    
+    return false;
 }
