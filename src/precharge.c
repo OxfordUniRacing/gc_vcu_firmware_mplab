@@ -124,7 +124,7 @@ void handle_precharge(void)
 			ass.break_loop_precharge = false;
 			
             //bms.ams_precharge_enabled included for clarity, but ts_active() will always imply bms.ams_precharge_enabled
-            if(/*ts_active() && bms.ams_precharge_enabled*/ has_delay_passed(precharge_start_time,50))
+            if(ts_active() && bms.ams_precharge_enabled)
 			{
                 PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
@@ -184,41 +184,16 @@ void handle_precharge(void)
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
 			
-			if(		/*get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
-					> bms.voltage * 0.95 30*/ has_delay_passed(precharge_start_time,5000))
+			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
+					> bms.voltage * 0.95)
 			{
 				PRECHARGE_STATE = PC_WRITE_INVERTER_PARAMETERS;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
-				
-                /*char input_limit[5];
-                snprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
-                
-				UART1_Write("sa",2);
-                UART2_Write("sa",2);
-                pause(100);
-				UART1_Write(input_limit,5);
-                UART2_Write(input_limit,5);
-                pause(100);
-				UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
-                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
-                pause(100);
-                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
-                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
-                pause(100);
-                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
-                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
-                pause(100);
-				UART1_Write("wp",2);
-                UART2_Write("wp",2);
-                pause(100);
-				UART1_Write("e",1);
-				UART2_Write("e",1);*/
-				
 			}
 			else
 			{
 				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
-				if(has_delay_passed(precharge_start_time, 6000))
+				if(has_delay_passed(precharge_start_time, 5000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");
