@@ -13,6 +13,11 @@
 #define INVERTER_PRECHARGE_CURRENT		0.04
 #define INVERTER_PRECHARGE_RESISTANCE	220
 
+#define INVERTER_POSITIVE_SLEW_RATE_COMMAND     "ri200"
+#define INVERTER_NEGATIVE_SLEW_RATE_COMMAND     "rd400"
+#define INVERTER_RESPONSE_TIME_COMMAND          "ot050"
+#define INVERTER_CURRENT_LIMIT_COMMAND          "il"    //we don't specify the number here, we instead check it on startup from the battery
+
 //=============================GLOBAL VAR
 
 bms_t bms = {
@@ -26,8 +31,10 @@ ass_t ass = {0};
 
 
 static volatile uint32_t precharge_start_time = 0;
+static volatile uint32_t parameter_write_start_time = 0;
 
 //===================================LOCAL FUNC DECLARATIONS
+static bool handle_inverter_parameters(void);
 
 //===========================================GLOBAL FUNC
 
@@ -40,6 +47,7 @@ void handle_precharge(void)
         PC_BMS_RELAY,                   //For handling the BMS relay
 		PC_WAIT_FOR_INVERTER,			//Waiting for communication from the inverters
 		PC_WAIT_FOR_FINAL_VOLTAGE,		//Waiting for the inverter voltage to reach 95% of battery voltage
+        PC_WRITE_INVERTER_PARAMETERS,
 		PC_READY,						//Ready to for BMS to exit precharge
 		PC_FAILED						//A timeout has occured, set flag for VCU relay to open 
 	} PRECHARGE_STATE = PC_TS_OFF;		//Different possible precharge states
@@ -116,7 +124,7 @@ void handle_precharge(void)
 			ass.break_loop_precharge = false;
 			
             //bms.ams_precharge_enabled included for clarity, but ts_active() will always imply bms.ams_precharge_enabled
-            if(ts_active() && bms.ams_precharge_enabled)
+            if(/*ts_active() && bms.ams_precharge_enabled*/ has_delay_passed(precharge_start_time,50))
 			{
                 PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
@@ -151,7 +159,7 @@ void handle_precharge(void)
 				//@@ Needs to calculate total delay
 				//t = RC ln ( Vbat / (Vbat - 30*1.2) ) * 1000
                 
-				if(has_delay_passed(precharge_start_time, 2000))
+				if(has_delay_passed(precharge_start_time, 3500))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_FAIL\n\r");
@@ -171,43 +179,46 @@ void handle_precharge(void)
 			 * 
 			 * After this, the car is ready to start
 			 */
-            /*if(tx_ready.dcl_inv1){
-                UART1_Write("sa",2);
-                UART1_Write("ri200",5);
-                UART1_Write("wp",2);
-                
-                UART2_Write("sa",2);
-                UART2_Write("ri200",5);
-                UART2_Write("wp",2);
-            }*/
             
 			
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
 			
-			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
-					> bms.voltage * 0.95)
+			if(		/*get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
+					> bms.voltage * 0.95 30*/ has_delay_passed(precharge_start_time,5000))
 			{
-				PRECHARGE_STATE = PC_READY;
+				PRECHARGE_STATE = PC_WRITE_INVERTER_PARAMETERS;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
 				
-				/*UART1_Write("sa",2);
-				//UART1_Write("il200",5);
-				UART1_Write("ot050",5);
+                /*char input_limit[5];
+                snprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+                
+				UART1_Write("sa",2);
+                UART2_Write("sa",2);
+                pause(100);
+				UART1_Write(input_limit,5);
+                UART2_Write(input_limit,5);
+                pause(100);
+				UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                pause(100);
+                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                pause(100);
+                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                pause(100);
 				UART1_Write("wp",2);
-				UART1_Write("e",2);
-				
-				UART2_Write("sa",2);
-				//UART2_Write("il200",5);
-				UART2_Write("ot050",5);
-				UART2_Write("wp",2);
-				UART2_Write("e",2);*/
+                UART2_Write("wp",2);
+                pause(100);
+				UART1_Write("e",1);
+				UART2_Write("e",1);*/
 				
 			}
 			else
 			{
 				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
-				if(has_delay_passed(precharge_start_time, 5000))
+				if(has_delay_passed(precharge_start_time, 6000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");
@@ -215,6 +226,11 @@ void handle_precharge(void)
 			}
 			
 			break;
+            
+        case PC_WRITE_INVERTER_PARAMETERS:
+            if(handle_inverter_parameters()) PRECHARGE_STATE = PC_READY;
+            break;
+            
 		case PC_READY:
 			bms.precharge_enable = false;
 			ass.break_loop_precharge = false;
@@ -225,4 +241,85 @@ void handle_precharge(void)
 			ass.break_loop_precharge = true;
 			break;
 	}
+}
+
+static bool handle_inverter_parameters(void){
+    static enum{
+        START_COMMAND,
+        POSITIVE_SLEW_RATE_COMMAND,
+        NEGATIVE_SLEW_RATE_COMMAND,
+        RESPONSE_TIME_COMMAND,
+        CURRENT_LIMIT_COMMAND,
+        SAVE_COMMAND,
+        END_COMMAND        
+    } INVERTER_COMMAND_STATE = START_COMMAND;
+    
+    char input_limit[5];
+    sprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+            
+    
+    switch(INVERTER_COMMAND_STATE){
+        case START_COMMAND:
+            UART1_Write("sa",2);
+            UART2_Write("sa",2);
+            parameter_write_start_time = current_time_ms();
+            INVERTER_COMMAND_STATE = POSITIVE_SLEW_RATE_COMMAND;
+            break;
+            
+        case POSITIVE_SLEW_RATE_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                INVERTER_COMMAND_STATE = NEGATIVE_SLEW_RATE_COMMAND;
+            }
+            break;
+            
+        case NEGATIVE_SLEW_RATE_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                INVERTER_COMMAND_STATE = RESPONSE_TIME_COMMAND;
+            }
+            break;
+                        
+        case RESPONSE_TIME_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                INVERTER_COMMAND_STATE = CURRENT_LIMIT_COMMAND;
+            }
+            break;
+            
+        case CURRENT_LIMIT_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){    
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(input_limit,5);
+                UART2_Write(input_limit,5);
+                INVERTER_COMMAND_STATE = SAVE_COMMAND;
+            }
+            break;
+            
+        case SAVE_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){
+                parameter_write_start_time = current_time_ms();
+                UART1_Write("wp",2);
+                UART2_Write("wp",2);
+                INVERTER_COMMAND_STATE = END_COMMAND;
+            }
+            break;
+            
+        case END_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,30)){    
+                UART1_Write("s0",2);
+                UART2_Write("s0",2);
+                INVERTER_COMMAND_STATE = START_COMMAND;
+                return true;
+            }
+            break;
+    }
+    
+    return false;
 }

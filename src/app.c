@@ -131,7 +131,7 @@ void handle_console(void)
 	    LED_TOGGLE();
 		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
 		//UART2_Write(console_rx_buf, 1);
-		//UART1_Write(console_rx_buf, 1);
+		UART1_Write(console_rx_buf, 1);
     }
 }
 
@@ -188,6 +188,8 @@ void APP_Tasks ( void )
         //SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
         //SYS_CONSOLE_PRINT("bms.ams_precharge_enabled: %d\n\r",bms.ams_precharge_enabled);
         //SYS_CONSOLE_PRINT("%d\t%d\t%d\t%d\t%d\t%d\n\r",comms_active.bms,comms_active.dash,comms_active.inv1,comms_active.inv2,comms_active.pb,comms_active.steering);
+        SYS_CONSOLE_PRINT("Inverter 1 ID: %ld\n\r",inv1.id);
+        SYS_CONSOLE_PRINT("Inverter 2 ID: %ld\n\r",inv2.id);
         send_debug_timer = current_time_ms();
     }
     
