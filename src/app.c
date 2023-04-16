@@ -131,7 +131,7 @@ void handle_console(void)
 	    LED_TOGGLE();
 		SYS_CONSOLE_PRINT("%c", console_rx_buf[0]);
 		//UART2_Write(console_rx_buf, 1);
-		UART1_Write(console_rx_buf, 1);
+		//UART1_Write(console_rx_buf, 1);
     }
 }
 

@@ -23,9 +23,9 @@ static volatile bool uart2_ready;
 static volatile bool uart1_rdNotificationEnabled = false;
 static volatile bool uart2_rdNotificationEnabled = false;
 
-static volatile char inv1_rx_buf[1199];
+static volatile char inv1_rx_buf[1100];
 static volatile uint16_t inv1_rx_ptr = 0;
-static volatile char inv2_rx_buf[1199];
+static volatile char inv2_rx_buf[1100];
 static volatile uint16_t inv2_rx_ptr = 0;
 
 //================================LOCAL FUNCTION DECLARATIONS===================
@@ -76,13 +76,21 @@ void handle_uart(void)
      let interrupts take care of things for us. Note that we only enable or
      disable interrupts once per state change - spamming changing this flag
      causes bad behavior.*/
+    if(!car_control.ignition){
+        char temp_char;
+        while(UART1_Read(&temp_char,1));
+        while(UART2_Read(&temp_char,1));
+    }
+    
     if(!car_control.precharge_ready){
         if(!comms_active.inv1)
-            uart1_rx_char_startup();
+            //uart1_rx_char_startup();
+            uart1_rx_char();
         else
             uart1_rx_char();
         if(!comms_active.inv2)
-            uart2_rx_char_startup();
+            //uart2_rx_char_startup();
+            uart2_rx_char();
         else
             uart2_rx_char();
         if(uart1_rdNotificationEnabled) {

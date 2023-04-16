@@ -8,6 +8,7 @@
 
 //==========================DEFINITIONS
 
+
 //==========================GLOBAL VAR
 inv_t inv1;
 inv_t inv2;
@@ -73,15 +74,23 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
             break;
     }
     
+    char *id_loc1 = NULL;
+    char *id_loc2 = NULL;
+    
 	// Check for garbage
 	switch(msg_start_case)
 	{
 		//*
 		case 1: // garbled start up message
 			st_c = 1;
-            char *id_loc = strstr(msg,"ID =");
-            if(id_loc != NULL){
-                inv->id = strtol(id_loc+sizeof("ID =")-1,NULL,10);
+            id_loc1 = strstr(msg,INVERTER_LEFT_ID);
+            if(id_loc1 != NULL){
+                inv->id = strtol(INVERTER_LEFT_ID,NULL,10);
+                return 0;
+            }
+            id_loc2 = strstr(msg,INVERTER_RIGHT_ID);
+            if(id_loc2 != NULL){
+                inv->id = strtol(INVERTER_RIGHT_ID,NULL,10);
                 return 0;
             }
 			break;
@@ -108,6 +117,16 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
         case 0:
             return strtol(msg_start+sizeof("Errors= 0x"),NULL,16);
 		default:
+            id_loc1 = strstr(msg,INVERTER_LEFT_ID);
+            if(id_loc1 != NULL){
+                inv->id = strtol(INVERTER_LEFT_ID,NULL,10);
+                return 0;
+            }
+            id_loc2 = strstr(msg,INVERTER_RIGHT_ID);
+            if(id_loc2 != NULL){
+                inv->id = strtol(INVERTER_RIGHT_ID,NULL,10);
+                return 0;
+            }
             return -3;
             //return 0;
 	}

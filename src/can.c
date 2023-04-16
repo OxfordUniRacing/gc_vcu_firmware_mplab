@@ -33,6 +33,7 @@
 #define CAN_ID_TX_TO_LOGGER_2   0x7A2
 #define CAN_ID_TX_TO_LOGGER_3   0x7A3
 #define CAN_ID_TX_STATUS        0x7A4
+#define CAN_ID_TX_STARTUP_PARAMS    0x7A5
 
 #define CAN_RX_BUFFER_SIZE 64
 
@@ -111,7 +112,7 @@ void handle_can(void)
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
                 bool rtd_switch_state = (!!buf->data[0]);
-                if(car_control.precharge_ready){
+                if(car_control.precharge_ready && car_control.inverter_params_complete){
                     if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
                         if(rtd_switch_state == true && car_control.brake_on && car_control.user_pedal_value == 0){
                             car_control.ready_to_drive = true;
@@ -231,6 +232,15 @@ void handle_can(void)
         brake_pres_data[1] = 0;
         memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
         send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
+        
+        if(!car_control.precharge_ready){
+            uint16_t max_power = (bms.pack_dlc*bms.voltage)/100.0f; //max power, expressed in 0.1*kW
+            uint8_t data[] = 
+            {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
+            inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
+            max_power/256,max_power%256};
+            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,6);
+        }
     }
     
     if(tx_ready.status){

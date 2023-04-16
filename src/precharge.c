@@ -13,10 +13,12 @@
 #define INVERTER_PRECHARGE_CURRENT		0.04
 #define INVERTER_PRECHARGE_RESISTANCE	220
 
-#define INVERTER_POSITIVE_SLEW_RATE_COMMAND     "ri200"
-#define INVERTER_NEGATIVE_SLEW_RATE_COMMAND     "rd400"
-#define INVERTER_RESPONSE_TIME_COMMAND          "ot050"
-#define INVERTER_CURRENT_LIMIT_COMMAND          "il"    //we don't specify the number here, we instead check it on startup from the battery
+#define INVERTER_POSITIVE_SLEW_RATE_COMMAND     "ri"
+#define INVERTER_NEGATIVE_SLEW_RATE_COMMAND     "rd"
+#define INVERTER_RESPONSE_TIME_COMMAND          "ot"
+#define INVERTER_CURRENT_LIMIT_COMMAND          "il"
+#define INVERTER_PHASE_CURRENT_LIMIT_COMMAND    "cl"
+#define INVERTER_POLE_PAIRS_COMMAND             "pp"
 
 //=============================GLOBAL VAR
 
@@ -40,7 +42,15 @@ static bool handle_inverter_parameters(void);
 
 void handle_precharge(void)
 {
-	
+	inv1.POSITIVE_SLEW_RATE = 200;
+    inv1.NEGATIVE_SLEW_RATE = 400;
+    inv1.RESPONSE_TIME = 50;
+    inv1.POLE_PAIRS = 1;
+    
+    inv2.POSITIVE_SLEW_RATE = 200;
+    inv2.NEGATIVE_SLEW_RATE = 400;
+    inv2.RESPONSE_TIME = 50;
+    inv2.POLE_PAIRS = 1;
     
     static enum {
 		PC_TS_OFF,						//The TS is not active
@@ -105,7 +115,8 @@ void handle_precharge(void)
 			bms.precharge_enable = true;
             ass.break_loop_precharge = false;
             car_control.precharge_ready = false;
-			
+            car_control.inverter_params_complete = false;
+            
 			if(car_control.ignition)
 			{
 				PRECHARGE_STATE = PC_BMS_RELAY;
@@ -122,7 +133,10 @@ void handle_precharge(void)
 			 */
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
+			car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
 			
+            
             //bms.ams_precharge_enabled included for clarity, but ts_active() will always imply bms.ams_precharge_enabled
             if(ts_active() && bms.ams_precharge_enabled)
 			{
@@ -146,7 +160,10 @@ void handle_precharge(void)
 			 */
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
+			car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
 			
+            
 			if(comms_active.inv1 && comms_active.inv2)
 			{
 				
@@ -159,7 +176,7 @@ void handle_precharge(void)
 				//@@ Needs to calculate total delay
 				//t = RC ln ( Vbat / (Vbat - 30*1.2) ) * 1000
                 
-				if(has_delay_passed(precharge_start_time, 3500))
+				if(has_delay_passed(precharge_start_time, 4700))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_FAIL\n\r");
@@ -180,10 +197,17 @@ void handle_precharge(void)
 			 * After this, the car is ready to start
 			 */
             
+            /*if(inv1.id == strtol(INVERTER_RIGHT_ID,NULL,10) || inv2.id == strtol(INVERTER_LEFT_ID,NULL,10)){
+                ass.break_loop_inverter_error = true;
+                PRECHARGE_STATE = PC_FAILED;
+            }*/
 			
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
+			car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
 			
+            
 			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
 					> bms.voltage * 0.95)
 			{
@@ -204,16 +228,24 @@ void handle_precharge(void)
             
         case PC_WRITE_INVERTER_PARAMETERS:
             if(handle_inverter_parameters()) PRECHARGE_STATE = PC_READY;
+            
+            bms.precharge_enable = false;
+			ass.break_loop_precharge = false;
+            car_control.precharge_ready = true;
+            car_control.inverter_params_complete = false;
             break;
             
 		case PC_READY:
 			bms.precharge_enable = false;
 			ass.break_loop_precharge = false;
             car_control.precharge_ready = true;
+            car_control.inverter_params_complete = true;
 			break;
 		case PC_FAILED:			
 			bms.precharge_enable = true;	
 			ass.break_loop_precharge = true;
+            car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
 			break;
 	}
 }
@@ -225,13 +257,29 @@ static bool handle_inverter_parameters(void){
         NEGATIVE_SLEW_RATE_COMMAND,
         RESPONSE_TIME_COMMAND,
         CURRENT_LIMIT_COMMAND,
+        PHASE_CURRENT_LIMIT_COMMAND,
+        POLE_PAIRS_COMMAND,
         SAVE_COMMAND,
         END_COMMAND        
     } INVERTER_COMMAND_STATE = START_COMMAND;
     
-    char input_limit[5];
-    sprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
-            
+    char positive_slew_rate[5];
+    sprintf(positive_slew_rate,"%s%03d",INVERTER_POSITIVE_SLEW_RATE_COMMAND,inv1.POSITIVE_SLEW_RATE);
+    
+    char negative_slew_rate[5];
+    sprintf(negative_slew_rate,"%s%03d",INVERTER_NEGATIVE_SLEW_RATE_COMMAND,inv1.NEGATIVE_SLEW_RATE);
+    
+    char response_time[5];
+    sprintf(response_time,"%s%03d",INVERTER_RESPONSE_TIME_COMMAND,inv1.RESPONSE_TIME);
+    
+    char current_input_limit[5];
+    sprintf(current_input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+    
+    char phase_current_input_limit[5];
+    sprintf(phase_current_input_limit,"%s%03d",INVERTER_PHASE_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+    
+    char pole_pairs[5];
+    sprintf(pole_pairs,"%s%03d",INVERTER_POLE_PAIRS_COMMAND,inv1.POLE_PAIRS);
     
     switch(INVERTER_COMMAND_STATE){
         case START_COMMAND:
@@ -244,8 +292,8 @@ static bool handle_inverter_parameters(void){
         case POSITIVE_SLEW_RATE_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
-                UART1_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
-                UART2_Write(INVERTER_POSITIVE_SLEW_RATE_COMMAND,5);
+                UART1_Write(positive_slew_rate,5);
+                UART2_Write(positive_slew_rate,5);
                 INVERTER_COMMAND_STATE = NEGATIVE_SLEW_RATE_COMMAND;
             }
             break;
@@ -253,8 +301,8 @@ static bool handle_inverter_parameters(void){
         case NEGATIVE_SLEW_RATE_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
-                UART1_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
-                UART2_Write(INVERTER_NEGATIVE_SLEW_RATE_COMMAND,5);
+                UART1_Write(negative_slew_rate,5);
+                UART2_Write(negative_slew_rate,5);
                 INVERTER_COMMAND_STATE = RESPONSE_TIME_COMMAND;
             }
             break;
@@ -262,8 +310,8 @@ static bool handle_inverter_parameters(void){
         case RESPONSE_TIME_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){
                 parameter_write_start_time = current_time_ms();
-                UART1_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
-                UART2_Write(INVERTER_RESPONSE_TIME_COMMAND,5);
+                UART1_Write(response_time,5);
+                UART2_Write(response_time,5);
                 INVERTER_COMMAND_STATE = CURRENT_LIMIT_COMMAND;
             }
             break;
@@ -271,8 +319,26 @@ static bool handle_inverter_parameters(void){
         case CURRENT_LIMIT_COMMAND:
             if(has_delay_passed(parameter_write_start_time,100)){    
                 parameter_write_start_time = current_time_ms();
-                UART1_Write(input_limit,5);
-                UART2_Write(input_limit,5);
+                UART1_Write(current_input_limit,5);
+                UART2_Write(current_input_limit,5);
+                INVERTER_COMMAND_STATE = PHASE_CURRENT_LIMIT_COMMAND;
+            }
+            break;
+            
+        case PHASE_CURRENT_LIMIT_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){    
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(phase_current_input_limit,5);
+                UART2_Write(phase_current_input_limit,5);
+                INVERTER_COMMAND_STATE = POLE_PAIRS_COMMAND;
+            }
+            break;
+            
+        case POLE_PAIRS_COMMAND:
+            if(has_delay_passed(parameter_write_start_time,100)){
+                parameter_write_start_time = current_time_ms();
+                UART1_Write(pole_pairs,5);
+                UART2_Write(pole_pairs,5);
                 INVERTER_COMMAND_STATE = SAVE_COMMAND;
             }
             break;

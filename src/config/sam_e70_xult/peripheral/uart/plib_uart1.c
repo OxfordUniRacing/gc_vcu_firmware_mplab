@@ -51,7 +51,7 @@
 
 UART_RING_BUFFER_OBJECT uart1Obj;
 
-#define UART1_READ_BUFFER_SIZE      1200
+#define UART1_READ_BUFFER_SIZE      1300
 /* Disable Read, Overrun, Parity and Framing error interrupts */
 #define UART1_RX_INT_DISABLE()      UART1_REGS->UART_IDR = (UART_IDR_RXRDY_Msk | UART_IDR_FRAME_Msk | UART_IDR_PARE_Msk | UART_IDR_OVRE_Msk);
 /* Enable Read, Overrun, Parity and Framing error interrupts */
