@@ -234,12 +234,12 @@ void handle_can(void)
         send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
         
         if(!car_control.precharge_ready){
-            uint16_t max_power = (bms.pack_dlc*bms.voltage)/100.0f; //max power, expressed in 0.1*kW
             uint8_t data[] = 
             {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
             inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
-            max_power/256,max_power%256};
-            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,6);
+            bms.pack_dlc/256,bms.pack_dlc%256,
+            (uint8_t)car_control.torque_vectoring_active};
+            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
         }
     }
     

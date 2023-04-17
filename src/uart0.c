@@ -23,9 +23,9 @@ static volatile bool uart2_ready;
 static volatile bool uart1_rdNotificationEnabled = false;
 static volatile bool uart2_rdNotificationEnabled = false;
 
-static volatile char inv1_rx_buf[1100];
+static volatile char inv1_rx_buf[600];
 static volatile uint16_t inv1_rx_ptr = 0;
-static volatile char inv2_rx_buf[1100];
+static volatile char inv2_rx_buf[600];
 static volatile uint16_t inv2_rx_ptr = 0;
 
 //================================LOCAL FUNCTION DECLARATIONS===================
@@ -82,7 +82,7 @@ void handle_uart(void)
         while(UART2_Read(&temp_char,1));
     }
     
-    if(!car_control.precharge_ready){
+    if(!(car_control.precharge_ready && car_control.inverter_params_complete)){
         if(!comms_active.inv1)
             //uart1_rx_char_startup();
             uart1_rx_char();

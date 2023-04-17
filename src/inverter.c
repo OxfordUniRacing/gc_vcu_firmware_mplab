@@ -48,6 +48,14 @@ void handle_inverters(void)
         inv1.active_drive = false;
         inv2.active_drive = false;
     }
+    
+    if(!comms_active.inv1){
+        inv1.voltage = 0;
+    }
+    
+    if(!comms_active.inv2){
+        inv2.voltage = 0;
+    }
 }
 
 //returns 0 if successful, -1 if we've read past the buffer, <-1 if there's something wrong with the message (i.e. it doesn't find a parameter), and a positive int if there's an error code 
