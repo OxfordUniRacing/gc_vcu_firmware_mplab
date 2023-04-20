@@ -52,7 +52,7 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
-    car_control.brake_on = car_control.brake_pressure > 2;
+    car_control.brake_on = car_control.brake_pressure > 2.5;
     
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&

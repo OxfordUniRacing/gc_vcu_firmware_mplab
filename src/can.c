@@ -89,7 +89,8 @@ void handle_can(void)
             
             case CAN_ID_STEERING_SENSOR:
                 comms_time.steering = current_time_ms();
-                car_control.user_steering_value = (buf->data[0]*256 + buf->data[1] - 440)/390.0f;
+                float measurement = (buf->data[0]*256 + buf->data[1] - 440)/390.0f;
+                car_control.user_steering_value = 0.18f*measurement + car_control.user_steering_value*0.82f;
                 //SYS_CONSOLE_PRINT("Steering value: %d\n\r",car_control.user_steering_value);
                 break;
             
@@ -154,7 +155,7 @@ void handle_can(void)
             case CAN_ID_SBG_IMU_DELTA_ANGLE:
                 int16_bytes_converter.bytes[0] = buf->data[4];
                 int16_bytes_converter.bytes[1] = buf->data[5];
-                car_control.yaw_rate = (int16_bytes_converter.i)*0.001f;
+                car_control.yaw_rate = (int16_bytes_converter.i)*0.0001f+0.9f*car_control.yaw_rate;
                 break;
                 
             case CAN_ID_SBG_IMU_DELTA_VEL:
@@ -237,7 +238,7 @@ void handle_can(void)
             uint8_t data[] = 
             {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
             inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
-            bms.pack_dlc/256,bms.pack_dlc%256,
+            inv1.CURRENT_LIMIT*2/256,bms.pack_dlc*2%256,
             (uint8_t)car_control.torque_vectoring_active};
             send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
         }

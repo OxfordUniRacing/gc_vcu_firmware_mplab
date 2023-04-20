@@ -10,7 +10,7 @@
 #include "car_control.h"
 
 //==============================DEFINITIONS
-#define WRITE_PARAMETERS    true
+#define WRITE_PARAMETERS    false
 
 #define INVERTER_PRECHARGE_CURRENT		0.04
 #define INVERTER_PRECHARGE_RESISTANCE	220
@@ -49,11 +49,13 @@ void handle_precharge(void)
     inv1.NEGATIVE_SLEW_RATE = 400;
     inv1.RESPONSE_TIME = 50;
     inv1.POLE_PAIRS = 1;
+    inv1.CURRENT_LIMIT = 150;
     
     inv2.POSITIVE_SLEW_RATE = 200;
     inv2.NEGATIVE_SLEW_RATE = 400;
     inv2.RESPONSE_TIME = 50;
     inv2.POLE_PAIRS = 1;
+    inv2.CURRENT_LIMIT = 150;
     
     static enum {
 		PC_TS_OFF,						//The TS is not active
@@ -286,10 +288,11 @@ static bool handle_inverter_parameters(void){
     sprintf(response_time,"%s%03d",INVERTER_RESPONSE_TIME_COMMAND,inv1.RESPONSE_TIME);
     
     char current_input_limit[5];
-    sprintf(current_input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+    //sprintf(current_input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);
+    sprintf(current_input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,inv1.CURRENT_LIMIT);
     
     char phase_current_input_limit[5];
-    sprintf(phase_current_input_limit,"%s%03d",INVERTER_PHASE_CURRENT_LIMIT_COMMAND,200);
+    sprintf(phase_current_input_limit,"%s%03d",INVERTER_PHASE_CURRENT_LIMIT_COMMAND,300);
     
     char pole_pairs[5];
     sprintf(pole_pairs,"%s%03d",INVERTER_POLE_PAIRS_COMMAND,inv1.POLE_PAIRS);

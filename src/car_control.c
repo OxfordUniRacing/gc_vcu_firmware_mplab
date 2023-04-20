@@ -6,20 +6,26 @@
 #define THR_DEADZONE 2 //throttle deadzone as a percentage of max throttle
 #define min(x,y) (x < y ? x : y)
 
+#define THROTTLE_SCALE_DOWN 1
+
+#define REFERENCE   3.2
+#define GAIN        24
+
 //===================GLOBAL VARIABLES===========================================
 control_t car_control = {0};
 
 //===================LOCAL VARIABLES============================================
 static const bool torque_vectoring_active = false;
+static const int torque_vectoring_algo = 2;
 
 //===================LOCAL FUNCTION DECLARATIONS================================
 static float expf_fast(float x);
-static float get_coefficient(uint8_t pedal_value);
+static float get_coefficient(uint8_t pedal_value,int algo);
 
 //===================GLOBAL FUNCTIONS===========================================
 
 int get_inv1_cmd(void){
-    uint8_t p = car_control.user_pedal_value/6;
+    uint8_t p = car_control.user_pedal_value/THROTTLE_SCALE_DOWN;
     if(p < THR_DEADZONE) return 0;
     
     //check for steering inactive / out of range or brake on
@@ -29,12 +35,12 @@ int get_inv1_cmd(void){
     
     //right turn, left inverter controls the outside wheel
     if(s > 0){
-        return min(p*(2.0f-expf_fast(-s*get_coefficient(p))),100);
+        return min(p*(2.0f-expf_fast(-s*get_coefficient(p,torque_vectoring_algo))),100);
     }
     //left turn, left inverter controls the inside wheel
     else if(s < 0){
         s = -s;
-        return p*expf_fast(-s*get_coefficient(p));
+        return p*expf_fast(-s*get_coefficient(p,torque_vectoring_algo));
     }
     else{
         return p;
@@ -42,22 +48,22 @@ int get_inv1_cmd(void){
 }
 
 int get_inv2_cmd(void){
-    uint8_t p = car_control.user_pedal_value/6;
+    uint8_t p = car_control.user_pedal_value/THROTTLE_SCALE_DOWN;
     if(p < THR_DEADZONE) return 0;
     
     //check for steering inactive / out of range or brake on
     float s = car_control.user_steering_value;
-    if(s < -1 || s > 1 || car_control.brake_on) 
+    if(s < -1 || s > 1 || car_control.brake_on || !torque_vectoring_active) 
         return p;
     
     //right turn, right inverter controls the inside wheel
     if(s > 0){
-        return p*expf_fast(-s*get_coefficient(p));
+        return p*expf_fast(-s*get_coefficient(p,torque_vectoring_algo));
     }
     //left turn, right inverter controls the outside wheel
     else if(s < 0){
         s = -s;
-        return min(p*(2.0f-expf_fast(-s*get_coefficient(p))),100);
+        return min(p*(2.0f-expf_fast(-s*get_coefficient(p,torque_vectoring_algo))),100);
     }
     else{
         return p;
@@ -95,7 +101,23 @@ static float expf_fast(float x){
     return u.f;
 }
 
-static float get_coefficient(uint8_t pedal_value){
+static float get_coefficient(uint8_t pedal_value,int algo){
     float u = (float)pedal_value;
-    return 3*((u>0)*(0.36*u) + (u>10)*(3.6-0.36*u) + (u>50)*(-0.18*(u-50)) + (u>70)*(-3.6+0.18*(u-50)));
+    if(algo == 1)
+        return 3*((u>0)*(0.36*u) + (u>10)*(3.6-0.36*u) + (u>50)*(-0.18*(u-50)) + (u>70)*(-3.6+0.18*(u-50)));
+    if(algo == 2){
+        float speedbysteeronyaw;
+        if(car_control.yaw_rate != 0)
+            speedbysteeronyaw = car_control.v_x*car_control.user_steering_value/car_control.yaw_rate;
+        else
+            speedbysteeronyaw = 4;
+        
+        speedbysteeronyaw = speedbysteeronyaw > 0 ? speedbysteeronyaw : -speedbysteeronyaw;
+        
+        if(speedbysteeronyaw > 4)
+            speedbysteeronyaw = 4;
+        
+        return GAIN*(speedbysteeronyaw - REFERENCE);
+    }
+        
 }

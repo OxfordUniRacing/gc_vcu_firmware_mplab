@@ -25,6 +25,7 @@ typedef struct {
     int NEGATIVE_SLEW_RATE;
     int RESPONSE_TIME;
     int POLE_PAIRS;
+    int CURRENT_LIMIT;
 	
 }inv_t;
 
