@@ -11,6 +11,10 @@
 #include "precharge.h"
 #include "pio.h"
 #include "car_control.h"
+
+#include "peripheral/pwm/plib_pwm0.h"
+#include "peripheral/pwm/plib_pwm_common.h"
+
 //==============================DEFINITIONS
 
 //CAN receive Ids
@@ -111,6 +115,12 @@ void handle_can(void)
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
                 bool rtd_switch_state = (!!buf->data[0]);
+                if(rtd_switch_state){
+                    PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
+                }
+                else{
+                    PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
+                }
                 if(car_control.precharge_ready){
                     if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
                         if(rtd_switch_state == true && car_control.brake_on && car_control.user_pedal_value == 0){

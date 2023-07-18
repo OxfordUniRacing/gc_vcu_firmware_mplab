@@ -214,7 +214,7 @@ int get_thr_cmd_str(int desired_thr, char output[], size_t size)
 		desired_thr -= seconddec;
 		length += seconddec;
         
-        ptr += snprintf(ptr,2,"r");
+        ptr += snprintf(ptr,2,"f");
         length++;
 		
 		//snprintf(ptr,2,"\n\r");
@@ -237,7 +237,7 @@ int get_thr_cmd_str(int desired_thr, char output[], size_t size)
 		desired_thr -= seconddec;
 		length += (10-seconddec);
         
-        ptr += snprintf(ptr,2,"r");
+        ptr += snprintf(ptr,2,"f");
         length++;
 		
 		//snprintf(ptr,2,"\n\r");

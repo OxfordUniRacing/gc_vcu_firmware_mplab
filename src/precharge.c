@@ -159,7 +159,7 @@ void handle_precharge(void)
 				//@@ Needs to calculate total delay
 				//t = RC ln ( Vbat / (Vbat - 30*1.2) ) * 1000
                 
-				if(has_delay_passed(precharge_start_time, 3500))
+				if(has_delay_passed(precharge_start_time, 5000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_FAIL\n\r");
@@ -185,7 +185,7 @@ void handle_precharge(void)
 			ass.break_loop_precharge = false;
 			
 			if(		/*get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
-					> bms.voltage * 0.95 30*/ has_delay_passed(precharge_start_time,5000))
+					> bms.voltage * 0.95 30*/ has_delay_passed(precharge_start_time,6000))
 			{
 				PRECHARGE_STATE = PC_WRITE_INVERTER_PARAMETERS;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
@@ -243,7 +243,7 @@ void handle_precharge(void)
 	}
 }
 
-static bool handle_inverter_parameters(void){
+static bool handle_inverter_parameters(void){    
     static enum{
         START_COMMAND,
         POSITIVE_SLEW_RATE_COMMAND,
@@ -252,7 +252,7 @@ static bool handle_inverter_parameters(void){
         CURRENT_LIMIT_COMMAND,
         SAVE_COMMAND,
         END_COMMAND        
-    } INVERTER_COMMAND_STATE = START_COMMAND;
+    } INVERTER_COMMAND_STATE = END_COMMAND;
     
     char input_limit[5];
     sprintf(input_limit,"%s%03d",INVERTER_CURRENT_LIMIT_COMMAND,bms.pack_dlc/2);

@@ -169,10 +169,9 @@ void APP_Tasks ( void )
     handle_tx_timer();
     handle_can();
     handle_pio();
-    handle_precharge();
     
     handle_uart();
-	
+	handle_precharge();
 	handle_console();
     
     //if(bms.ams_precharge_enabled != bms.)
@@ -185,11 +184,12 @@ void APP_Tasks ( void )
         //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
         //SYS_CONSOLE_PRINT("Steering sensor value: %d\n\r",car_control.user_steering_value);
         //SYS_CONSOLE_PRINT("RTD: %d\n\r",car_control.ready_to_drive);
-        //SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
+        SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
         //SYS_CONSOLE_PRINT("bms.ams_precharge_enabled: %d\n\r",bms.ams_precharge_enabled);
         //SYS_CONSOLE_PRINT("%d\t%d\t%d\t%d\t%d\t%d\n\r",comms_active.bms,comms_active.dash,comms_active.inv1,comms_active.inv2,comms_active.pb,comms_active.steering);
-        SYS_CONSOLE_PRINT("Inverter 1 ID: %ld\n\r",inv1.id);
-        SYS_CONSOLE_PRINT("Inverter 2 ID: %ld\n\r",inv2.id);
+        //SYS_CONSOLE_PRINT("Inverter 1 ID: %ld\n\r",inv1.id);
+        //SYS_CONSOLE_PRINT("Inverter 2 ID: %ld\n\r",inv2.id);
+        //SYS_CONSOLE_PRINT("Pedal value: %d\n\r",car_control.user_pedal_value);
         send_debug_timer = current_time_ms();
     }
     
