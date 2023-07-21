@@ -19,6 +19,7 @@
 #define TS_ACTIVE_BOUNCE_TIME 20
 #define RTD_SOUND_TIME 1500
 #define ASS_LOOP_STOP_TIME  300
+#define BRAKE_PRESSURE_THRESHOLD 0.3f
 
 //===================GLOBAL VARIABLES===========================================
 
@@ -52,7 +53,7 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
-    car_control.brake_on = car_control.brake_pressure > 2.5;
+    car_control.brake_on = car_control.brake_pressure > BRAKE_PRESSURE_THRESHOLD;
     
     bool ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&

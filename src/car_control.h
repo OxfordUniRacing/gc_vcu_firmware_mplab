@@ -25,8 +25,6 @@ typedef struct
     bool brake_on;
     float brake_pressure;
     
-    bool torque_vectoring_active;
-    
     //car state data
     float yaw_rate;
     float v_x;

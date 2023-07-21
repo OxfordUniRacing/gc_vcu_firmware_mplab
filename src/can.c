@@ -239,7 +239,7 @@ void handle_can(void)
             {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
             inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
             inv1.CURRENT_LIMIT*2/256,bms.pack_dlc*2%256,
-            (uint8_t)car_control.torque_vectoring_active};
+            0};
             send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
         }
     }
