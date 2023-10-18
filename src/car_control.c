@@ -6,7 +6,7 @@
 #define THR_DEADZONE 2 //throttle deadzone as a percentage of max throttle
 #define min(x,y) (x < y ? x : y)
 
-#define THROTTLE_SCALE_DOWN 1
+#define THROTTLE_SCALE_DOWN 10
 
 #define REFERENCE   3.2
 #define GAIN        24

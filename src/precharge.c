@@ -126,7 +126,7 @@ void handle_precharge(void)
             
 			if(car_control.ignition)
 			{
-				PRECHARGE_STATE = PC_BMS_RELAY;
+				PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
 				precharge_start_time = current_time_ms();
                 SYS_CONSOLE_PRINT("PC_TS_OFF_SUCCESS\n\r");
 			}
@@ -216,7 +216,7 @@ void handle_precharge(void)
 			
             
 			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
-					> bms.voltage * 0.95)
+					> /*bms.voltage * 0.95*/ 25)
 			{
 				PRECHARGE_STATE = PC_WRITE_INVERTER_PARAMETERS;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
