@@ -2396,6 +2396,17 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_93_DIR"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
+  &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_93_DIR&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/core&gt;
+&lt;/core&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="core" name="PIN_93_DRIVER"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_93_DRIVER&quot;&gt;
@@ -2411,7 +2422,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_93_FUNCTION_NAME&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;RTD_SOUND_PIN&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;RTD_SOUND&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2422,7 +2433,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_93_FUNCTION_TYPE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;PWM0_PWMH1&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2444,7 +2455,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIN_93_PERIPHERAL_FUNCTION&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;A&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;GPIO&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -2620,7 +2631,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PIOA_PDR_VALUE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;2097252&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;2097248&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -3010,7 +3021,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PMC_PCER0&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;2692963584&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;core&quot; value=&quot;545479936&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -3166,7 +3177,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;core&gt;
   &lt;core dnOrder=&quot;0&quot; id=&quot;PWM0_CLOCK_ENABLE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;pwm0&quot; value=&quot;true&quot;/&gt;
+      &lt;Dynamic dnOrder=&quot;0&quot; id=&quot;pwm0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/core&gt;
 &lt;/core&gt;
@@ -4588,7 +4599,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;pwm0&gt;
   &lt;pwm0 dnOrder=&quot;0&quot; id=&quot;PWM_CH_1_ENABLE&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;false&quot;/&gt;
     &lt;/Values&gt;
   &lt;/pwm0&gt;
 &lt;/pwm0&gt;
@@ -5666,11 +5677,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>01ec633fb0ccc8490c32e1d404311abd96fd90919204862ca5512340adc05344</hash>
+         <hash>e682ab58edcbb919274bae267b34c1ffa042d35e647b27db59bbddfe0351da7c</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.h</file>
-         <hash>ff39e5abfa12ccb3ce969042a0c37f1fff2ad8dd6d67f014ef86ff4670f4fd88</hash>
+         <hash>50fe81ebfb7ea13e282c10cbcbe048f58663ed8696f1f0a1345f72c4b797a90c</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\gmac.h</file>
@@ -5686,7 +5697,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pio\plib_pio.c</file>
-         <hash>3a2251f7d7ad2284ca995d1af45f88f77cefcb6d632df1edd918cd7a3a54a0a1</hash>
+         <hash>3a3b97aee0353a009c7dc62a2c19347cda8450a1326b3a7f24c409241d7c2e39</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\system\system.h</file>
@@ -5734,7 +5745,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\pin_configurations.csv</file>
-         <hash>b41704e9bcdc8f43c23093abaadafa973706def91fc86e0efa65f1cd7e4548c6</hash>
+         <hash>fc6334a8f418cf2dfde61d3e809f8e60db5d5a4b8a482e94fd583370eef6e909</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\afec.h</file>
@@ -5854,7 +5865,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\pwm\plib_pwm0.c</file>
-         <hash>367206654483774f96fe318848310b2aa4a406328125503422ef4bb1e3bb5b5c</hash>
+         <hash>2aa7054f9b4c06b71587eddd01abb3cb926f5f07c96abe234f595268b8a64ee2</hash>
       </entry>
       <entry>
          <file>..\src\packs\CMSIS\CMSIS\Core\Include\cmsis_armcc.h</file>
@@ -6182,7 +6193,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\clk\plib_clk.c</file>
-         <hash>63bb1e1f2b9618c6ebb5f8fa617bb40de143b24a1fd69635669b48fdf52c8939</hash>
+         <hash>9796a3bdae90d13617c1e5a763818c8d62633fe9d9ef46985559b5227f97dcad</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\component\pwm.h</file>
@@ -6298,7 +6309,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>926b8f6077372a2715a823f8cf1bbb95bae12a49859d1403b13d75dd3cadb1b0</hash>
+         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
       </entry>
       <entry>
          <file>..\src\packs\ATSAME70Q21B_DFP\instance\uart3.h</file>

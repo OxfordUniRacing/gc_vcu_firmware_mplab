@@ -42,7 +42,9 @@ void init_pio(void){
     TS_INPUT_InputEnable();
     ASS_PIN_RELAY_OutputEnable();
     BRAKE_LIGHT_OutputEnable();
-    PWM0_ChannelsStop(PWM_CHANNEL_1_MASK); //disable buzzer pwm to start
+    RTD_SOUND_OutputEnable();
+    PIO_PinWrite(RTD_SOUND_PIN,0);
+    //PWM0_ChannelsStop(PWM_CHANNEL_1_MASK); //disable buzzer pwm to start
     AFEC0_ChannelsEnable(AFEC_CH8_MASK); //enable ADC on brake pressure sensor
 }
 
@@ -115,12 +117,14 @@ void handle_pio(void){
     }*/
     
     if(car_control.ready_to_drive && !rtd_sounded){
-        PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
+        //PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
+        PIO_PinWrite(RTD_SOUND_PIN,1);
         rtd_sounded = true;
         rtd_sound_timer = current_time_ms();
     }
     if(rtd_sounded && has_delay_passed(rtd_sound_timer,RTD_SOUND_TIME)){
-        PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
+        //PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
+        PIO_PinWrite(RTD_SOUND_PIN,0);
         if(!car_control.ready_to_drive){ //reset condition
             rtd_sounded = false;
         }

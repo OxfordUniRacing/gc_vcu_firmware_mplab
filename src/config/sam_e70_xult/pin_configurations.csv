@@ -75,7 +75,7 @@
 90,PC10,,Available,In,,,,,,,
 91,PA3,,Available,In,,,,,,,
 92,PD12,,Available,In,,,,,,,
-93,PA2,RTD_SOUND_PIN,PWM0_PWMH1,n/a,n/a,No,Disabled,No,Yes,Disabled,Low
+93,PA2,RTD_SOUND,GPIO,In,n/a,No,Disabled,No,Yes,Disabled,Low
 94,PC11,,Available,In,,,,,,,
 97,PC14,,Available,In,,,,,,,
 98,PD11,GPIO_PD11,Available,In,,,,,,,

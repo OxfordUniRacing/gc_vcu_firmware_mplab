@@ -84,9 +84,14 @@
 #define BRAKE_LIGHT_Get()               ((PIOC_REGS->PIO_PDSR >> 9) & 0x1)
 #define BRAKE_LIGHT_PIN                  PIO_PIN_PC9
 
-/*** Macros for RTD_SOUND_PIN pin ***/
-#define RTD_SOUND_PIN_Get()               ((PIOA_REGS->PIO_PDSR >> 2) & 0x1)
-#define RTD_SOUND_PIN_PIN                  PIO_PIN_PA2
+/*** Macros for RTD_SOUND pin ***/
+#define RTD_SOUND_Set()               (PIOA_REGS->PIO_SODR = (1<<2))
+#define RTD_SOUND_Clear()             (PIOA_REGS->PIO_CODR = (1<<2))
+#define RTD_SOUND_Toggle()            (PIOA_REGS->PIO_ODSR ^= (1<<2))
+#define RTD_SOUND_OutputEnable()      (PIOA_REGS->PIO_OER = (1<<2))
+#define RTD_SOUND_InputEnable()       (PIOA_REGS->PIO_ODR = (1<<2))
+#define RTD_SOUND_Get()               ((PIOA_REGS->PIO_PDSR >> 2) & 0x1)
+#define RTD_SOUND_PIN                  PIO_PIN_PA2
 
 /*** Macros for ASS_PIN_RELAY pin ***/
 #define ASS_PIN_RELAY_Set()               (PIOC_REGS->PIO_SODR = (1<<19))
