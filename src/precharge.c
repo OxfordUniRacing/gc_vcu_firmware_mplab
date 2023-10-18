@@ -27,7 +27,8 @@
 
 bms_t bms = {
     .pack_dlc = 10, //minimum value we can set inverters to
-    .precharge_enable = true
+    .precharge_enable = true,
+    .voltage = 100
 };
 ass_t ass = {0};
 
