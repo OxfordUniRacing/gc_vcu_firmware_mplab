@@ -78,8 +78,8 @@ void handle_uart(void)
      causes bad behavior.*/
     if(!car_control.ignition){
         char temp_char;
-        while(UART1_Read(&temp_char,1));
-        while(UART2_Read(&temp_char,1));
+        //while(UART1_Read(&temp_char,1));
+        //while(UART2_Read(&temp_char,1));
     }
     
     if(!(car_control.precharge_ready && car_control.inverter_params_complete)){
@@ -188,7 +188,7 @@ static void uart1_rx_char_startup(void){
     {
         if(inv1_rx_ptr == sizeof(inv1_rx_buf)) inv1_rx_ptr = 0;
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        //SYS_CONSOLE_PRINT("%c",temp_char);
+        SYS_CONSOLE_PRINT("%c",temp_char);
         inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		if(inv1_rx_ptr == sizeof(inv1_rx_buf)){ 
@@ -210,7 +210,7 @@ static void uart1_rx_char(void){
     while(UART1_Read(&temp_char, 1))
     {
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        //SYS_CONSOLE_PRINT("%c",temp_char);
+        SYS_CONSOLE_PRINT("%c",temp_char);
         inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr + 1 < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		else inv1_rx_ptr = 0;
@@ -233,7 +233,7 @@ static void uart2_rx_char_startup(void)
     {
         if(inv2_rx_ptr == sizeof(inv2_rx_buf)) inv2_rx_ptr = 0;
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        //SYS_CONSOLE_PRINT("%c",temp_char);
+        SYS_CONSOLE_PRINT("%c",temp_char);
         inv2_rx_buf[inv2_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv2_rx_ptr < sizeof(inv2_rx_buf)) inv2_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		if(inv2_rx_ptr == sizeof(inv2_rx_buf)){ 

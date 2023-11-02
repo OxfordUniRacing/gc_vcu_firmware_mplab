@@ -68,8 +68,8 @@ void handle_pio(void){
         //SYS_CONSOLE_PRINT("ASS_CLOSE: %d\n\rASS_LATCHED_OPEN: %d\n\r",ass_close,ass_latched_open);
         if(ass_latched_open){ //the timer to break the loop has started
             uint8_t zero[] = {'0'}; //send 0s to the motors to try to get them to stop within 300ms
-            UART1_Write(zero,1);
-            UART2_Write(zero,1);
+            //UART1_Write(zero,1);
+            //UART2_Write(zero,1);
             
             //The point of this delay is to ensure that the pack current is small to avoid damaging the contactors
             //Therefore we open the ass loop if the current is small enough or after 300ms, whichever comes first
