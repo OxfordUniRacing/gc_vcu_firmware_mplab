@@ -13,16 +13,16 @@
 
 typedef struct
 {
-	bool ready_to_drive;
-    bool inverter_params_complete;
-    bool precharge_ready;
-    bool ignition;
+	bool ready_to_drive;														//True if the car is ready to drive (NOT SWITCH STATE)
+    bool inverter_params_complete;												//True if the inverters have been set up
+    bool precharge_ready;														//True if the precharge sequence has been completed
+    bool ignition;																//Ignition state from the dashboard
     uint8_t ins_error_code;
 	
 	//User values
 	uint8_t user_pedal_value;
     float user_steering_value;
-    bool brake_on;
+    bool brake_on;																//True when the current brake pressure is above the brake threshold
     float brake_pressure;
     
     //car state data

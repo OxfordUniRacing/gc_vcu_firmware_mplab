@@ -10,12 +10,9 @@
 #include "configuration.h"
 #include "system/console/sys_console.h"
 
+
 void APP_Initialize ( void );
-
-
 void APP_Tasks( void );
-
-
 
 #endif /* _APP_H */
 

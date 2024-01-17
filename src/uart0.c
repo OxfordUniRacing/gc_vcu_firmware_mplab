@@ -12,6 +12,7 @@
 #include "timer.h"
 #include "car_control.h"
 #include "pio.h"
+#include "globals.h"
 //=====================DEFINITIONS
 
 //=====================================GLOBAL VARIABLES========================
@@ -76,20 +77,21 @@ void handle_uart(void)
      let interrupts take care of things for us. Note that we only enable or
      disable interrupts once per state change - spamming changing this flag
      causes bad behavior.*/
+	
+#ifndef DEBUG_IGNORE_BMS
     if(!car_control.ignition){
         char temp_char;
-        //while(UART1_Read(&temp_char,1));
-        //while(UART2_Read(&temp_char,1));
+        while(UART1_Read(&temp_char,1));
+        while(UART2_Read(&temp_char,1));
     }
-    
+#endif
+	
     if(!(car_control.precharge_ready && car_control.inverter_params_complete)){
         if(!comms_active.inv1)
-            //uart1_rx_char_startup();
             uart1_rx_char();
         else
             uart1_rx_char();
         if(!comms_active.inv2)
-            //uart2_rx_char_startup();
             uart2_rx_char();
         else
             uart2_rx_char();
@@ -138,6 +140,9 @@ void handle_uart(void)
              function encountered some other problem e.g. an unexpected message.
              Either way, this else statement deliberately does not update
              comms_time so that if this condition persists, a timeout occurs*/
+#ifdef DEBUG_PRINT_INVERTER_MESSAGES
+			SYS_CONSOLE_PRINT("INV2: %s\n\r", inv2_rx_buf);
+#endif
         }
 		inv2_rx_ptr = 0;
 		uart2_ready = false;
@@ -163,6 +168,10 @@ void handle_uart(void)
         }
         else{
             SYS_CONSOLE_PRINT("Non-critical error code from inverter 1: %d\n\r",error_code);
+			
+#ifdef DEBUG_PRINT_INVERTER_MESSAGES
+			SYS_CONSOLE_PRINT("INV1: %s\n\r", inv1_rx_buf);
+#endif
             /* This will print -1 if the parse function tried to read past the
              length of the inverter buffer, and will print -2 if the parse
              function encountered some other problem e.g. an unexpected message.
@@ -188,7 +197,7 @@ static void uart1_rx_char_startup(void){
     {
         if(inv1_rx_ptr == sizeof(inv1_rx_buf)) inv1_rx_ptr = 0;
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        SYS_CONSOLE_PRINT("%c",temp_char);
+        //SYS_CONSOLE_PRINT("%c",temp_char);
         inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		if(inv1_rx_ptr == sizeof(inv1_rx_buf)){ 
@@ -210,7 +219,7 @@ static void uart1_rx_char(void){
     while(UART1_Read(&temp_char, 1))
     {
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        SYS_CONSOLE_PRINT("%c",temp_char);
+        //SYS_CONSOLE_PRINT("%c",temp_char);
         inv1_rx_buf[inv1_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv1_rx_ptr + 1 < sizeof(inv1_rx_buf)) inv1_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		else inv1_rx_ptr = 0;
@@ -233,7 +242,7 @@ static void uart2_rx_char_startup(void)
     {
         if(inv2_rx_ptr == sizeof(inv2_rx_buf)) inv2_rx_ptr = 0;
         //inv1_rx_time = current_time_ms(); //Sets the last time something was recieved for timeouts
-        SYS_CONSOLE_PRINT("%c",temp_char);
+        //SYS_CONSOLE_PRINT("%c",temp_char);
         inv2_rx_buf[inv2_rx_ptr] = temp_char;                       //Set next location to the inputted character
         if(inv2_rx_ptr < sizeof(inv2_rx_buf)) inv2_rx_ptr++;    //Increment the pointer, overlapping if overflows
 		if(inv2_rx_ptr == sizeof(inv2_rx_buf)){ 

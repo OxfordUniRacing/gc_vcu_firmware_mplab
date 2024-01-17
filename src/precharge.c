@@ -8,6 +8,7 @@
 #include "inverter.h"
 #include "user.h"
 #include "car_control.h"
+#include "globals.h"
 
 //==============================DEFINITIONS
 #define WRITE_PARAMETERS    false
@@ -72,8 +73,8 @@ void handle_precharge(void)
          //driver stopped the car safely, reset the precharge sequence
         if(PRECHARGE_STATE == PC_READY){         
             PRECHARGE_STATE = PC_TS_OFF;
-            UART1_Write("asd",3);
-            UART2_Write("asd",3);
+            UART1_Write("asd\n\r",5);
+            UART2_Write("asd\n\r",5);
         }
         //ts button state cycled during precharge process, probably safe to fail it
         else if(PRECHARGE_STATE != PC_TS_OFF){   
@@ -127,7 +128,11 @@ void handle_precharge(void)
             
 			if(car_control.ignition)
 			{
+#ifdef DEBUG_IGNORE_BMS
 				PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
+#else
+				PRECHARGE_STATE = PC_BMS_RELAY;
+#endif
 				precharge_start_time = current_time_ms();
                 SYS_CONSOLE_PRINT("PC_TS_OFF_SUCCESS\n\r");
 			}
@@ -151,7 +156,7 @@ void handle_precharge(void)
                 PRECHARGE_STATE = PC_WAIT_FOR_INVERTER;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_SUCCESS\n\r");
             }
-            if(has_delay_passed(precharge_start_time,250))
+            if(has_delay_passed(precharge_start_time,2000))
 			{
                 PRECHARGE_STATE = PC_FAILED;
                 SYS_CONSOLE_PRINT("PC_BMS_RELAY_FAIL\n\r");
@@ -174,8 +179,6 @@ void handle_precharge(void)
             
 			if(comms_active.inv1 && comms_active.inv2)
 			{
-				
-				
 				PRECHARGE_STATE = PC_WAIT_FOR_FINAL_VOLTAGE;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_INVERTER_SUCCESS\n\r");
 			}
@@ -215,7 +218,10 @@ void handle_precharge(void)
 			car_control.precharge_ready = false;
             car_control.inverter_params_complete = false;
 			
-            
+#ifdef DEBUG_IGNORE_BMS
+			PRECHARGE_STATE = PC_WRITE_INVERTER_PARAMETERS;
+#else
+			
 			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
 					> /*bms.voltage * 0.95*/ 25)
 			{
@@ -231,7 +237,7 @@ void handle_precharge(void)
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");
 				}
 			}
-			
+#endif
 			break;
             
         case PC_WRITE_INVERTER_PARAMETERS:

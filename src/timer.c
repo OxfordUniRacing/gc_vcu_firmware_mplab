@@ -6,6 +6,7 @@
 #include "timer.h"
 #include "inverter.h"
 #include "precharge.h"
+#include "globals.h"
 
 #include "peripheral/tc/plib_tc0.h"
 #include "peripheral/tc/plib_tc_common.h"
@@ -120,10 +121,13 @@ void handle_timeouts(void)
     //handle all of the vital timeouts breaking the ass loop
     bool ass_break_loop_condition = (!comms_active.inv1 && car_control.precharge_ready) || 
                                 (!comms_active.inv2 && car_control.precharge_ready) ||
-                                //!comms_active.bms ||
+#ifndef DEBUG_IGNORE_BMS
+                                !comms_active.bms ||
+#endif
                                 !comms_active.pb;
     if(has_delay_passed(startup_timer,STARTUP_GRACE_PERIOD) && ass_break_loop_condition){
-        if(!ass.break_loop_timeout){ 
+        if(!ass.break_loop_timeout)
+		{ 
             comms_active_snapshot = comms_active;
         }
         ass.break_loop_timeout = true;

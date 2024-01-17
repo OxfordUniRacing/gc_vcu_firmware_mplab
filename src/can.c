@@ -11,6 +11,7 @@
 #include "precharge.h"
 #include "pio.h"
 #include "car_control.h"
+#include "globals.h"
 //==============================DEFINITIONS
 
 //CAN receive Ids
@@ -68,6 +69,11 @@ void send_can_message(uint16_t id, uint8_t data[],int length);
 
 void handle_can(void)
 {		
+	
+#ifdef DEBUG_IGNORE_IGNITION
+	car_control.ignition = true;
+#endif
+	
     //If there are received CAN messages to handle
 	if(can_rx_queue_len > 0)
 	{
@@ -83,7 +89,7 @@ void handle_can(void)
 				{
 					car_control.user_pedal_value = buf->data[1];
                     comms_time.pb = current_time_ms();
-                    //SYS_CONSOLE_PRINT("%d",car_control.user_pedal_value);
+                    //SYS_CONSOLE_PRINT("%d\n\r",car_control.user_pedal_value);
                 }
 				break;
             
@@ -113,12 +119,20 @@ void handle_can(void)
 			case CAN_ID_RTD:
 				comms_time.dash = current_time_ms();
                 bool rtd_switch_state = (!!buf->data[0]);
-                if(car_control.precharge_ready && car_control.inverter_params_complete){
-                    if(rtd_startup_flag){ //checks whether the switch has been turned from off to on since startup
-                        if(rtd_switch_state == true && car_control.brake_on && car_control.user_pedal_value == 0){
+				
+				/*
+				 * Wtf does rtd_startup_flag do?...
+				 */
+                if(car_control.precharge_ready && car_control.inverter_params_complete)	//If the invereters + battery is ready to go
+				{
+                    if(rtd_startup_flag)			//If startup conditions are good, then continue
+					{ 
+                        if(rtd_switch_state == true && car_control.brake_on && car_control.user_pedal_value == 0)	//If the switch is on, the brakes are on, and there is no pedal demand, then we are ready
+						{
                             car_control.ready_to_drive = true;
                         }
-                        else if(rtd_switch_state == false) {
+                        else if(rtd_switch_state == false) 
+						{
                             car_control.ready_to_drive = false;
                             rtd_startup_flag = car_control.brake_on && car_control.user_pedal_value == 0;
                         }
@@ -128,7 +142,8 @@ void handle_can(void)
                         else rtd_startup_flag = false;
                     }
                 }
-                else{
+                else	//If the battery is not ready then make sure we aren't ready to drive, and the startup flag is false
+				{
                     rtd_startup_flag = false;
                     car_control.ready_to_drive = false;
                 }
@@ -136,7 +151,9 @@ void handle_can(void)
             
             case CAN_ID_IGNITION:
                 comms_time.dash = current_time_ms();
+#ifndef DEBUG_IGNORE_IGNITION
                 car_control.ignition = buf->data[0];
+#endif
                 break;
                 
 				

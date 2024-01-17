@@ -223,6 +223,7 @@
       <itemPath>../src/precharge.h</itemPath>
       <itemPath>../src/car_control.h</itemPath>
       <itemPath>../src/app.h</itemPath>
+      <itemPath>../src/globals.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

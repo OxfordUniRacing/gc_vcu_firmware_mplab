@@ -5,6 +5,7 @@
 #include <string.h>
 #include "pio.h"
 #include "car_control.h"
+#include "globals.h"
 
 //==========================DEFINITIONS
 
@@ -68,10 +69,7 @@ int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*i
     // also leaves the flag as 1 if the inverters are in analog mode
 	
 	int st_c = 1;
-	
-    SYS_CONSOLE_PRINT("INC: %s",msg);   //Print the message to the console
-	
-    const char *possible_msg_starts[] = {"Error", "*", "T=", "S=", "t=", "s="};
+    const char *possible_msg_starts[] = {"Error\n\r", "*", "T=", "S=", "t=", "s="};
     int msg_start_case;
     char *msg_start;
     

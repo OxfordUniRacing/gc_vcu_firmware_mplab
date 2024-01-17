@@ -6,6 +6,8 @@
 #include "precharge.h"
 #include "user.h"
 #include "car_control.h"
+#include "globals.h"
+
 
 #include "peripheral/pio/plib_pio.h"
 #include "peripheral/pwm/plib_pwm0.h"
@@ -14,12 +16,6 @@
 #include "peripheral/afec/plib_afec_common.h"
 
 //===================DEFINITIONS================================================
-#define ASS_CLOSED 1
-#define ASS_OPEN 0
-#define TS_ACTIVE_BOUNCE_TIME 20
-#define RTD_SOUND_TIME 1500
-#define ASS_LOOP_STOP_TIME  300
-#define BRAKE_PRESSURE_THRESHOLD 0.3f
 
 //===================GLOBAL VARIABLES===========================================
 
@@ -55,48 +51,70 @@ void handle_pio(void){
                                 //subtracting 0.5 takes away the constant term from the affine conversion
                                 //multiplying by 25 gives the answer in bar
             ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
+	
+	
+#ifndef DEBUG_PERMENANT_BRAKE
     car_control.brake_on = car_control.brake_pressure > BRAKE_PRESSURE_THRESHOLD;
-    
-    bool ass_close =	!ass.break_loop_precharge &&
+#else
+	car_control.brake_on = true;
+#endif
+	
+	
+	bool ass_close;
+	
+#ifndef DEBUG_IGNORE_ASS
+    ass_close =	!ass.break_loop_precharge &&
 						!ass.break_loop_ts_deactive &&
 						!ass.break_loop_inverter_error &&
                         !ass.break_loop_ins_detect &&
                         !ass.break_loop_timeout;
-    
+	
+#else
+	ass_close = true;
+#endif
+	
+	
     //if(ass_latched_open) SYS_CONSOLE_PRINT("%d",ass_latched_open);
     if(!ass_close || ass_latched_open){ //a condition to break the loop has been met
         //SYS_CONSOLE_PRINT("ASS_CLOSE: %d\n\rASS_LATCHED_OPEN: %d\n\r",ass_close,ass_latched_open);
         if(ass_latched_open){ //the timer to break the loop has started
             uint8_t zero[] = {'0'}; //send 0s to the motors to try to get them to stop within 300ms
-            //UART1_Write(zero,1);
-            //UART2_Write(zero,1);
-            
+            UART1_Write(zero,1);
+            UART2_Write(zero,1);
+			
             //The point of this delay is to ensure that the pack current is small to avoid damaging the contactors
             //Therefore we open the ass loop if the current is small enough or after 300ms, whichever comes first
-            if(has_delay_passed(ass_timer,ASS_LOOP_STOP_TIME) || bms.current < 1){
+            if(has_delay_passed(ass_timer,ASS_LOOP_STOP_TIME) || bms.current < 1)
+			{
                 PIO_PinWrite(ASS_PIN_RELAY_PIN, ASS_OPEN);
             }
         }
-        else{ //the timer hasn't started, so set the flag and start the timer
+        else
+		{ //the timer hasn't started, so set the flag and start the timer
             ass_latched_open = true;
             ass_timer = current_time_ms();
         }
     }
-    else{ //the ass loop can safely remain closed, provided the driver has started the car
-        if(car_control.ignition && (bms.ams_precharge_enabled || car_control.precharge_ready)){
-            PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);
-            //SYS_CONSOLE_PRINT("ASS_CLOSED");
-            if(!ignition_local){
+    else
+	{ 
+        if(car_control.ignition && (bms.ams_precharge_enabled || car_control.precharge_ready)) 
+		{	//If we have started the car
+            PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_CLOSED);	//Make sure ASS loop is closed
+ 
+            if(!ignition_local)
+			{
                 ignition_local = true;
                 ignition_timer = current_time_ms();
             }
-            else if(!ts_active() && has_delay_passed(ignition_timer,TS_ACTIVE_BOUNCE_TIME)){
+            else if(!ts_active() && has_delay_passed(ignition_timer,TS_ACTIVE_BOUNCE_TIME))
+			{
                 ass.break_loop_ts_deactive = true;
                 bms.precharge_enable = true;
             }
         }
         
-        else { 
+        else 
+		{ 
             PIO_PinWrite(ASS_PIN_RELAY_PIN,ASS_OPEN);
             ignition_local = false;
         }
@@ -116,16 +134,19 @@ void handle_pio(void){
         }
     }*/
     
-    if(car_control.ready_to_drive && !rtd_sounded){
+    if(car_control.ready_to_drive && !rtd_sounded)
+	{
         //PWM0_ChannelsStart(PWM_CHANNEL_1_MASK);
         PIO_PinWrite(RTD_SOUND_PIN,1);
         rtd_sounded = true;
         rtd_sound_timer = current_time_ms();
     }
-    if(rtd_sounded && has_delay_passed(rtd_sound_timer,RTD_SOUND_TIME)){
+    if(rtd_sounded && has_delay_passed(rtd_sound_timer,RTD_SOUND_TIME))
+	{
         //PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
         PIO_PinWrite(RTD_SOUND_PIN,0);
-        if(!car_control.ready_to_drive){ //reset condition
+        if(!car_control.ready_to_drive)
+		{ //reset condition
             rtd_sounded = false;
         }
     }
@@ -135,5 +156,9 @@ void handle_pio(void){
 
 bool ts_active(void){
     //return ts_active_local;
+#ifndef DEBUG_IGNORE_TS
     return TS_INPUT_Get();
+#else
+	return true;
+#endif
 }

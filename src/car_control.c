@@ -1,12 +1,13 @@
 //====================INCLUDES==================================================
 #include "car_control.h"
 #include "precharge.h"
+#include "globals.h"
 
 //===================DEFINITIONS================================================
 #define THR_DEADZONE 2 //throttle deadzone as a percentage of max throttle
 #define min(x,y) (x < y ? x : y)
 
-#define THROTTLE_SCALE_DOWN 10
+
 
 #define REFERENCE   3.2
 #define GAIN        24
