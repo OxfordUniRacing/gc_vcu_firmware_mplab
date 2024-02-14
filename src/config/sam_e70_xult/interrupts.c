@@ -79,7 +79,7 @@ void __attribute__((optimize("-O1"),section(".text.Dummy_Handler"),long_call, no
 }
 
 /* MISRAC 2012 deviation block start */
-/* MISRA C-2012 Rule 8.6 deviated 66 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
+/* MISRA C-2012 Rule 8.6 deviated 65 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
 /* Device vectors list dummy definition*/
 extern void SVCall_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PendSV_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -99,7 +99,6 @@ extern void USART0_Handler             ( void ) __attribute__((weak, alias("Dumm
 extern void USART2_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PIOD_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PIOE_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
-extern void HSMCI_Handler              ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TWIHS0_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TWIHS1_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void SPI0_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -188,7 +187,7 @@ const H3DeviceVectors exception_table=
     .pfnUSART2_Handler             = USART2_Handler,
     .pfnPIOD_Handler               = PIOD_Handler,
     .pfnPIOE_Handler               = PIOE_Handler,
-    .pfnHSMCI_Handler              = HSMCI_Handler,
+    .pfnHSMCI_Handler              = HSMCI_InterruptHandler,
     .pfnTWIHS0_Handler             = TWIHS0_Handler,
     .pfnTWIHS1_Handler             = TWIHS1_Handler,
     .pfnSPI0_Handler               = SPI0_Handler,

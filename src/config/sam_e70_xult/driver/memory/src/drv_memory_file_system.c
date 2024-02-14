@@ -1,23 +1,23 @@
-/*******************************************************************************
-  TC Peripheral Library Interface Header File
+/******************************************************************************
+  MEMORY Driver File System Interface Implementation
 
-  Company
+  Company:
     Microchip Technology Inc.
 
-  File Name
-    plib_tc0.h
+  File Name:
+    drv_memory_file_system.c
 
-  Summary
-    TC peripheral library interface.
+  Summary:
+    MEMORY Driver Interface Definition
 
-  Description
-    This file defines the interface to the TC peripheral library.  This
-    library provides access to and control of the associated peripheral
-    instance.
+  Description:
+    The MEMORY Driver provides a interface to access the MEMORY on the PIC32
+    microcontroller. This file implements the MEMORY Driver file system interface.
+    This file should be included in the project if MEMORY driver functionality with
+    File system is needed.
+*******************************************************************************/
 
-******************************************************************************/
-
-// DOM-IGNORE-BEGIN
+//DOM-IGNORE-BEGIN
 /*******************************************************************************
 * Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
 *
@@ -40,89 +40,55 @@
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
-// DOM-IGNORE-END
-
-#ifndef PLIB_TC0_H    // Guards against multiple inclusion
-#define PLIB_TC0_H
-
+//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Included Files
+// Section: Include Files
 // *****************************************************************************
 // *****************************************************************************
 
-/*  This section lists the other files that are included in this file.
-*/
-
-
-#include "plib_tc_common.h"
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus  // Provide C++ Compatibility
-
-extern "C" {
-
-#endif
-
-// DOM-IGNORE-END
+#include "driver/memory/src/drv_memory_local.h"
+#include "system/fs/sys_fs_media_manager.h"
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Data Types
+// Section: Global objects
 // *****************************************************************************
 // *****************************************************************************
-/*  The following data type definitions are used by the functions in this
-    interface and should be considered part it.
-*/
+
+/* FS Function registration table. */
+typedef SYS_FS_MEDIA_COMMAND_STATUS (* CommandStatusGetType)( DRV_HANDLE, SYS_FS_MEDIA_BLOCK_COMMAND_HANDLE );
+
+const SYS_FS_MEDIA_FUNCTIONS memoryMediaFunctions =
+{
+    .mediaStatusGet     = DRV_MEMORY_IsAttached,
+    .mediaGeometryGet   = DRV_MEMORY_GeometryGet,
+    .sectorRead         = DRV_MEMORY_AsyncRead,
+    .sectorWrite        = DRV_MEMORY_AsyncEraseWrite,
+    .eventHandlerset    = DRV_MEMORY_TransferHandlerSet,
+    .commandStatusGet   = (CommandStatusGetType)DRV_MEMORY_CommandStatusGet,
+    .Read               = DRV_MEMORY_AsyncRead,
+    .erase              = DRV_MEMORY_AsyncErase,
+    .addressGet         = DRV_MEMORY_AddressGet,
+    .open               = DRV_MEMORY_Open,
+    .close              = DRV_MEMORY_Close,
+    .tasks              = DRV_MEMORY_Tasks,
+};
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Interface Routines
+// Section: MEMORY Driver File system interface Routines
 // *****************************************************************************
 // *****************************************************************************
-/* The following functions make up the methods (set of possible operations) of
-   this interface.
-*/
 
-// *****************************************************************************
-
-  
-
-
- 
-
-
-
-void TC0_CH0_TimerInitialize (void);
-
-void TC0_CH0_TimerStart (void);
-
-void TC0_CH0_TimerStop (void);
-
-void TC0_CH0_TimerPeriodSet (uint16_t period);
-
-void TC0_CH0_TimerCompareSet (uint16_t compare);
-
-uint32_t TC0_CH0_TimerFrequencyGet (void);
-
-uint16_t TC0_CH0_TimerPeriodGet (void);
-
-uint16_t TC0_CH0_TimerCounterGet (void);
-
-void TC0_CH0_TimerCallbackRegister(TC_TIMER_CALLBACK callback, uintptr_t context);
-
-
-
- 
-
- 
-
-
-#ifdef __cplusplus // Provide C++ Compatibility
+void DRV_MEMORY_RegisterWithSysFs( const SYS_MODULE_INDEX drvIndex, uint8_t mediaType)
+{
+    SYS_FS_MEDIA_MANAGER_Register
+    (
+        (SYS_MODULE_OBJ)drvIndex,
+        (SYS_MODULE_INDEX)drvIndex,
+        &memoryMediaFunctions,
+        (SYS_FS_MEDIA_TYPE)mediaType
+    );
 }
-#endif
-
-#endif //PLIB_TC0_H
-
-/* End of File */

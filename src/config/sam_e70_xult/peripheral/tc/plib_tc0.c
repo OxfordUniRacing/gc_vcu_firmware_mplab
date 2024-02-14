@@ -77,7 +77,7 @@ void TC0_CH0_TimerInitialize (void)
 
 
     /* enable interrupt */
-    TC0_REGS->TC_CHANNEL[0].TC_IER = TC_IER_CPCS_Msk;
+    TC0_REGS->TC_CHANNEL[0].TC_IER = TC_IER_CPAS_Msk;
     TC0_CH0_CallbackObj.callback_fn = NULL;
 }
 
@@ -104,6 +104,11 @@ void TC0_CH0_TimerPeriodSet (uint16_t period)
     TC0_REGS->TC_CHANNEL[0].TC_RC = period;
 }
 
+/* Configure timer compare */
+void TC0_CH0_TimerCompareSet (uint16_t compare)
+{
+    TC0_REGS->TC_CHANNEL[0].TC_RA = compare;
+}
 
 /* Read timer period */
 uint16_t TC0_CH0_TimerPeriodGet (void)

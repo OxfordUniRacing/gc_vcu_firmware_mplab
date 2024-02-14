@@ -1,20 +1,21 @@
 /*******************************************************************************
-  NVIC PLIB Implementation
+  Memory Driver EFC Interface Definition
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    plib_nvic.c
+    drv_memory_efc.h
 
   Summary:
-    NVIC PLIB Source File
+    Memory Driver EFC Interface Definition
 
   Description:
-    None
-
+    The Memory Driver provides a interface to access the EFC peripheral on the
+    microcontroller.
 *******************************************************************************/
 
+//DOM-IGNORE-BEGIN
 /*******************************************************************************
 * Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
 *
@@ -37,79 +38,48 @@
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
 *******************************************************************************/
+//DOM-IGNORE-END
 
-#include "device.h"
-#include "plib_nvic.h"
-
+#ifndef _DRV_MEMORY_EFC_H
+#define _DRV_MEMORY_EFC_H
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: NVIC Implementation
+// Section: File includes
 // *****************************************************************************
 // *****************************************************************************
 
-void NVIC_Initialize( void )
-{
-    /* Priority 0 to 7 and no sub-priority. 0 is the highest priority */
-    NVIC_SetPriorityGrouping( 0x00 );
+#include "drv_memory_definitions.h"
 
-    /* Enable NVIC Controller */
-    __DMB();
-    __enable_irq();
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus  // Provide C++ Compatibility
+    extern "C" {
+#endif
 
-    /* Enable the interrupt sources and configure the priorities as configured
-     * from within the "Interrupt Manager" of MHC. */
-    NVIC_SetPriority(UART1_IRQn, 7);
-    NVIC_EnableIRQ(UART1_IRQn);
-    NVIC_SetPriority(USART1_IRQn, 7);
-    NVIC_EnableIRQ(USART1_IRQn);
-    NVIC_SetPriority(HSMCI_IRQn, 7);
-    NVIC_EnableIRQ(HSMCI_IRQn);
-    NVIC_SetPriority(TC0_CH0_IRQn, 7);
-    NVIC_EnableIRQ(TC0_CH0_IRQn);
-    NVIC_SetPriority(MCAN0_INT0_IRQn, 7);
-    NVIC_EnableIRQ(MCAN0_INT0_IRQn);
-    NVIC_SetPriority(UART2_IRQn, 7);
-    NVIC_EnableIRQ(UART2_IRQn);
-    NVIC_SetPriority(XDMAC_IRQn, 7);
-    NVIC_EnableIRQ(XDMAC_IRQn);
+// DOM-IGNORE-END
 
-    /* Enable Usage fault */
-    SCB->SHCSR |= (SCB_SHCSR_USGFAULTENA_Msk);
-    /* Trap divide by zero */
-    SCB->CCR   |= SCB_CCR_DIV_0_TRP_Msk;
+DRV_HANDLE DRV_EFC_Open( const SYS_MODULE_INDEX drvIndex, const DRV_IO_INTENT ioIntent );
 
-    /* Enable Bus fault */
-    SCB->SHCSR |= (SCB_SHCSR_BUSFAULTENA_Msk);
+void DRV_EFC_Close( const DRV_HANDLE handle );
 
+SYS_STATUS DRV_EFC_Status( const SYS_MODULE_INDEX drvIndex );
+
+bool DRV_EFC_SectorErase( const DRV_HANDLE handle, uint32_t address );
+
+bool DRV_EFC_Read( const DRV_HANDLE handle, void *rx_data, uint32_t rx_data_length, uint32_t address );
+
+bool DRV_EFC_PageWrite( const DRV_HANDLE handle, void *tx_data, uint32_t address );
+
+
+MEMORY_DEVICE_TRANSFER_STATUS DRV_EFC_TransferStatusGet( const DRV_HANDLE handle );
+
+bool DRV_EFC_GeometryGet( const DRV_HANDLE handle, MEMORY_DEVICE_GEOMETRY *geometry );
+
+#ifdef __cplusplus
 }
+#endif
 
-void NVIC_INT_Enable( void )
-{
-    __DMB();
-    __enable_irq();
-}
-
-bool NVIC_INT_Disable( void )
-{
-    bool processorStatus = (__get_PRIMASK() == 0U);
-
-    __disable_irq();
-    __DMB();
-
-    return processorStatus;
-}
-
-void NVIC_INT_Restore( bool state )
-{
-    if( state == true )
-    {
-        __DMB();
-        __enable_irq();
-    }
-    else
-    {
-        __disable_irq();
-        __DMB();
-    }
-}
+#endif // #ifndef _DRV_MEMORY_EFC_H
+/*******************************************************************************
+ End of File
+*/

@@ -1,20 +1,21 @@
-/*******************************************************************************
- System Interrupts File
+/******************************************************************************
+  SDMMC Driver File System Interface Implementation
 
   Company:
     Microchip Technology Inc.
 
   File Name:
-    interrupt.h
+    drv_sdmmc_file_system.c
 
   Summary:
-    Interrupt vectors mapping
+    SDMMC Driver File System Interface Implementation
 
   Description:
-    This file contains declarations of device vectors used by Harmony 3
- *******************************************************************************/
+    This file registers the SDMMC Driver capabilities with the file system
+    interface.
+*******************************************************************************/
 
-// DOM-IGNORE-BEGIN
+//DOM-IGNORE-BEGIN
 /*******************************************************************************
 * Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
 *
@@ -36,42 +37,53 @@
 * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *******************************************************************************/
-// DOM-IGNORE-END
-
-#ifndef INTERRUPTS_H
-#define INTERRUPTS_H
+*******************************************************************************/
+//DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Included Files
-// *****************************************************************************
-// *****************************************************************************
-#include <stdint.h>
-
-
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Handler Routines
+// Section: Include Files
 // *****************************************************************************
 // *****************************************************************************
 
-void Reset_Handler (void);
-void NonMaskableInt_Handler (void);
-void HardFault_Handler (void);
-void MemoryManagement_Handler (void);
-void BusFault_Handler (void);
-void UsageFault_Handler (void);
-void DebugMonitor_Handler (void);
-void UART1_InterruptHandler (void);
-void USART1_InterruptHandler (void);
-void HSMCI_InterruptHandler (void);
-void TC0_CH0_InterruptHandler (void);
-void MCAN0_INT0_InterruptHandler (void);
-void UART2_InterruptHandler (void);
-void XDMAC_InterruptHandler (void);
+#include "driver/sdmmc/drv_sdmmc.h"
+#include "system/fs/sys_fs_media_manager.h"
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Global objects
+// *****************************************************************************
+// *****************************************************************************
 
+/* FS Function registration table. */
+typedef SYS_FS_MEDIA_COMMAND_STATUS (* CommandStatusGetType)( DRV_HANDLE, SYS_FS_MEDIA_BLOCK_COMMAND_HANDLE );
 
-#endif // INTERRUPTS_H
+const SYS_FS_MEDIA_FUNCTIONS sdmmcMediaFunctions =
+{
+    .mediaStatusGet     = DRV_SDMMC_IsAttached,
+    .mediaGeometryGet   = DRV_SDMMC_GeometryGet,
+    .sectorRead         = DRV_SDMMC_AsyncRead,
+    .sectorWrite        = DRV_SDMMC_AsyncWrite,
+    .eventHandlerset    = DRV_SDMMC_EventHandlerSet,
+    .commandStatusGet   = (CommandStatusGetType)DRV_SDMMC_CommandStatus,
+    .open               = DRV_SDMMC_Open,
+    .close              = DRV_SDMMC_Close,
+    .tasks              = DRV_SDMMC_Tasks
+};
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: SDMMC Driver File system interface Routines
+// *****************************************************************************
+// *****************************************************************************
+
+void DRV_SDMMC_RegisterWithSysFs( const SYS_MODULE_INDEX drvIndex)
+{
+    SYS_FS_MEDIA_MANAGER_Register
+    (
+        (SYS_MODULE_OBJ)drvIndex,
+        (SYS_MODULE_INDEX)drvIndex,
+        &sdmmcMediaFunctions,
+        SYS_FS_MEDIA_TYPE_SD_CARD
+    );
+}
