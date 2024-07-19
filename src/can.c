@@ -12,6 +12,7 @@
 #include "pio.h"
 #include "car_control.h"
 #include "globals.h"
+#include "can_inverters.h"
 //==============================DEFINITIONS
 
 //CAN receive Ids
@@ -27,6 +28,17 @@
 #define CAN_ID_SBG_IMU_DELTA_VEL    0x123
 #define CAN_ID_SBG_EKF_VEL_BODY 0x139
 #define CAN_ID_SBG_EKF_VEL_NED_ACC  0x138
+
+#define CAN_ID_INV1_HS1		((PGN_HS1 << 8) + (0xFF << 8) + INV_RIGHT_ADDRESS)
+#define CAN_ID_INV1_HS2		((PGN_HS2 << 8) + (0xFF << 8) + INV_RIGHT_ADDRESS)
+#define CAN_ID_INV1_HS3		((PGN_HS3 << 8) + (0xFF << 8) + INV_RIGHT_ADDRESS)
+#define CAN_ID_INV1_HS4		((PGN_HS4 << 8) + (0xFF << 8) + INV_RIGHT_ADDRESS)
+
+#define CAN_ID_INV2_HS1		((PGN_HS1 << 8) + (0xFF << 8) + INV_LEFT_ADDRESS)
+#define CAN_ID_INV2_HS2		((PGN_HS2 << 8) + (0xFF << 8) + INV_LEFT_ADDRESS)
+#define CAN_ID_INV2_HS3		((PGN_HS3 << 8) + (0xFF << 8) + INV_LEFT_ADDRESS)
+#define CAN_ID_INV2_HS4		((PGN_HS4 << 8) + (0xFF << 8) + INV_LEFT_ADDRESS)
+
 
 //CAN send Ids
 #define CAN_ID_TX_TO_BMS    0x008
@@ -64,7 +76,6 @@ MCAN_RX_BUFFER* can_rx_queue_push(void);
 
 void can_rx_callback(uint8_t numberOfMessage, uintptr_t contextHandle);
 
-void send_can_message(uint16_t id, uint8_t data[],int length);
 //===========================================GLOBAL FUNC
 
 void handle_can(void)
@@ -81,6 +92,11 @@ void handle_can(void)
 		buf = can_rx_queue_pop();
 		//Take pedal board
 
+		//first check for the J1939 ids
+		
+		
+		
+		
 		switch(buf->id)
 		{
 			case CAN_ID_PEDAL_BOARD:
@@ -196,9 +212,27 @@ void handle_can(void)
                 float v_e_acc = int16_bytes_converter.i*0.01f;
                 car_control.v_acc = (v_n_acc+v_e_acc)/2;
                 break;
-		}
-		
-		
+			default:
+				Nop();
+				uint32_t temp_id = buf->id;
+				temp_id &= 0xFFFFFF;
+				switch(temp_id)
+				{
+					case CAN_ID_INV1_HS1:
+						parse_HS1(&inv1, buf->data);
+						break;
+					case CAN_ID_INV1_HS2:
+						parse_HS2(&inv1, buf->data);
+						break;
+					case CAN_ID_INV2_HS1:
+						parse_HS1(&inv2, buf->data);
+						break;
+					case CAN_ID_INV2_HS2:
+						parse_HS2(&inv2, buf->data);
+						break;
+				}
+				break;
+		}	
 	}
     
     //Handle transmitting CAN messages
@@ -330,7 +364,7 @@ MCAN_RX_BUFFER* can_rx_queue_pop(void)
 //helper function that sends a CAN message given an ID and a byte array of data
 //it will always send 8 bytes regardless of the length of the data passed to it
 //it fills any remaining bytes with 0s
-void send_can_message(uint16_t id, uint8_t data[],int length){
+void send_can_message(uint32_t id, uint8_t data[],int length){
     
     MCAN_TX_BUFFER temp_tx_buf = {
         .data = {0,0,0,0,0,0,0,0},

@@ -22,17 +22,17 @@ control_t car_control = {0};
 //===================GLOBAL FUNCTIONS===========================================
 
 int get_inv1_cmd(void){
-    uint8_t p = car_control.user_pedal_value/THROTTLE_SCALE_DOWN;
+    uint8_t p = car_control.user_pedal_value;
     if(p < THR_DEADZONE) return 0;
-    
-    return p;
+	
+	return int(p) * 160 * 5  / 100;
 }
 
 int get_inv2_cmd(void){
-    uint8_t p = car_control.user_pedal_value/THROTTLE_SCALE_DOWN;
+    uint8_t p = car_control.user_pedal_value;
     if(p < THR_DEADZONE) return 0;
-    
-    return p;
+	
+	return int(p) * 160 * 5  / 100;
 }
 
 void handle_ins(void){

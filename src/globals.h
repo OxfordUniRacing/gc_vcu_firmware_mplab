@@ -33,6 +33,29 @@
 
 
 
+#define INV_RIGHT_ADDRESS	(0x71)	//INV1
+#define INV_LEFT_ADDRESS	(0x72)	//INV2
+#define SOURCE_ADDRESS		(0x01)
+
+#define PGN_HC1				(0x11000)
+#define PGN_HC2				(0x11100)
+#define PGN_HC3				(0x11200)
+
+#define PGN_HS1				(0x11800)
+#define PGN_HS2				(0x11900)
+#define PGN_HS3				(0x11A00)
+#define PGN_HS4				(0x11B00)
+
+
+typedef enum {
+		STATUSWORD_NOTREADY	= 0x01,
+		STATUSWORD_SHUTDOWN = 0x02,
+		STATUSWORD_PRECHARGE = 0x04,
+		STATUSWORD_ENERGISED = 0x07,
+		STATUSWORD_ENABLED = 0x08,
+		STATUSWORD_FAULTREACTION = 0x0B,
+		STATUSWORD_FAULTOFF = 0x0D
+}statusword_t;
 
 
 #endif /* _EXAMPLE_FILE_NAME_H */

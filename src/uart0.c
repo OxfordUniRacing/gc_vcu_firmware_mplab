@@ -19,15 +19,15 @@
 
 //=====================================LOCAL VARIABLES=========================
 
-static volatile bool uart1_ready;
-static volatile bool uart2_ready;
-static volatile bool uart1_rdNotificationEnabled = false;
-static volatile bool uart2_rdNotificationEnabled = false;
+static bool uart1_ready;
+static bool uart2_ready;
+static bool uart1_rdNotificationEnabled = false;
+static bool uart2_rdNotificationEnabled = false;
 
-static volatile char inv1_rx_buf[600];
-static volatile uint16_t inv1_rx_ptr = 0;
-static volatile char inv2_rx_buf[600];
-static volatile uint16_t inv2_rx_ptr = 0;
+static char inv1_rx_buf[600];
+static uint16_t inv1_rx_ptr = 0;
+static char inv2_rx_buf[600];
+static uint16_t inv2_rx_ptr = 0;
 
 //================================LOCAL FUNCTION DECLARATIONS===================
 static void uart1_rx_char(void);

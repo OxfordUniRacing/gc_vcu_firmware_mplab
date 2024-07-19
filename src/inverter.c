@@ -6,9 +6,15 @@
 #include "pio.h"
 #include "car_control.h"
 #include "globals.h"
+#include "can_inverters.h"
 
 //==========================DEFINITIONS
 
+
+#define HC1_DRIVE_PERIOD		20
+#define HC1_nDRIVE_PERIOD		200
+#define HC2_PERIOD				200	
+#define HC3_PERIOD				200
 
 //==========================GLOBAL VAR
 inv_t inv1;
@@ -21,35 +27,50 @@ inv_t inv2;
 
 void handle_inverters(void)
 {   
-    if(car_control.ready_to_drive){ 
-        if(!inv1.active_drive && get_inv1_cmd() > 0){
-            //start with empty buffer long enough for any command
-            char thr_cmd[128] = {0};
-            //use helper function to fill buffer, actual length of command returned from
-            //helper function so that I don't write unnecessary characters
-            int length = get_thr_cmd_str(car_control.user_pedal_value,thr_cmd,128);
-            UART1_Write((uint8_t*)thr_cmd,length);	
-            inv1.active_drive = true;
-        }
-        
-        if(!inv2.active_drive && get_inv2_cmd() > 0){
-            //start with empty buffer long enough for any command
-            char thr_cmd[128] = {0};
-            //use helper function to fill buffer, actual length of command returned from
-            //helper function so that I don't write unnecessary characters
-            int length = get_thr_cmd_str(car_control.user_pedal_value,thr_cmd,128);
-            UART2_Write((uint8_t*)thr_cmd,length);	
-            inv2.active_drive = true;
-        }
+	static uint32_t HC1_transmit_time = 0;
+	static uint32_t HC2_transmit_time = - 5;
+	static uint32_t HC3_transmit_time = - 15;
+	
+	/*
+	 * We always want to be sending all HC1,2,3 at 200ms when not ready to drive
+	 * 
+	 * When we are ready to drive, up the rate of HC1 to 5-10ms
+	 */
+	
+	if(car_control.ready_to_drive)
+	{
+		if( has_delay_passed(HC1_transmit_time, HC1_DRIVE_PERIOD))
+		{
+			update_HC1_drive();
+			
+			HC1_transmit_time = current_time_ms();
+		}
 	}
-    
-    else if(inv1.active_drive || inv2.active_drive){
-        UART1_Write("0",1);
-        UART2_Write("0",1);
-        inv1.active_drive = false;
-        inv2.active_drive = false;
-    }
-    
+	else
+	{
+		if( has_delay_passed(HC1_transmit_time, HC1_nDRIVE_PERIOD))
+		{
+			update_HC1_shutdown();
+			
+			HC1_transmit_time = current_time_ms();
+		}
+	}
+	
+	
+	if( has_delay_passed(HC2_transmit_time, HC2_PERIOD))
+	{
+		update_HC2();
+
+		HC2_transmit_time = current_time_ms();
+	}
+	else if( has_delay_passed(HC3_transmit_time, HC3_PERIOD))
+	{
+		update_HC3();
+
+		HC3_transmit_time = current_time_ms();
+	}
+
+	//If comms have broken to the inverters, set the voltage to default (0))
     if(!comms_active.inv1){
         inv1.voltage = 0;
     }
@@ -60,7 +81,7 @@ void handle_inverters(void)
 }
 
 //returns 0 if successful, -1 if we've read past the buffer, <-1 if there's something wrong with the message (i.e. it doesn't find a parameter), and a positive int if there's an error code 
-int inv_parse_rx(volatile char* msg, volatile size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
+int inv_parse_rx(char* msg, size_t len, inv_t* inv, size_t (*io_write)(uint8_t*,const size_t) ) // @@ Check if we can read the inverter stuff for reading the voltage
 {
 	// IO DESCRIPTOR ARG Is for writing the s
 	
