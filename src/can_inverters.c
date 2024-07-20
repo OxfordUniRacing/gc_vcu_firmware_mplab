@@ -74,7 +74,7 @@ void transmit_HC1(
 {
 	// HC1: PGN 0x110(00)
 	
-	uint32_t id = (PGN_HC1 + dest_address) << 8 + SOURCE_ADDRESS;
+	uint32_t id = ((PGN_HC1 + dest_address) << 8) + SOURCE_ADDRESS;
 	uint32_t length = 8;
 	
 	uint8_t data[8];
@@ -93,7 +93,7 @@ void transmit_HC1(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = data,
+        .data = *data,
         .dlc = length,
         .id = id,
         .sof = 1
@@ -112,7 +112,7 @@ void update_HC1_drive(void)
 	transmit_HC1(INV_LEFT_ADDRESS, get_inv2_cmd(), CONTROLWORLD_ENABLE, TRQ_LIMIT);
 }
 
-void update_HC1_precharge(void)
+void update_HC1_energise(void)
 {
 	transmit_HC1(INV_RIGHT_ADDRESS, 0, CONTROLWORLD_ENERGISE, TRQ_LIMIT);
 	transmit_HC1(INV_LEFT_ADDRESS, 0, CONTROLWORLD_ENERGISE, TRQ_LIMIT);
@@ -133,7 +133,7 @@ void transmit_HC2(
 {
 	// HC1: PGN 0x110(00)
 	
-	uint32_t id = (PGN_HC2 + dest_address) << 8 + SOURCE_ADDRESS;
+	uint32_t id = ((PGN_HC2 + dest_address) << 8) + SOURCE_ADDRESS;
 	uint32_t length = 8;
 	
 	uint8_t data[8];
@@ -152,7 +152,7 @@ void transmit_HC2(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = data,
+        .data = *data,
         .dlc = length,
         .id = id,
         .sof = 1
@@ -176,7 +176,7 @@ void transmit_HC3(
 {
 	// HC1: PGN 0x110(00)
 	
-	uint32_t id = (PGN_HC3 + dest_address) << 8 + SOURCE_ADDRESS;
+	uint32_t id = ((PGN_HC3 + dest_address) << 8) + SOURCE_ADDRESS;
 	uint32_t length = 8;
 	
 	uint8_t data[8];
@@ -194,7 +194,7 @@ void transmit_HC3(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = data,
+        .data = *data,
         .dlc = length,
         .id = id,
         .sof = 1
@@ -255,4 +255,13 @@ void parse_HS2(inv_t* inv, uint8_t data[])
 	inv->available_reverse_torque = (float)available_rev_trq / 160;
 	
 	inv->statusword = data[4];
+}
+
+void parse_HS3(inv_t* inv, uint8_t data[])
+{
+	int16_t measured_capacitor_voltage = 0;
+	measured_capacitor_voltage += data[4];
+	measured_capacitor_voltage += ((int16_t)data[5]) << 8;
+	
+	inv->capacitor_voltage = measured_capacitor_voltage;
 }

@@ -25,14 +25,14 @@ int get_inv1_cmd(void){
     uint8_t p = car_control.user_pedal_value;
     if(p < THR_DEADZONE) return 0;
 	
-	return int(p) * 160 * 5  / 100;
+	return ((int)p) * 160 * 5  / 100;
 }
 
 int get_inv2_cmd(void){
     uint8_t p = car_control.user_pedal_value;
     if(p < THR_DEADZONE) return 0;
 	
-	return int(p) * 160 * 5  / 100;
+	return ((int)p) * 160 * 5  / 100;
 }
 
 void handle_ins(void){

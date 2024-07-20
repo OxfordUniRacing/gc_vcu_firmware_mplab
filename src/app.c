@@ -171,7 +171,7 @@ void APP_Tasks ( void )
     handle_pio();
     handle_precharge();
     
-    handle_uart();
+    //handle_uart();
 	
 	handle_console();
 	handle_inverters();
@@ -194,6 +194,17 @@ void APP_Tasks ( void )
         SYS_CONSOLE_PRINT("bms:%d\tdash:%d\tinv1:%d\tinv2:%d\tpb:%d\tsteer:%d\n\r",comms_active.bms,comms_active.dash,comms_active.inv1,comms_active.inv2,comms_active.pb,comms_active.steering);
         //SYS_CONSOLE_PRINT("Inverter 1 ID: %ld\n\r",inv1.id);
         //SYS_CONSOLE_PRINT("Inverter 2 ID: %ld\n\r",inv2.id);
+		
+		if(inv1.fault_active)
+		{
+			SYS_CONSOLE_PRINT("INV1 FAULT: %x", inv1.fault_code);
+		}
+		
+		if(inv2.fault_active)
+		{
+			SYS_CONSOLE_PRINT("INV2 FAULT: %x", inv2.fault_code);
+		}
+		
         send_debug_timer = current_time_ms();
     }
 }

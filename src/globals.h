@@ -9,7 +9,7 @@
 
 
 //=============================DEBUG DEFINES===========================
-#define DEBUG_IGNORE_BMS	//If defined, does not require BMS to be connected to operate											
+//#define DEBUG_IGNORE_BMS	//If defined, does not require BMS to be connected to operate											
 
 //#define DEBUG_IGNORE_ASS	//If defined, assumes ASS loop is always closed
 

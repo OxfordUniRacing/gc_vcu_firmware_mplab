@@ -95,7 +95,7 @@ void handle_can(void)
 		//first check for the J1939 ids
 		
 		
-		
+		SYS_CONSOLE_PRINT("CAN ID: %x\n\r", buf->id);
 		
 		switch(buf->id)
 		{
@@ -212,23 +212,45 @@ void handle_can(void)
                 float v_e_acc = int16_bytes_converter.i*0.01f;
                 car_control.v_acc = (v_n_acc+v_e_acc)/2;
                 break;
+			case 0x38:
+				break;
+			case 0x6D0:
+				break;
 			default:
 				Nop();
 				uint32_t temp_id = buf->id;
-				temp_id &= 0xFFFFFF;
+				temp_id &= 0x01FFFFFF;//ignore prority + reserve
+				
 				switch(temp_id)
 				{
 					case CAN_ID_INV1_HS1:
 						parse_HS1(&inv1, buf->data);
+						comms_time.inv1 = current_time_ms();
 						break;
 					case CAN_ID_INV1_HS2:
 						parse_HS2(&inv1, buf->data);
+						comms_time.inv1 = current_time_ms();
+						break;
+					case CAN_ID_INV1_HS3:
+						parse_HS3(&inv1, buf->data);
+						comms_time.inv1 = current_time_ms();
 						break;
 					case CAN_ID_INV2_HS1:
 						parse_HS1(&inv2, buf->data);
+						comms_time.inv2 = current_time_ms();
 						break;
 					case CAN_ID_INV2_HS2:
 						parse_HS2(&inv2, buf->data);
+						comms_time.inv2 = current_time_ms();
+						break;
+					case CAN_ID_INV2_HS3:
+						parse_HS3(&inv2, buf->data);
+						comms_time.inv2 = current_time_ms();
+						break;
+					default:
+						Nop();
+						Nop();
+						Nop();
 						break;
 				}
 				break;
@@ -248,52 +270,53 @@ void handle_can(void)
         
     }
     
-    if(tx_ready.logger)
-	{
-        tx_time.logger = current_time_ms();
-        
-        if(ts_active()){
-            uint16_t inv1_current_inflated = inv1.phase_current*10;
-            uint16_t inv1_voltage_inflated = inv1.voltage*10;
-            uint16_t inv1_pwm_deflated = inv1.pwm/2;
-            uint8_t inv1_data[] = 
-                {inv1.motor_temp*2+inv1_pwm_deflated/256, inv1_pwm_deflated%256,
-                inv1.rpm/256, inv1.rpm%256,
-                inv1_current_inflated/256, inv1_current_inflated%256,
-                inv1_voltage_inflated/256, inv1_voltage_inflated%256};
-            send_can_message(CAN_ID_TX_TO_LOGGER_1,inv1_data,8);
-            
-            uint16_t inv2_current_inflated = inv2.phase_current*10;
-            uint16_t inv2_voltage_inflated = inv2.voltage*10;
-            uint16_t inv2_pwm_deflated = inv2.pwm/2;
-            uint8_t inv2_data[] = 
-                {inv2.motor_temp*2+inv2_pwm_deflated/256, inv2_pwm_deflated%256,
-                inv2.rpm/256, inv2.rpm%256,
-                inv2_current_inflated/256, inv2_current_inflated%256,
-                inv2_voltage_inflated/256, inv2_voltage_inflated%256};
-            send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
-        }
-        else{
-            uint8_t zero_data[] = {0,0,0,0,0,0,0,0};
-            send_can_message(CAN_ID_TX_TO_LOGGER_1,zero_data,8);
-            send_can_message(CAN_ID_TX_TO_LOGGER_2,zero_data,8);
-        }
-        
-        uint8_t brake_pres_data[sizeof(float)+2];
-        brake_pres_data[0] = car_control.brake_on;
-        brake_pres_data[1] = 0;
-        memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
-        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
-        
-        if(!car_control.precharge_ready){
-            uint8_t data[] = 
-            {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
-            inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
-            inv1.CURRENT_LIMIT*2/256,bms.pack_dlc*2%256,
-            0};
-            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
-        }
-    }
+	//Not using data logger
+//    if(tx_ready.logger)
+//	{
+//        tx_time.logger = current_time_ms();
+//        
+//        if(ts_active()){
+//            uint16_t inv1_current_inflated = inv1.phase_current*10;
+//            uint16_t inv1_voltage_inflated = inv1.voltage*10;
+//            uint16_t inv1_pwm_deflated = inv1.pwm/2;
+//            uint8_t inv1_data[] = 
+//                {inv1.motor_temp*2+inv1_pwm_deflated/256, inv1_pwm_deflated%256,
+//                inv1.rpm/256, inv1.rpm%256,
+//                inv1_current_inflated/256, inv1_current_inflated%256,
+//                inv1_voltage_inflated/256, inv1_voltage_inflated%256};
+//            send_can_message(CAN_ID_TX_TO_LOGGER_1,inv1_data,8);
+//            
+//            uint16_t inv2_current_inflated = inv2.phase_current*10;
+//            uint16_t inv2_voltage_inflated = inv2.voltage*10;
+//            uint16_t inv2_pwm_deflated = inv2.pwm/2;
+//            uint8_t inv2_data[] = 
+//                {inv2.motor_temp*2+inv2_pwm_deflated/256, inv2_pwm_deflated%256,
+//                inv2.rpm/256, inv2.rpm%256,
+//                inv2_current_inflated/256, inv2_current_inflated%256,
+//                inv2_voltage_inflated/256, inv2_voltage_inflated%256};
+//            send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
+//        }
+//        else{
+//            uint8_t zero_data[] = {0,0,0,0,0,0,0,0};
+//            send_can_message(CAN_ID_TX_TO_LOGGER_1,zero_data,8);
+//            send_can_message(CAN_ID_TX_TO_LOGGER_2,zero_data,8);
+//        }
+//        
+//        uint8_t brake_pres_data[sizeof(float)+2];
+//        brake_pres_data[0] = car_control.brake_on;
+//        brake_pres_data[1] = 0;
+//        memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
+//        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
+//        
+//        if(!car_control.precharge_ready){
+//            uint8_t data[] = 
+//            {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
+//            inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
+//            inv1.CURRENT_LIMIT*2/256,bms.pack_dlc*2%256,
+//            0};
+//            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
+//        }
+//    }
     
     if(tx_ready.status){
         uint8_t status_data[] =

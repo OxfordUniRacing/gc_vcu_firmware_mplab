@@ -46,11 +46,15 @@ void init_pio(void){
 
 void handle_pio(void){
     AFEC0_ConversionStart();
-    while(!AFEC0_ChannelResultIsReady(AFEC_CH8)); //wait for reading
-    car_control.brake_pressure = //result*3.3/65535 gets voltage, *2.36 provides the factor for the potential divider
-                                //subtracting 0.5 takes away the constant term from the affine conversion
-                                //multiplying by 25 gives the answer in bar
-            ((float)AFEC0_ChannelResultGet(AFEC_CH8)*7.788f/65535U-0.5)*25;
+    while(!AFEC0_ChannelResultIsReady(AFEC_CH8)) {}; //wait for reading
+	
+	uint16_t brake_adc = AFEC0_ChannelResultGet(AFEC_CH8);
+	float brake_pressure_raw = brake_adc;
+	car_control.brake_pressure = (brake_pressure_raw * 7.788f /65535U-0.5)*25;
+	
+    //result*3.3/65535 gets voltage, *2.36 provides the factor for the potential divider
+    //subtracting 0.5 takes away the constant term from the affine conversion
+    //multiplying by 25 gives the answer in bar
 	
 	
 #ifndef DEBUG_PERMENANT_BRAKE

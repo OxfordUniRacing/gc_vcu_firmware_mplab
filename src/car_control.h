@@ -14,7 +14,9 @@
 typedef struct
 {
 	bool ready_to_drive;														//True if the car is ready to drive (NOT SWITCH STATE)
-    bool inverter_params_complete;												//True if the inverters have been set up
+    bool inverters_energise;													//True if the inverters are to be energised
+	bool inverters_enable;
+	bool inverter_params_complete;												//True if the inverters have been set up
     bool precharge_ready;														//True if the precharge sequence has been completed
     bool ignition;																//Ignition state from the dashboard
     uint8_t ins_error_code;
