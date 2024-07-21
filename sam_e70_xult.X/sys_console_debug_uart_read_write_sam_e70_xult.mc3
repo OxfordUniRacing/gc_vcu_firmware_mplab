@@ -4075,11 +4075,33 @@
 </value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="FILTERS_EXT"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_EXT&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="FILTERS_EXT_NOMATCH"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_EXT_NOMATCH&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="FILTERS_STD"/>
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;FILTERS_STD&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;0&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -4103,6 +4125,49 @@
     &lt;Values dnOrder=&quot;0&quot;&gt;
       &lt;User dnOrder=&quot;0&quot; value=&quot;true&quot;/&gt;
     &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN0_EXT_FILTER1"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN0_EXT_FILTER1&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
+      &lt;/Boolean&gt;
+      &lt;Boolean dnOrder=&quot;1&quot; id=&quot;visible&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN0_EXT_FILTER1_EFID2"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN0_EXT_FILTER1_EFID2&quot;&gt;
+    &lt;Values dnOrder=&quot;0&quot;&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;536870911&quot;/&gt;
+    &lt;/Values&gt;
+  &lt;/mcan0&gt;
+&lt;/mcan0&gt;
+</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="mcan0" name="MCAN0_STD_FILTER1"/>
+         <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
+  &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;MCAN0_STD_FILTER1&quot;&gt;
+    &lt;Attributes dnOrder=&quot;0&quot;&gt;
+      &lt;Boolean dnOrder=&quot;0&quot; id=&quot;enabled&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
+      &lt;/Boolean&gt;
+      &lt;Boolean dnOrder=&quot;1&quot; id=&quot;visible&quot;&gt;
+        &lt;Value dnOrder=&quot;0&quot;&gt;false&lt;/Value&gt;
+      &lt;/Boolean&gt;
+    &lt;/Attributes&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
 </value>
@@ -4315,7 +4380,7 @@
          <value>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&lt;mcan0&gt;
   &lt;mcan0 dnOrder=&quot;0&quot; id=&quot;RXF0_ELEMENTS&quot;&gt;
     &lt;Values dnOrder=&quot;0&quot;&gt;
-      &lt;User dnOrder=&quot;0&quot; value=&quot;1&quot;/&gt;
+      &lt;User dnOrder=&quot;0&quot; value=&quot;2&quot;/&gt;
     &lt;/Values&gt;
   &lt;/mcan0&gt;
 &lt;/mcan0&gt;
@@ -5641,11 +5706,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\configuration.h</file>
-         <hash>1371bc728d9ccd6566647efafa8997dedf91bc9ce5fd2c9b36233bcf6cf65a7e</hash>
+         <hash>926b8f6077372a2715a823f8cf1bbb95bae12a49859d1403b13d75dd3cadb1b0</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\definitions.h</file>
-         <hash>8eb244348b1d5e07048bc786dada221f8cf4e6a3117e986a3823739fed00725d</hash>
+         <hash>7dd84395e6b3dc9ba40f5d60187a366aec9bcd7d66215fc97b506c26edf95e27</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\device.h</file>
@@ -5673,7 +5738,7 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\initialization.c</file>
-         <hash>e682ab58edcbb919274bae267b34c1ffa042d35e647b27db59bbddfe0351da7c</hash>
+         <hash>754f12b90cfc2aecc28d0774222a109bfc0933fc1727fe93d6e86ffe6b4137e5</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\interrupts.c</file>
@@ -5729,11 +5794,11 @@
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.c</file>
-         <hash>cf2de996ddf6adf9635602f1645fd9ad7a9ea4cff7d56718a8e2af7675146e17</hash>
+         <hash>9780721139c02b30b1166b9f355091922578529446dd44003cda579fcb7526d6</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan0.h</file>
-         <hash>62bbf1d5ffae0eae33f89b6a5de543171d9cd1190ebad721901e4e9b4486a59f</hash>
+         <hash>1f059827cdceb72a72c3166c43a04d3d8295e33d7d1ad6fcdae6c55cf2b1bc51</hash>
       </entry>
       <entry>
          <file>..\src\config\sam_e70_xult\peripheral\mcan\plib_mcan_common.h</file>

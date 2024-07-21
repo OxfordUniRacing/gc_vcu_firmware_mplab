@@ -95,7 +95,7 @@ void handle_can(void)
 		//first check for the J1939 ids
 		
 		
-		SYS_CONSOLE_PRINT("CAN ID: %x\n\r", buf->id);
+		
 		
 		switch(buf->id)
 		{
@@ -220,7 +220,7 @@ void handle_can(void)
 				Nop();
 				uint32_t temp_id = buf->id;
 				temp_id &= 0x01FFFFFF;//ignore prority + reserve
-				
+				//SYS_CONSOLE_PRINT("CAN ID: %x\n\r", buf->id);
 				switch(temp_id)
 				{
 					case CAN_ID_INV1_HS1:
