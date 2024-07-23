@@ -96,7 +96,6 @@ void transmit_HC1(
         .data = *data,
         .dlc = length,
         .id = id,
-        .sof = 1
     };
 		
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
@@ -155,7 +154,6 @@ void transmit_HC2(
         .data = *data,
         .dlc = length,
         .id = id,
-        .sof = 1
     };
 		
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
@@ -197,7 +195,6 @@ void transmit_HC3(
         .data = *data,
         .dlc = length,
         .id = id,
-        .sof = 1
     };
 		
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
@@ -263,5 +260,5 @@ void parse_HS3(inv_t* inv, uint8_t data[])
 	measured_capacitor_voltage += data[4];
 	measured_capacitor_voltage += ((int16_t)data[5]) << 8;
 	
-	inv->capacitor_voltage = measured_capacitor_voltage;
+	inv->capacitor_voltage = (float)measured_capacitor_voltage / 16;
 }

@@ -29,7 +29,7 @@
 #define TS_ACTIVE_BOUNCE_TIME 2000
 #define RTD_SOUND_TIME 2500							
 #define ASS_LOOP_STOP_TIME  300
-#define BRAKE_PRESSURE_THRESHOLD 0.5f				//Threshold to consider the brakes active (BAR)
+#define BRAKE_PRESSURE_THRESHOLD 1.0f				//Threshold to consider the brakes active (BAR)
 
 
 
