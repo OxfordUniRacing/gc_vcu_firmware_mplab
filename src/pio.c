@@ -82,9 +82,6 @@ void handle_pio(void){
     if(!ass_close || ass_latched_open){ //a condition to break the loop has been met
         //SYS_CONSOLE_PRINT("ASS_CLOSE: %d\n\rASS_LATCHED_OPEN: %d\n\r",ass_close,ass_latched_open);
         if(ass_latched_open){ //the timer to break the loop has started
-            uint8_t zero[] = {'0'}; //send 0s to the motors to try to get them to stop within 300ms
-            UART1_Write(zero,1);
-            UART2_Write(zero,1);
 			
             //The point of this delay is to ensure that the pack current is small to avoid damaging the contactors
             //Therefore we open the ass loop if the current is small enough or after 300ms, whichever comes first
@@ -149,10 +146,12 @@ void handle_pio(void){
 	{
         //PWM0_ChannelsStop(PWM_CHANNEL_1_MASK);
         PIO_PinWrite(RTD_SOUND_PIN,0);
-        if(!car_control.ready_to_drive)
-		{ //reset condition
-            rtd_sounded = false;
-        }
+
+		if(!car_control.ready_to_drive)
+        {
+			rtd_sounded = false;
+		}
+
     }
     
     PIO_PinWrite(BRAKE_LIGHT_PIN,car_control.brake_on);

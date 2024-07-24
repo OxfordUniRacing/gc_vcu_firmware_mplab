@@ -156,6 +156,9 @@ void MCAN0_Initialize(void)
 */
 bool MCAN0_MessageTransmitFifo(uint8_t numberOfMessage, MCAN_TX_BUFFER *txBuffer)
 {
+	
+	//return;
+	
     uint8_t  *txFifo = NULL;
     uint8_t  *txBuf = (uint8_t *)txBuffer;
     uint32_t bufferNumber = 0U;

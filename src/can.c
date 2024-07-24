@@ -183,8 +183,12 @@ void handle_can(void)
 								}
 							}
 							else{
-								if(rtd_switch_state == false && car_control.brake_on && car_control.user_pedal_value == 0) rtd_startup_flag = true;
-								else rtd_startup_flag = false;
+								if(rtd_switch_state == false && car_control.brake_on && car_control.user_pedal_value == 0)
+								{	
+									rtd_startup_flag = true;
+								}
+										
+								//else rtd_startup_flag = false;
 							}
 						}
 						else	//If the battery is not ready then make sure we aren't ready to drive, and the startup flag is false
@@ -271,55 +275,11 @@ void handle_can(void)
         
     }
     
-	//Not using data logger
-//    if(tx_ready.logger)
-//	{
-//        tx_time.logger = current_time_ms();
-//        
-//        if(ts_active()){
-//            uint16_t inv1_current_inflated = inv1.phase_current*10;
-//            uint16_t inv1_voltage_inflated = inv1.voltage*10;
-//            uint16_t inv1_pwm_deflated = inv1.pwm/2;
-//            uint8_t inv1_data[] = 
-//                {inv1.motor_temp*2+inv1_pwm_deflated/256, inv1_pwm_deflated%256,
-//                inv1.rpm/256, inv1.rpm%256,
-//                inv1_current_inflated/256, inv1_current_inflated%256,
-//                inv1_voltage_inflated/256, inv1_voltage_inflated%256};
-//            send_can_message(CAN_ID_TX_TO_LOGGER_1,inv1_data,8);
-//            
-//            uint16_t inv2_current_inflated = inv2.phase_current*10;
-//            uint16_t inv2_voltage_inflated = inv2.voltage*10;
-//            uint16_t inv2_pwm_deflated = inv2.pwm/2;
-//            uint8_t inv2_data[] = 
-//                {inv2.motor_temp*2+inv2_pwm_deflated/256, inv2_pwm_deflated%256,
-//                inv2.rpm/256, inv2.rpm%256,
-//                inv2_current_inflated/256, inv2_current_inflated%256,
-//                inv2_voltage_inflated/256, inv2_voltage_inflated%256};
-//            send_can_message(CAN_ID_TX_TO_LOGGER_2,inv2_data,8);
-//        }
-//        else{
-//            uint8_t zero_data[] = {0,0,0,0,0,0,0,0};
-//            send_can_message(CAN_ID_TX_TO_LOGGER_1,zero_data,8);
-//            send_can_message(CAN_ID_TX_TO_LOGGER_2,zero_data,8);
-//        }
-//        
-//        uint8_t brake_pres_data[sizeof(float)+2];
-//        brake_pres_data[0] = car_control.brake_on;
-//        brake_pres_data[1] = 0;
-//        memcpy(brake_pres_data+2,&car_control.brake_pressure,sizeof(float));
-//        send_can_message(CAN_ID_TX_TO_LOGGER_3,brake_pres_data,sizeof(float)+2);
-//        
-//        if(!car_control.precharge_ready){
-//            uint8_t data[] = 
-//            {inv1.POSITIVE_SLEW_RATE/256,inv1.POSITIVE_SLEW_RATE%256,
-//            inv1.NEGATIVE_SLEW_RATE/256,inv1.NEGATIVE_SLEW_RATE%256,
-//            inv1.CURRENT_LIMIT*2/256,bms.pack_dlc*2%256,
-//            0};
-//            send_can_message(CAN_ID_TX_STARTUP_PARAMS,data,7);
-//        }
-//    }
     
     if(tx_ready.status){
+		
+		tx_time.status = current_time_ms();
+		
         uint8_t status_data[] =
             {
             ass.break_loop_inverter_error,
@@ -394,6 +354,7 @@ void send_can_message(uint32_t id, uint8_t data[],int length){
         .data = {0,0,0,0,0,0,0,0},
         .dlc = length,
         .id = id,
+		.xtd = true,
     };
     
     for(int i = 0; i < length && i < 8; i++)

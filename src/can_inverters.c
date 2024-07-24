@@ -93,11 +93,17 @@ void transmit_HC1(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = *data,
+        .data = {0,0,0,0,0,0,0,0},
         .dlc = length,
         .id = id,
+		.xtd = true,
     };
 		
+	for(int i = 0; i < length && i < 8; i++)
+	{
+        temp_tx_buf.data[i] = data[i];
+	}
+	
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 }
 
@@ -151,11 +157,17 @@ void transmit_HC2(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = *data,
+        .data = {0,0,0,0,0,0,0,0},
         .dlc = length,
         .id = id,
+		.xtd = true
     };
 		
+	for(int i = 0; i < length && i < 8; i++)
+	{
+        temp_tx_buf.data[i] = data[i];
+	}
+	
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 }
 
@@ -192,11 +204,17 @@ void transmit_HC3(
 	data[7] = 0;		//Not using checksum
 	
 	MCAN_TX_BUFFER temp_tx_buf = {
-        .data = *data,
+        .data = {0,0,0,0,0,0,0,0},
         .dlc = length,
         .id = id,
+		.xtd = true
     };
 		
+	for(int i = 0; i < length && i < 8; i++)
+	{
+        temp_tx_buf.data[i] = data[i];
+	}
+	
     MCAN0_MessageTransmitFifo(1,&temp_tx_buf);
 }
 

@@ -26,7 +26,7 @@
 #define TX_PERIOD_INV2  50
 #define TX_PERIOD_BMS   100
 #define TX_PERIOD_LOGGER    100
-#define TX_PERIOD_STATUS    1000
+#define TX_PERIOD_STATUS    100
 
 #define STARTUP_GRACE_PERIOD    2000
 

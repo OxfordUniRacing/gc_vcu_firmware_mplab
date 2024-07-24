@@ -177,18 +177,21 @@ void APP_Tasks ( void )
 	handle_inverters();
     handle_timeouts();
 	
+	
+	
 	static uint32_t send_debug_timer = 0;
     if(current_time_ms() - send_debug_timer > 1000){
         //SYS_CONSOLE_PRINT("TS active: %d\n\r",ts_active());
         //SYS_CONSOLE_PRINT("ASS flags: %d\n\r%d\n\r%d\n\r%d\n\r%d\n\r",ass.break_loop_inverter_error,ass.break_loop_precharge,ass.break_loop_ts_deactive,ass.break_loop_timeout,ass.break_loop_pedal_invalid);
         //SYS_CONSOLE_PRINT("BMS Voltage: %f\n\r",bms.voltage);
-		SYS_CONSOLE_PRINT("Inverter Voltage: %f\n\r", inv1.capacitor_voltage);
+		SYS_CONSOLE_PRINT("Inverter Voltage: %f\n\r", get_inv_lowest_voltage() );
         //SYS_CONSOLE_PRINT("Car control RTD: %d\n\r",car_control.ready_to_drive);
         //SYS_CONSOLE_PRINT("Steering sensor value: %f\n\r",car_control.user_steering_value);
 		//SYS_CONSOLE_PRINT("PEDAL: %d\n\r", car_control.user_pedal_value);
 		SYS_CONSOLE_PRINT("BRAKE: %d\n\r", car_control.brake_on);
         //SYS_CONSOLE_PRINT("RTD: %d\n\r",car_control.ready_to_drive);
 		SYS_CONSOLE_PRINT("TS ACTIVE: %d\n\r", ts_active());
+		SYS_CONSOLE_PRINT("BMS VOTLAGE: %f\n\r", bms.voltage);
 		//SYS_CONSOLE_PRINT("AMS PRECHARGE EN: %d\n\r", bms.ams_precharge_enabled);
         SYS_CONSOLE_PRINT("Brake pressure reading: %f\n\r",car_control.brake_pressure);
         //SYS_CONSOLE_PRINT("bms.ams_precharge_enabled: %d\n\r",bms.ams_precharge_enabled);
@@ -205,6 +208,15 @@ void APP_Tasks ( void )
 		{
 			SYS_CONSOLE_PRINT("INV2 FAULT: %x", inv2.fault_code);
 		}
+		
+		
+		static uint32_t id = 1;
+		uint8_t data[8] = {1,2,3,4,5,6,7,8};
+		uint8_t len = 8;
+		
+		//send_can_message(id, data, len);
+		
+		id++;
 		
         send_debug_timer = current_time_ms();
     }

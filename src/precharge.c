@@ -66,6 +66,7 @@ void handle_precharge(void)
 		PC_WAIT_FOR_INVERTER_ENERGISE,	//Waiting fot the inverters to enter "energised" state
 		PC_WAIT_FOR_INVERTER_ENABLED,	//Waiting for the inverters to enter "enabled" state
 		PC_WAIT_FOR_FINAL_VOLTAGE,		//Waiting for the inverter voltage to reach 95% of battery voltage
+		PC_WAIT_FOR_PRECHARGE_DISABLE,
 		PC_READY,						//Ready to for BMS to exit precharge
 		PC_FAILED						//A timeout has occured, set flag for VCU relay to open 
 	} PRECHARGE_STATE = PC_TS_OFF;		//Different possible precharge states
@@ -217,7 +218,7 @@ void handle_precharge(void)
 			
 			if(inv1.statusword == STATUSWORD_ENERGISED && inv2.statusword == STATUSWORD_ENERGISED)
 			{
-				PRECHARGE_STATE = PC_WAIT_FOR_INVERTER_ENABLED;
+				PRECHARGE_STATE = PC_WAIT_FOR_FINAL_VOLTAGE;
                 SYS_CONSOLE_PRINT("PC_INVERTERS_ENERGISED_SUCCESS\n\r");
 			}
 			else
@@ -233,34 +234,7 @@ void handle_precharge(void)
 			
 			break;
 			
-		case PC_WAIT_FOR_INVERTER_ENABLED:
-			
-			bms.precharge_enable = true;
-			ass.break_loop_precharge = false;
-			car_control.inverters_energise = false;	//Disable
-			car_control.inverters_enable = true;	//Enable
-			car_control.precharge_ready = false;
-            car_control.inverter_params_complete = false;
-			
-			if(inv1.statusword == STATUSWORD_ENABLED && inv2.statusword == STATUSWORD_ENABLED)
-			{
-				PRECHARGE_STATE = PC_WAIT_FOR_FINAL_VOLTAGE;
-                SYS_CONSOLE_PRINT("PC_INVERTERS_ENABLED_SUCCESS\n\r");
-			}
-			else
-			{
-
-                
-				if(has_delay_passed(precharge_start_time, 3000))
-				{
-					PRECHARGE_STATE = PC_FAILED;
-                    SYS_CONSOLE_PRINT("PC_INVERTERS_ENABLED_FAILED\n\r");
-				}
-
-			}
-			
-			
-			break;
+		
 			
 		case PC_WAIT_FOR_FINAL_VOLTAGE:
 			/*
@@ -279,8 +253,8 @@ void handle_precharge(void)
 			
 			bms.precharge_enable = true;
 			ass.break_loop_precharge = false;
-			car_control.inverters_energise = false;
-			car_control.inverters_enable = true;
+			car_control.inverters_energise = true;
+			car_control.inverters_enable = false;
 			car_control.precharge_ready = false;
             car_control.inverter_params_complete = false;
 			
@@ -288,16 +262,15 @@ void handle_precharge(void)
 			PRECHARGE_STATE = PC_READY;
 #else
 			
-			if(		get_inv_lowest_voltage() + (INVERTER_PRECHARGE_CURRENT * INVERTER_PRECHARGE_RESISTANCE)
-					> /*bms.voltage * 0.95*/ 25)
+			if(		get_inv_lowest_voltage() > bms.voltage * 0.90)
 			{
-				PRECHARGE_STATE = PC_READY;
+				PRECHARGE_STATE = PC_WAIT_FOR_PRECHARGE_DISABLE;
                 SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_SUCCESS\n\r");
 			}
 			else
 			{
 				//t = 1000* -RCln(1-0.95) =1000* RCln20 = 3743
-				if(has_delay_passed(precharge_start_time, 5000))
+				if(has_delay_passed(precharge_start_time, 10000))
 				{
 					PRECHARGE_STATE = PC_FAILED;
                     SYS_CONSOLE_PRINT("PC_WAIT_FOR_FINAL_VOLTAGE_FAIL\n\r");
@@ -305,7 +278,60 @@ void handle_precharge(void)
 			}
 #endif
 			break;
+			
+		case PC_WAIT_FOR_PRECHARGE_DISABLE:
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = false;
+			car_control.inverters_energise = true;
+			car_control.inverters_enable = false;	
+			car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
+			
+			
+			if(!bms.ams_precharge_enabled)
+			{
+				PRECHARGE_STATE = PC_WAIT_FOR_INVERTER_ENABLED;
+				SYS_CONSOLE_PRINT("PC_WAIT_FOR_BMS_PRECHARGE_DISABLE_SUCCESS\n\r");
+			}
+			else
+			{
+				if(has_delay_passed(precharge_start_time, 10000))
+				{
+					PRECHARGE_STATE = PC_FAILED;
+                    SYS_CONSOLE_PRINT("PC_WAIT_FOR_BMS_PRECHARGE_DISABLE_FAILED\n\r");
+				}
+			}
+			
+			break;
             
+		case PC_WAIT_FOR_INVERTER_ENABLED:
+			
+			bms.precharge_enable = false;
+			ass.break_loop_precharge = false;
+			car_control.inverters_energise = false;	//Disable
+			car_control.inverters_enable = true;	//Enable
+			car_control.precharge_ready = false;
+            car_control.inverter_params_complete = false;
+			
+			if(inv1.statusword == STATUSWORD_ENABLED && inv2.statusword == STATUSWORD_ENABLED)
+			{
+				PRECHARGE_STATE = PC_READY;
+                SYS_CONSOLE_PRINT("PC_INVERTERS_ENABLED_SUCCESS\n\r");
+			}
+			else
+			{
+
+                
+				if(has_delay_passed(precharge_start_time, 10000))
+				{
+					PRECHARGE_STATE = PC_FAILED;
+                    SYS_CONSOLE_PRINT("PC_INVERTERS_ENABLED_FAILED\n\r");
+				}
+
+			}
+			
+			break;
+			
 		case PC_READY:
 			bms.precharge_enable = false;
 			ass.break_loop_precharge = false;
